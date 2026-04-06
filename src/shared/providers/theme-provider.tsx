@@ -1,4 +1,4 @@
-/* eslint-disable react-refresh/only-export-components */
+ 
 import * as React from "react"
 
 type Theme = "dark" | "light" | "system"
@@ -219,12 +219,12 @@ export function ThemeProvider({
   )
 }
 
-export const useTheme = () => {
-  const context = React.useContext(ThemeProviderContext)
+// export const useTheme = () => {
+//   const context = React.useContext(ThemeProviderContext)
 
-  if (context === undefined) {
-    throw new Error("useTheme must be used within a ThemeProvider")
-  }
+//   if (context === undefined) {
+//     throw new Error("useTheme must be used within a ThemeProvider")
+//   }
 
-  return context
-}
+//   return context
+// }
