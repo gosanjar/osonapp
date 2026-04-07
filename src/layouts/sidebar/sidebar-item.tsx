@@ -1,71 +1,68 @@
 import { NavLink } from "react-router-dom"
 import {
-  AccordionContent,
   AccordionItem,
+  AccordionContent,
   AccordionTrigger,
 } from "@/shared/ui/accordion"
 import type { ISidebarMenuTree } from "@/entities/sidebar/types"
+import Flex from "@/shared/ui/flex"
+
+const ITEM_CLASS =
+  "flex w-full cursor-pointer items-center rounded-md px-2.5 py-2"
+
+const ItemContent = ({ menu }: { menu: ISidebarMenuTree }) => (
+  <Flex>
+    {menu?.icon}
+    <div className="text-sm">{menu.label}</div>
+  </Flex>
+)
 
 const SidebarItem = ({ menu }: { menu: ISidebarMenuTree }) => {
-  if (!menu?.children) {
-    return (
-      <div className="flex flex-col gap-1.5">
-        {menu?.section && (
-          <div
-            className="px-2.5 text-lg text-gray-400"
-            style={{ marginTop: menu?.section ? 25 : 0 }}
+  const depth = menu?.depth ?? 0
+  const marginLeft = depth * 28
+
+  return (
+    <Flex direction="col" gap={1.5} className="w-full">
+      {menu?.section && (
+        <Flex className="mt-6 w-full px-2.5 text-lg text-gray-400">
+          {menu.section}
+        </Flex>
+      )}
+
+      {menu?.children ? (
+        <AccordionItem
+          value={menu.path}
+          className="w-full border-none [&_h3]:w-full"
+        >
+          <AccordionTrigger
+            className={`${ITEM_CLASS} font-normal hover:no-underline`}
+            style={{ marginLeft }}
           >
-            {menu.section}
-          </div>
-        )}
+            <ItemContent menu={menu} />
+          </AccordionTrigger>
+          <AccordionContent className="[&_a]:no-underline">
+            <Flex direction="col" gap={1.5}>
+              {menu.children.map((subMenu, index) => (
+                <SidebarItem
+                  key={index}
+                  menu={{ ...subMenu, depth: depth + 1 }}
+                />
+              ))}
+            </Flex>
+          </AccordionContent>
+        </AccordionItem>
+      ) : (
         <NavLink
           to={menu.path}
           className={({ isActive }) =>
-            `flex cursor-pointer items-center rounded-md px-2.5 py-2 hover:bg-gray-700 ${isActive ? "bg-gray-700 text-white" : ""}`
+            `${ITEM_CLASS} hover:bg-gray-700 ${isActive ? "bg-gray-700 text-white" : ""}`
           }
-          style={{ marginLeft: (menu?.depth ?? 0) * 28 }}
+          style={{ marginLeft }}
         >
-          <div className="flex items-center gap-2.5">
-            {menu?.icon}
-            <div className="text-sm">{menu.label}</div>
-          </div>
+          <ItemContent menu={menu} />
         </NavLink>
-      </div>
-    )
-  }
-
-  return (
-    <AccordionItem value={menu.path} className="border-none">
-      <div className="flex flex-col gap-1.5">
-        {menu?.section && (
-          <div
-            className="px-2.5 text-lg text-gray-400"
-            style={{ marginTop: menu?.section ? 25 : 0 }}
-          >
-            {menu.section}
-          </div>
-        )}
-        <AccordionTrigger
-          className="flex cursor-pointer items-center rounded-md px-2.5 py-2 font-normal hover:no-underline"
-          style={{ marginLeft: (menu?.depth ?? 0) * 28 }}
-        >
-          <div className="flex items-center gap-2.5 text-lg">
-            {menu?.icon}
-            <div className="text-sm">{menu.label}</div>
-          </div>
-        </AccordionTrigger>
-      </div>
-      <AccordionContent className="[&_a]:no-underline">
-        <div className="flex flex-col gap-1.5">
-          {menu.children?.map((subMenu, index) => (
-            <SidebarItem
-              key={index}
-              menu={{ ...subMenu, depth: (menu?.depth ?? 0) + 1 }}
-            />
-          ))}
-        </div>
-      </AccordionContent>
-    </AccordionItem>
+      )}
+    </Flex>
   )
 }
 

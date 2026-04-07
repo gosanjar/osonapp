@@ -1,5 +1,4 @@
 import { ROUTES } from "@/shared/config/routes"
-import { HugeiconsIcon } from "@hugeicons/react"
 import {
   BankIcon,
   Book02Icon,
@@ -18,23 +17,24 @@ import {
 } from "@hugeicons/core-free-icons"
 import type { ISidebarMenuTree } from "./types"
 import { useMemo } from "react"
+import Icon from "@/shared/ui/icon"
 
 const useSidebar = () => {
   const menuList: ISidebarMenuTree[] = useMemo((): ISidebarMenuTree[] => {
     return [
       {
         path: ROUTES.DASHBOARD,
-        icon: <HugeiconsIcon icon={Home01Icon} size={18} />,
+        icon: <Icon icon={Home01Icon} />,
         label: "Dashboard",
       },
       {
         path: ROUTES.CONSTRUCTOR,
-        icon: <HugeiconsIcon icon={WebDesign01Icon} size={18} />,
+        icon: <Icon icon={WebDesign01Icon} />,
         label: "Konstruktor",
       },
       {
         path: ROUTES.ORDERS,
-        icon: <HugeiconsIcon icon={ShoppingCart02Icon} size={18} />,
+        icon: <Icon icon={ShoppingCart02Icon} />,
         label: "Buyurtmalar",
         children: [
           {
@@ -53,7 +53,7 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.CATALOG,
-        icon: <HugeiconsIcon icon={Store01Icon} size={18} />,
+        icon: <Icon icon={Store01Icon} />,
         label: "Katalog",
         children: [
           {
@@ -80,7 +80,7 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.CUSTOMERS,
-        icon: <HugeiconsIcon icon={User03Icon} size={18} />,
+        icon: <Icon icon={User03Icon} />,
         label: "Mijozlar",
         children: [
           {
@@ -95,8 +95,8 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.MARKETING,
-        icon: <HugeiconsIcon icon={DiscountIcon} size={18} />,
-        label: "Katalog",
+        icon: <Icon icon={DiscountIcon} />,
+        label: "Marketing",
         children: [
           {
             path: ROUTES.MARKETING_DISCOUNT,
@@ -130,7 +130,7 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.ANALYTICS,
-        icon: <HugeiconsIcon icon={WaterfallUp01Icon} size={18} />,
+        icon: <Icon icon={WaterfallUp01Icon} />,
         label: "Metrikalar",
         children: [
           {
@@ -161,18 +161,18 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.TELEGRAM_CONNECT,
-        icon: <HugeiconsIcon icon={TelegramIcon} size={18} />,
+        icon: <Icon icon={TelegramIcon} />,
         label: "Telegram bot",
         section: "Kanallar",
       },
       {
         path: ROUTES.CONVERSATIONS,
-        icon: <HugeiconsIcon icon={ChatIcon} size={18} />,
+        icon: <Icon icon={ChatIcon} />,
         label: "Chat",
       },
       {
         path: ROUTES.SETTINGS,
-        icon: <HugeiconsIcon icon={Setting07Icon} size={18} />,
+        icon: <Icon icon={Setting07Icon} />,
         label: "Sozlamalar",
         section: "Sozlamalar",
         children: [
@@ -192,7 +192,7 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.PAYMENTS,
-        icon: <HugeiconsIcon icon={BankIcon} size={18} />,
+        icon: <Icon icon={BankIcon} />,
         label: "To'lovlar",
         children: [
           {
@@ -211,7 +211,7 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.MANAGEMENT,
-        icon: <HugeiconsIcon icon={UserMultiple02Icon} size={18} />,
+        icon: <Icon icon={UserMultiple02Icon} />,
         label: "Xodimlar",
         children: [
           {
@@ -226,12 +226,12 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.APPLICATIONS,
-        icon: <HugeiconsIcon icon={DashboardSquare01Icon} size={18} />,
+        icon: <Icon icon={DashboardSquare01Icon} />,
         label: "Dastur",
       },
       {
         path: ROUTES.META_FIELDS,
-        icon: <HugeiconsIcon icon={Book02Icon} size={18} />,
+        icon: <Icon icon={Book02Icon} />,
         label: "Maxsus ma'lumotlar",
       },
     ]
