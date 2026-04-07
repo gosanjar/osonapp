@@ -6,11 +6,16 @@ import { NavLink } from "react-router-dom"
 
 const NotFound = () => {
   return (
-    <Flex justify="center" direction="col" className="h-screen w-screen">
+    <Flex
+      justify="center"
+      align="center"
+      direction="column"
+      className="h-screen w-screen bg-secondary"
+    >
       <img src="/not-found.webp" alt="Not Found" />
       <NavLink
         to={ROUTES.ROOT}
-        className="flex items-center gap-2.5 rounded-md bg-white p-2 text-2xl font-medium text-black"
+        className="flex items-center gap-2.5 rounded-md bg-secondary-foreground p-2 text-2xl font-medium text-secondary"
       >
         <Icon icon={ArrowLeft02Icon} size={32} />
         Go Home

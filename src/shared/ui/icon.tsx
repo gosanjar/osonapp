@@ -4,11 +4,24 @@ const Icon = ({
   icon,
   size = 18,
   color,
+  className,
+  strokeWidth,
   ...props
 }: {
   icon: IconSvgElement
   size?: number
   color?: string
-}) => <HugeiconsIcon icon={icon} size={size} color={color} {...props} />
+  strokeWidth?: number
+  className?: string
+}) => (
+  <HugeiconsIcon
+    icon={icon}
+    size={size}
+    color={color}
+    className={`shrink-0 ${className || ""}`}
+    strokeWidth={strokeWidth}
+    {...props}
+  />
+)
 
 export default Icon

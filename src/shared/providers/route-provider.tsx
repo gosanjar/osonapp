@@ -16,7 +16,7 @@ export const Routes = () => {
   )
 
   return (
-    <Flex direction="col" className="h-screen w-screen justify-center">
+    <Flex direction="column" className="h-screen w-screen justify-center">
       <Suspense fallback={<HugeiconsIcon icon={Loading03Icon} size={32} />}>
         <RouterProvider router={routes} />
       </Suspense>

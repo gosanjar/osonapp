@@ -18,23 +18,37 @@ const router = (): RouteObject[] => {
             },
             {
               path: ROUTES.DASHBOARD,
-              Component: lazy(() => import("@pages/admin/index")),
+              Component: lazy(() => import("@pages/admin/dashboard")),
             },
             {
               path: ROUTES.CONSTRUCTOR,
               Component: lazy(() => import("@pages/admin/index")),
             },
             {
-              path: ROUTES.ORDERS_ALL,
-              Component: lazy(() => import("@pages/admin/index")),
+              path: ROUTES.ORDERS,
+              children: [
+                {
+                  path: ROUTES.ORDERS_ALL,
+                  Component: lazy(() => import("@pages/admin/index")),
+                },
+                {
+                  path: ROUTES.ORDERS_PREORDERS,
+                  Component: lazy(() => import("@pages/admin/index")),
+                },
+                {
+                  path: ROUTES.ORDERS_SETTINGS,
+                  Component: lazy(() => import("@pages/admin/index")),
+                },
+              ],
             },
             {
-              path: ROUTES.ORDERS_PREORDERS,
-              Component: lazy(() => import("@pages/admin/index")),
-            },
-            {
-              path: ROUTES.ORDERS_SETTINGS,
-              Component: lazy(() => import("@pages/admin/index")),
+              path: ROUTES.ANALYTICS,
+              children: [
+                {
+                  path: ROUTES.ANALYTICS_SALES,
+                  Component: lazy(() => import("@pages/admin/index")),
+                },
+              ],
             },
           ],
         },
