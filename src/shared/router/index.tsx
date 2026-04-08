@@ -29,15 +29,19 @@ const router = (): RouteObject[] => {
               children: [
                 {
                   path: ROUTES.ORDERS_ALL,
-                  Component: lazy(() => import("@pages/admin/index")),
+                  Component: lazy(
+                    () => import("@pages/admin/orders/all-orders")
+                  ),
                 },
                 {
                   path: ROUTES.ORDERS_PREORDERS,
-                  Component: lazy(() => import("@pages/admin/index")),
+                  Component: lazy(
+                    () => import("@pages/admin/orders/pre-orders")
+                  ),
                 },
                 {
                   path: ROUTES.ORDERS_SETTINGS,
-                  Component: lazy(() => import("@pages/admin/index")),
+                  Component: lazy(() => import("@pages/admin/orders/settings")),
                 },
               ],
             },

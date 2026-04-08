@@ -46,15 +46,21 @@ const MainLayout = () => {
         gap={0}
         align="start"
         direction="column"
-        className="w-full bg-secondary text-secondary-foreground"
+        className="w-full overflow-x-auto bg-secondary text-secondary-foreground"
       >
-        <Flex justify="between" className="h-16 w-full border-b p-4">
-          <Button className="lg:hidden" onClick={() => setOpen(true)}>
-            <Icon icon={Menu02Icon} />
-          </Button>
-          <div className="hidden items-center gap-2.5 text-lg font-medium lg:flex">
-            {currentLabel}
-          </div>
+        <Flex
+          justify="between"
+          align="center"
+          className="h-16 w-full border-b p-4"
+        >
+          <Flex align="center">
+            <Button className="lg:hidden" onClick={() => setOpen(true)}>
+              <Icon icon={Menu02Icon} />
+            </Button>
+            <div className="items-center gap-2.5 text-lg font-medium">
+              {currentLabel}
+            </div>
+          </Flex>
           <Flex>
             <LangToggle />
             <ThemeToggle />
@@ -64,14 +70,14 @@ const MainLayout = () => {
         <Flex
           gap={4}
           direction="column"
-          className="h-full w-full overflow-y-auto p-4"
+          className="h-full w-full overflow-x-auto overflow-y-auto p-4"
         >
           <Suspense
             fallback={<Icon icon={Loading03Icon} className="animate-spin" />}
           >
-            <div className="flex items-center gap-2.5 text-lg font-medium lg:hidden">
+            {/*<div className="flex items-center gap-2.5 text-lg font-medium lg:hidden">
               {currentLabel}
-            </div>
+            </div>*/}
             <Outlet />
             <Flex justify="between" className="mt-auto w-full text-sm">
               <div>

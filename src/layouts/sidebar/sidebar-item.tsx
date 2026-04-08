@@ -8,7 +8,7 @@ import type { ISidebarMenuTree } from "@/entities/sidebar/types"
 import Flex from "@/shared/ui/flex"
 
 const ITEM_CLASS =
-  "flex w-full cursor-pointer items-center rounded-md px-2.5 py-2"
+  "flex w-full cursor-pointer items-center rounded-md px-2.5 py-2 text-sm"
 
 const ItemContent = ({ menu }: { menu: ISidebarMenuTree }) => (
   <Flex align="center" className="text-white">
