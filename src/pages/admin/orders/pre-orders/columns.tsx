@@ -1,35 +1,11 @@
 import type { Order } from "@/entities/order/types"
-import { Checkbox } from "@/shared/ui/checkbox"
 import { DataTableColumnHeader } from "@/shared/ui/data-table/data-table-column-header"
 import { type ColumnDef } from "@tanstack/react-table"
 
 export const columns: ColumnDef<Order>[] = [
   {
-    accessorKey: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-  {
     accessorKey: "client",
     header: "Mijoz",
-    enableColumnFilter: true,
   },
   {
     accessorKey: "phone",

@@ -12,6 +12,8 @@ export const ROUTES = {
   // Catalog
   CATALOG: "/catalog",
   CATALOG_PRODUCTS: "/catalog/products",
+  CATALOG_PRODUCTS_CREATE: "/catalog/products/create",
+  CATALOG_PRODUCTS_EDIT: "/catalog/products/edit",
   CATALOG_COLLECTIONS: "/catalog/collections",
   CATALOG_INVENTORY: "/catalog/inventory",
   CATALOG_PRODUCT_RECOMMENDATIONS: "/catalog/product/recommendations",

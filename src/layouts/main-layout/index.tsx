@@ -46,7 +46,7 @@ const MainLayout = () => {
         gap={0}
         align="start"
         direction="column"
-        className="w-full overflow-x-auto bg-secondary text-secondary-foreground"
+        className="w-full overflow-x-auto overflow-y-hidden bg-secondary text-secondary-foreground"
       >
         <Flex
           justify="between"
@@ -70,14 +70,11 @@ const MainLayout = () => {
         <Flex
           gap={4}
           direction="column"
-          className="h-full w-full overflow-x-auto overflow-y-auto p-4"
+          className="h-full w-full overflow-y-auto p-4"
         >
           <Suspense
             fallback={<Icon icon={Loading03Icon} className="animate-spin" />}
           >
-            {/*<div className="flex items-center gap-2.5 text-lg font-medium lg:hidden">
-              {currentLabel}
-            </div>*/}
             <Outlet />
             <Flex justify="between" className="mt-auto w-full text-sm">
               <div>

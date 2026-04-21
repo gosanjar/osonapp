@@ -147,3 +147,25 @@
 *::-webkit-scrollbar-track {
   background: transparent;
 }
+
+html {
+  overflow-y: hidden;
+}
+
+.dark .mdxeditor {
+  border-radius: 6px;
+  background-color: #0b1220;
+  color: #ffffff;
+}
+
+.dark .mdxeditor-content {
+  color: #ffffff;
+}
+
+.dark .mdxeditor-toolbar {
+  background-color: #111827;
+  border-color: #1f2937;
+}
+.dark .mdxeditor * {
+  color: #ffffff;
+}

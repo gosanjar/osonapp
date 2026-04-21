@@ -46,6 +46,29 @@ const router = (): RouteObject[] => {
               ],
             },
             {
+              path: ROUTES.CATALOG,
+              children: [
+                {
+                  path: ROUTES.CATALOG_PRODUCTS,
+                  Component: lazy(
+                    () => import("@pages/admin/catalog/products")
+                  ),
+                },
+                {
+                  path: ROUTES.CATALOG_PRODUCTS_CREATE,
+                  Component: lazy(
+                    () => import("@pages/admin/catalog/products/create")
+                  ),
+                },
+                {
+                  path: ROUTES.CATALOG_PRODUCTS_EDIT,
+                  Component: lazy(
+                    () => import("@pages/admin/catalog/products/create")
+                  ),
+                },
+              ],
+            },
+            {
               path: ROUTES.ANALYTICS,
               children: [
                 {
