@@ -1,6 +1,7 @@
 import {
   type ColumnDef,
   type ColumnFiltersState,
+  type Row,
   type SortingState,
   type VisibilityState,
   flexRender,
@@ -33,6 +34,7 @@ interface DataTableProps<TData, TValue> {
   selectable?: boolean
   noResultsTitle?: string
   noResultsContent?: string
+  onRowClick?: (row: Row<TData>) => void
 }
 
 export function DataTable<TData, TValue>({
@@ -41,6 +43,7 @@ export function DataTable<TData, TValue>({
   selectable = true,
   noResultsTitle,
   noResultsContent,
+  onRowClick,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
@@ -144,6 +147,8 @@ export function DataTable<TData, TValue>({
                       <TableRow
                         key={row.id}
                         data-state={row.getIsSelected() && "selected"}
+                        onClick={() => onRowClick?.(row)}
+                        className={onRowClick ? "cursor-pointer" : ""}
                       >
                         {row.getVisibleCells().map((cell) => (
                           <TableCell key={cell.id}>

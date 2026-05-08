@@ -9,10 +9,20 @@ import { NavLink, useLocation } from "react-router-dom"
 import Icon from "@/shared/ui/icon"
 import { ROUTES } from "@/shared/config/routes"
 import Flex from "@/shared/ui/flex"
+import { useState } from "react"
 
 const Sidebar = ({ onNavigate }: { onNavigate?: () => void }) => {
   const { pathname } = useLocation()
   const { menuList } = useSidebar()
+
+  const activeItem =
+    menuList.find((item) =>
+      item.children?.some((child) => pathname.startsWith(child.path))
+    )?.path ?? ""
+
+  const [openItem, setOpenItem] = useState(activeItem)
+
+  const value = openItem || activeItem
 
   return (
     <Flex
@@ -34,11 +44,8 @@ const Sidebar = ({ onNavigate }: { onNavigate?: () => void }) => {
       <Accordion
         type="single"
         collapsible
-        defaultValue={
-          menuList.find((item) =>
-            item.children?.some((child) => child.path === pathname)
-          )?.path
-        }
+        value={value}
+        onValueChange={setOpenItem}
       >
         <Flex
           direction="column"

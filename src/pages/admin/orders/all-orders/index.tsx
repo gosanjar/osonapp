@@ -21,7 +21,7 @@ const AllOrders = () => {
       {
         <DataTable<Order, unknown>
           columns={columns}
-          data={orderMocks(0)}
+          data={orderMocks(5)}
           noResultsTitle="Buyurtmalaringizni boshqaring"
           noResultsContent="Bu erda siz oʻz buyurtmalaringizni koʻrishingiz, oʻzgartirishingiz va bashqarishingiz mumkin."
         />

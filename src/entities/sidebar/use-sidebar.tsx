@@ -61,7 +61,7 @@ const useSidebar = () => {
             label: "Mahsulotlar",
           },
           {
-            path: ROUTES.CATALOG_COLLECTIONS,
+            path: ROUTES.CATALOG_CATEGORIES,
             label: "Kategoriyalar",
           },
           {
