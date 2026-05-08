@@ -1,6 +1,5 @@
-import { Button } from "@/shared/ui/button"
 import Flex from "@/shared/ui/flex"
-import { CancelButton } from "@/shared/ui/predefined"
+import { CancelButton, SaveButton } from "@/shared/ui/predefined"
 import MediaCard from "./sections/media-card"
 import VideoCard from "./sections/video-card"
 import PriceCard from "./sections/price-card"
@@ -26,7 +25,7 @@ const CreateProduct = () => {
             </Flex>
             <Flex>
               <CancelButton />
-              <Button size="lg">Saqlash</Button>
+              <SaveButton />
             </Flex>
           </Flex>
 

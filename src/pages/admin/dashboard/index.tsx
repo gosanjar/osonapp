@@ -26,7 +26,7 @@ const Dashboard = () => {
         "Telegram orqali buyurtma qabul qilish va do`koningizni boshqarish uchun telegram botni ulang.",
     },
     {
-      to: ROUTES.CATALOG_COLLECTIONS,
+      to: ROUTES.CATALOG_CATEGORIES,
       color: "bg-blue-500",
       title: "Kategoriyalar qo`shish",
       description:

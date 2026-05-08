@@ -11,6 +11,7 @@ import {
 import { Separator } from "@/shared/ui/separator"
 import Flex from "@/shared/ui/flex"
 import { AddButton } from "@/shared/ui/predefined"
+import StatusCard from "@/shared/components/status-card"
 
 export function ProductSidebar() {
   return (
@@ -20,7 +21,7 @@ export function ProductSidebar() {
           <CardTitle>Mahsulot tafsilotlari</CardTitle>
         </CardHeader>
 
-        <CardContent className="">
+        <CardContent>
           <Flex direction="column" gap={4}>
             <Input label="Mahsulot turi" placeholder="Masalan: Kiyim" />
             <Input label="Brend" placeholder="Masalan: Nike" />
@@ -49,33 +50,7 @@ export function ProductSidebar() {
         </CardContent>
       </Card>
 
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Nashr holati</CardTitle>
-        </CardHeader>
-
-        <CardContent className="">
-          <Flex direction="column" gap={4}>
-            <Select defaultValue="ACTIVE">
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="ACTIVE">Faol</SelectItem>
-                <SelectItem value="DRAFT">Qoralama</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Flex
-              align="center"
-              className="h-8 w-full rounded-lg border bg-muted px-2"
-            >
-              <span className="h-2.5 w-2.5 animate-pulse rounded-full bg-green-500" />
-              <p className="text-sm font-medium">Faol va do'konda ko'rinadi</p>
-            </Flex>
-          </Flex>
-        </CardContent>
-      </Card>
+      <StatusCard description="Mahsulot holatini belgilang." />
     </Flex>
   )
 }
