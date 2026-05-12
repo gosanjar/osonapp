@@ -9,6 +9,18 @@ import { HugeiconsIcon } from "@hugeicons/react"
 import { Loading03Icon } from "@hugeicons/core-free-icons"
 import Flex from "@/shared/ui/flex"
 
+const getSubdomain = () => {
+  const hostname = window.location.hostname
+  const parts = hostname.split(".")
+  if (parts.length >= 3) return parts[0]
+  // *.localhost (e.g. gosanjar.localhost)
+  if (parts.length === 2 && parts[1] === "localhost") return parts[0]
+  return null
+}
+
+const subdomain = getSubdomain()
+export const isMainDomain = subdomain === null
+
 export const Routes = () => {
   const routes = useMemo(
     () => createBrowserRouter(router() as RouteObject[]),
@@ -16,10 +28,12 @@ export const Routes = () => {
   )
 
   return (
-    <Flex direction="column" className="h-screen w-screen justify-center">
-      <Suspense fallback={<HugeiconsIcon icon={Loading03Icon} size={32} />}>
-        <RouterProvider router={routes} />
-      </Suspense>
-    </Flex>
+    <Suspense fallback={
+      <Flex direction="column" className="h-screen w-screen items-center justify-center">
+        <HugeiconsIcon icon={Loading03Icon} size={32} />
+      </Flex>
+    }>
+      <RouterProvider router={routes} />
+    </Suspense>
   )
 }

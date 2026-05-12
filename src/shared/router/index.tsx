@@ -2,8 +2,46 @@ import MainLayout from "@/layouts/main-layout"
 import { lazy } from "react"
 import { Navigate, type RouteObject } from "react-router-dom"
 import { ROUTES } from "../config/routes"
+import { isMainDomain } from "../providers/route-provider"
+
+const mainDomainRouter = (): RouteObject[] => [
+  {
+    path: "/",
+    Component: lazy(() => import("@/pages/public/landing")),
+  },
+  {
+    path: "/login",
+    Component: lazy(() => import("@/pages/public/auth/login")),
+  },
+  {
+    path: "/register",
+    Component: lazy(() => import("@/pages/public/auth/register")),
+  },
+  {
+    path: "/forgot-password",
+    Component: lazy(() => import("@/pages/public/auth/forgot-password")),
+  },
+  {
+    path: "/pricing",
+    Component: lazy(() => import("@/pages/public/pricing")),
+  },
+  {
+    path: "/blog",
+    Component: lazy(() => import("@/pages/public/blog")),
+  },
+  {
+    path: "/for/:niche",
+    Component: lazy(() => import("@/pages/public/niche")),
+  },
+  {
+    path: "*",
+    Component: lazy(() => import("@/features/not-found")),
+  },
+]
 
 const router = (): RouteObject[] => {
+  if (isMainDomain) return mainDomainRouter()
+
   return [
     {
       path: ROUTES.ROOT,
@@ -113,9 +151,7 @@ const router = (): RouteObject[] => {
               children: [
                 {
                   path: ROUTES.CUSTOMERS_ALL,
-                  Component: lazy(
-                    () => import("@pages/admin/customers/all")
-                  ),
+                  Component: lazy(() => import("@pages/admin/customers/all")),
                 },
                 {
                   path: ROUTES.CUSTOMERS_SEGMENTS,
@@ -161,7 +197,8 @@ const router = (): RouteObject[] => {
                 {
                   path: ROUTES.MARKETING_GIFT_PROMOTIONS_CREATE,
                   Component: lazy(
-                    () => import("@pages/admin/marketing/gift-promotions/create")
+                    () =>
+                      import("@pages/admin/marketing/gift-promotions/create")
                   ),
                 },
                 {
@@ -191,19 +228,22 @@ const router = (): RouteObject[] => {
                 {
                   path: ROUTES.MARKETING_REWARD_POINTS_CREATE_ACCOUNT,
                   Component: lazy(
-                    () => import("@pages/admin/marketing/reward-points/create-account")
+                    () =>
+                      import("@pages/admin/marketing/reward-points/create-account")
                   ),
                 },
                 {
                   path: ROUTES.MARKETING_REWARD_POINTS_PLACE_ORDER,
                   Component: lazy(
-                    () => import("@pages/admin/marketing/reward-points/place-order")
+                    () =>
+                      import("@pages/admin/marketing/reward-points/place-order")
                   ),
                 },
                 {
                   path: ROUTES.MARKETING_REWARD_POINTS_GOAL_SPEND,
                   Component: lazy(
-                    () => import("@pages/admin/marketing/reward-points/goal-spend")
+                    () =>
+                      import("@pages/admin/marketing/reward-points/goal-spend")
                   ),
                 },
               ],
@@ -213,7 +253,9 @@ const router = (): RouteObject[] => {
               children: [
                 {
                   path: ROUTES.ANALYTICS_GOOGLE,
-                  Component: lazy(() => import("@pages/admin/analytics/google")),
+                  Component: lazy(
+                    () => import("@pages/admin/analytics/google")
+                  ),
                 },
                 {
                   path: ROUTES.ANALYTICS_SALES,
@@ -225,11 +267,15 @@ const router = (): RouteObject[] => {
                 },
                 {
                   path: ROUTES.ANALYTICS_SEARCH,
-                  Component: lazy(() => import("@pages/admin/analytics/search")),
+                  Component: lazy(
+                    () => import("@pages/admin/analytics/search")
+                  ),
                 },
                 {
                   path: ROUTES.ANALYTICS_PRODUCTS,
-                  Component: lazy(() => import("@pages/admin/analytics/products")),
+                  Component: lazy(
+                    () => import("@pages/admin/analytics/products")
+                  ),
                 },
                 {
                   path: ROUTES.ANALYTICS_CART,
@@ -259,11 +305,15 @@ const router = (): RouteObject[] => {
             },
             {
               path: ROUTES.SETTINGS_SHIPPING_CREATE,
-              Component: lazy(() => import("@pages/admin/settings/shipping/create")),
+              Component: lazy(
+                () => import("@pages/admin/settings/shipping/create")
+              ),
             },
             {
               path: ROUTES.SETTINGS_SHIPPING_EDIT,
-              Component: lazy(() => import("@pages/admin/settings/shipping/create")),
+              Component: lazy(
+                () => import("@pages/admin/settings/shipping/create")
+              ),
             },
             {
               path: ROUTES.SETTINGS_LOCATION,
@@ -271,11 +321,15 @@ const router = (): RouteObject[] => {
             },
             {
               path: ROUTES.SETTINGS_LOCATION_CREATE,
-              Component: lazy(() => import("@pages/admin/settings/location/create")),
+              Component: lazy(
+                () => import("@pages/admin/settings/location/create")
+              ),
             },
             {
               path: ROUTES.SETTINGS_LOCATION_EDIT,
-              Component: lazy(() => import("@pages/admin/settings/location/create")),
+              Component: lazy(
+                () => import("@pages/admin/settings/location/create")
+              ),
             },
             {
               path: ROUTES.PRICING,
