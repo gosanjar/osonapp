@@ -52,7 +52,7 @@ export default function RegisterPage() {
 
     const apiUrl = import.meta.env.VITE_API_URL as string
     const es = new EventSource(
-      `${apiUrl}/auth/pre-reg-stream/?phone_number=${encodeURIComponent(phoneValue)}`
+      `${apiUrl}/auth/pre-reg-stream/?phone_number=${phoneValue.replace(/\D/g, "")}`
     )
 
     es.onmessage = (e) => {
