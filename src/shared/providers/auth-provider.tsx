@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react"
-import { authApi, type AuthUser } from "@/shared/api/auth"
+import { AuthApi, type AuthUser } from "@/shared/api/auth"
 
 type AuthState =
   | { status: "loading" }
@@ -24,8 +24,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AuthState>({ status: "loading" })
 
   useEffect(() => {
-    authApi
-      .me()
+    AuthApi.me()()
       .then((res) => setState({ status: "authenticated", user: res.data }))
       .catch(() => {
         setState({ status: "unauthenticated" })
@@ -47,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const logout = useCallback(async () => {
-    await authApi.logout().catch(() => null)
+    await AuthApi.logout()().catch(() => null)
     setState({ status: "unauthenticated" })
   }, [])
 

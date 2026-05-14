@@ -1,36 +1,27 @@
-import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useForm } from "react-hook-form"
+import { useMutation } from "@tanstack/react-query"
 import AuthLayout from "./layout"
-import { authApi } from "@/shared/api/auth"
-
-type FormValues = {
-  phone_number: string
-  password: string
-}
+import { AuthApi, type LoginPayload } from "@/shared/api/auth"
 
 export default function LoginPage() {
-  const [error, setError] = useState<string | null>(null)
   const {
     register,
     handleSubmit,
     formState: { isSubmitting },
-  } = useForm<FormValues>()
+  } = useForm<LoginPayload>()
 
-  const onSubmit = async (values: FormValues) => {
-    setError(null)
-    try {
-      const res = await authApi.login(values)
-      const { subdomain } = res.data.user
-      const host = import.meta.env.VITE_APP_DOMAIN || "osonapp.uz"
-      window.location.assign(`https://${subdomain}.${host}`)
-    } catch (err: unknown) {
-      const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ?? "Telefon raqam yoki parol noto'g'ri"
-      setError(msg)
-    }
-  }
+  const { mutate, error, isPending } = useMutation({
+    mutationFn: (data: LoginPayload) => AuthApi.login(data)(),
+    onSuccess: () => {
+      const appUrl = import.meta.env.VITE_APP_URL || "https://app.osonapp.uz"
+      window.location.assign(appUrl)
+    },
+  })
+
+  const errorMsg =
+    (error as { response?: { data?: { message?: string } } })?.response?.data
+      ?.message ?? (error ? "Telefon raqam yoki parol noto'g'ri" : null)
 
   return (
     <AuthLayout>
@@ -41,7 +32,7 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit((data) => mutate(data))} className="space-y-4">
         <div>
           <label className="mb-1.5 block text-sm text-muted-foreground">
             Telefon raqam
@@ -71,18 +62,18 @@ export default function LoginPage() {
           />
         </div>
 
-        {error && (
+        {errorMsg && (
           <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
-            {error}
+            {errorMsg}
           </p>
         )}
 
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isPending || isSubmitting}
           className="mt-2 w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
         >
-          {isSubmitting ? "Kirilmoqda..." : "Kirish"}
+          {isPending ? "Kirilmoqda..." : "Kirish"}
         </button>
       </form>
 

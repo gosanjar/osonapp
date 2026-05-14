@@ -1,40 +1,24 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useForm } from "react-hook-form"
+import { useMutation } from "@tanstack/react-query"
 import AuthLayout from "./layout"
-import { authApi } from "@/shared/api/auth"
-
-type FormValues = {
-  first_name: string
-  last_name: string
-  phone_number: string
-  password: string
-  shop_name: string
-}
+import { AuthApi, type RegisterPayload } from "@/shared/api/auth"
 
 export default function RegisterPage() {
-  const [error, setError] = useState<string | null>(null)
   const [shopUrl, setShopUrl] = useState<string | null>(null)
-  const {
-    register,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<FormValues>()
+  const { register, handleSubmit } = useForm<RegisterPayload>()
 
-  const onSubmit = async (values: FormValues) => {
-    setError(null)
-    try {
-      const res = await authApi.register(values)
-      const { subdomain } = res.data.user
-      const host = import.meta.env.VITE_APP_DOMAIN || "osonapp.uz"
-      setShopUrl(`https://${subdomain}.${host}`)
-    } catch (err: unknown) {
-      const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ?? "Ro'yxatdan o'tishda xatolik yuz berdi"
-      setError(msg)
-    }
-  }
+  const { mutate, error, isPending } = useMutation({
+    mutationFn: (data: RegisterPayload) => AuthApi.register(data)(),
+    onSuccess: () => {
+      setShopUrl(import.meta.env.VITE_APP_URL || "https://app.osonapp.uz")
+    },
+  })
+
+  const errorMsg =
+    (error as { response?: { data?: { message?: string } } })?.response?.data
+      ?.message ?? (error ? "Ro'yxatdan o'tishda xatolik yuz berdi" : null)
 
   if (shopUrl) {
     return (
@@ -56,7 +40,7 @@ export default function RegisterPage() {
             className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#229ED9] py-3 font-semibold text-white transition-opacity hover:opacity-90"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/>
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z" />
             </svg>
             @osonapp_bot ga o'tish
           </a>
@@ -81,7 +65,7 @@ export default function RegisterPage() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <form onSubmit={handleSubmit((data) => mutate(data))} className="space-y-4">
         <div className="grid grid-cols-2 gap-3">
           <div>
             <label className="mb-1.5 block text-sm text-muted-foreground">
@@ -140,18 +124,18 @@ export default function RegisterPage() {
           />
         </div>
 
-        {error && (
+        {errorMsg && (
           <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
-            {error}
+            {errorMsg}
           </p>
         )}
 
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isPending}
           className="mt-2 w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
         >
-          {isSubmitting ? "Yaratilmoqda..." : "Ro'yxatdan o'tish"}
+          {isPending ? "Yaratilmoqda..." : "Ro'yxatdan o'tish"}
         </button>
       </form>
 

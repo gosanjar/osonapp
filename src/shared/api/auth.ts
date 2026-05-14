@@ -1,4 +1,4 @@
-import api from "./index"
+import { request } from "./index"
 
 export type LoginPayload = {
   phone_number: string
@@ -21,17 +21,50 @@ export type AuthUser = {
   subdomain: string
 }
 
-export type AuthResponse = {
-  user: AuthUser
+export type ApiResponse<T> = {
+  success: boolean
+  message: string
+  data: T
 }
 
-export const authApi = {
-  login: (data: LoginPayload) => api.post<AuthResponse>("/auth/login/", data),
+export type AuthData = {
+  user: AuthUser
+  access?: string
+  refresh?: string
+}
 
-  register: (data: RegisterPayload) =>
-    api.post<AuthResponse>("/auth/register/", data),
+export class AuthApi {
+  static login(data: LoginPayload) {
+    return () =>
+      request<ApiResponse<AuthData>>({
+        method: "POST",
+        url: "/auth/login/",
+        data,
+      })
+  }
 
-  logout: () => api.post("/auth/logout/"),
+  static register(data: RegisterPayload) {
+    return () =>
+      request<ApiResponse<AuthData>>({
+        method: "POST",
+        url: "/auth/register/",
+        data,
+      })
+  }
 
-  me: () => api.get<AuthUser>("/auth/me/"),
+  static me() {
+    return () =>
+      request<ApiResponse<AuthUser>>({
+        method: "GET",
+        url: "/auth/me/",
+      })
+  }
+
+  static logout() {
+    return () =>
+      request<ApiResponse<object>>({
+        method: "POST",
+        url: "/auth/logout/",
+      })
+  }
 }
