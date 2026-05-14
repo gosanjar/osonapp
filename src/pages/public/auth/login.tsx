@@ -1,28 +1,29 @@
 import { Link } from "react-router-dom"
-import { useForm } from "react-hook-form"
+import { useForm, FormProvider } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import AuthLayout from "./layout"
-import { AuthApi, type LoginPayload } from "@/shared/api/auth"
+import { AuthApi } from "@/shared/api/auth"
+import { Input } from "@/shared/ui/input"
+import { FormControl } from "@/shared/ui/form-control"
+import { PHONE_PATTERN } from "@/shared/utils/validation"
+import { getApiError } from "@/shared/api"
+
 const APP_URL = import.meta.env.VITE_APP_URL || "https://app.osonapp.uz"
 
+type FormValues = { phone_number: string; password: string }
+
 export default function LoginPage() {
-  const {
-    register,
-    handleSubmit,
-    formState: { isSubmitting },
-  } = useForm<LoginPayload>()
+  const form = useForm<FormValues>()
 
   const { mutate, error, isPending } = useMutation({
-    mutationFn: (data: LoginPayload) => AuthApi.login(data)(),
+    mutationFn: (data: FormValues) => AuthApi.login(data),
     onSuccess: (res) => {
       const token = res.data.access
       window.location.assign(token ? `${APP_URL}?token=${token}` : APP_URL)
     },
   })
 
-  const errorMsg =
-    (error as { response?: { data?: { message?: string } } })?.response?.data
-      ?.message ?? (error ? "Telefon raqam yoki parol noto'g'ri" : null)
+  const errorMsg = getApiError(error, "Telefon raqam yoki parol noto'g'ri")
 
   return (
     <AuthLayout>
@@ -33,53 +34,58 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <form
-        onSubmit={handleSubmit((data) => mutate(data))}
-        className="space-y-4"
-      >
-        <div>
-          <label className="mb-1.5 block text-sm text-muted-foreground">
-            Telefon raqam
-          </label>
-          <input
-            type="tel"
-            placeholder="+998 90 123 45 67"
-            className="w-full rounded-xl border border-border bg-muted px-4 py-3 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-            {...register("phone_number", { required: true })}
-          />
-        </div>
-        <div>
-          <div className="mb-1.5 flex items-center justify-between">
-            <label className="text-sm text-muted-foreground">Parol</label>
-            <Link
-              to="/forgot-password"
-              className="text-sm text-primary transition-colors hover:text-primary/80"
-            >
-              Parolni unutdingizmi?
-            </Link>
-          </div>
-          <input
-            type="password"
-            placeholder="••••••••"
-            className="w-full rounded-xl border border-border bg-muted px-4 py-3 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-            {...register("password", { required: true })}
-          />
-        </div>
-
-        {errorMsg && (
-          <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
-            {errorMsg}
-          </p>
-        )}
-
-        <button
-          type="submit"
-          disabled={isPending || isSubmitting}
-          className="mt-2 w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+      <FormProvider {...form}>
+        <form
+          onSubmit={form.handleSubmit((data) => mutate(data))}
+          className="space-y-4"
+          noValidate
         >
-          {isPending ? "Kirilmoqda..." : "Kirish"}
-        </button>
-      </form>
+          <FormControl<FormValues>
+            name="phone_number"
+            label="Telefon raqam"
+            required
+            rules={{
+              pattern: {
+                value: PHONE_PATTERN,
+                message: "Noto'g'ri format. Masalan: +998901234567",
+              },
+            }}
+          >
+            <Input type="tel" placeholder="+998 90 123 45 67" />
+          </FormControl>
+
+          <div className="space-y-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-sm leading-none font-medium">
+                Parol <span className="text-destructive">*</span>
+              </span>
+              <Link
+                to="/forgot-password"
+                className="text-sm text-primary transition-colors hover:text-primary/80"
+              >
+                Parolni unutdingizmi?
+              </Link>
+            </div>
+            <FormControl<FormValues> name="password" required>
+              <Input type="password" placeholder="••••••••" />
+            </FormControl>
+          </div>
+
+          {errorMsg && (
+            <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
+              {errorMsg}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={isPending || form.formState.isSubmitting}
+            className="mt-2 w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+          >
+            {isPending ? "Kirilmoqda..." : "Kirish"}
+          </button>
+        </form>
+      </FormProvider>
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         Akkauntingiz yo'qmi?{" "}

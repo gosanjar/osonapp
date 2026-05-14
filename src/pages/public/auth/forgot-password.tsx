@@ -1,25 +1,22 @@
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { useForm } from "react-hook-form"
+import { useForm, FormProvider } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import AuthLayout from "./layout"
 import { AuthApi } from "@/shared/api/auth"
 import { OtpStep } from "@/shared/components/otp-step"
+import { Input } from "@/shared/ui/input"
+import { FormControl } from "@/shared/ui/form-control"
+import { PHONE_PATTERN, passwordRules } from "@/shared/utils/validation"
+import { getApiError } from "@/shared/api"
 
 type Step = "phone" | "otp" | "reset"
-
-const inputClass =
-  "w-full rounded-xl border border-border bg-muted px-4 py-3 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none"
 
 const btnClass =
   "mt-2 w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
 
-function getErrorMsg(error: unknown, fallback: string) {
-  return (
-    (error as { response?: { data?: { message?: string } } })?.response?.data
-      ?.message ?? (error ? fallback : null)
-  )
-}
+type PhoneForm = { phone_number: string }
+type ResetForm = { new_password: string; confirm_password: string }
 
 export default function ForgotPasswordPage() {
   const navigate = useNavigate()
@@ -27,11 +24,11 @@ export default function ForgotPasswordPage() {
   const [phone, setPhone] = useState("")
   const [resetToken, setResetToken] = useState("")
 
-  const phoneForm = useForm<{ phone_number: string }>()
-  const resetForm = useForm<{ new_password: string; confirm_password: string }>()
+  const phoneForm = useForm<PhoneForm>()
+  const resetForm = useForm<ResetForm>()
 
   const sendOtp = useMutation({
-    mutationFn: (phone_number: string) => AuthApi.forgotPassword(phone_number)(),
+    mutationFn: (phone_number: string) => AuthApi.forgotPassword(phone_number),
     onSuccess: (_, phone_number) => {
       setPhone(phone_number)
       setStep("otp")
@@ -39,7 +36,7 @@ export default function ForgotPasswordPage() {
   })
 
   const verifyOtp = useMutation({
-    mutationFn: (otp: string) => AuthApi.verifyOtp(phone, otp)(),
+    mutationFn: (otp: string) => AuthApi.verifyOtp(phone, otp),
     onSuccess: (res) => {
       setResetToken(res.data.reset_token)
       setStep("reset")
@@ -48,12 +45,12 @@ export default function ForgotPasswordPage() {
 
   const resetPassword = useMutation({
     mutationFn: (new_password: string) =>
-      AuthApi.resetPassword(phone, resetToken, new_password)(),
+      AuthApi.resetPassword(phone, resetToken, new_password),
     onSuccess: () => navigate("/login"),
   })
 
   if (step === "phone") {
-    const errorMsg = getErrorMsg(sendOtp.error, "Xatolik yuz berdi")
+    const errorMsg = getApiError(sendOtp.error, "Xatolik yuz berdi")
 
     return (
       <AuthLayout>
@@ -64,36 +61,49 @@ export default function ForgotPasswordPage() {
           </p>
         </div>
 
-        <form
-          onSubmit={phoneForm.handleSubmit((d) => sendOtp.mutate(d.phone_number))}
-          className="space-y-4"
-        >
-          <div>
-            <label className="mb-1.5 block text-sm text-muted-foreground">
-              Telefon raqam
-            </label>
-            <input
-              type="tel"
-              placeholder="+998 90 123 45 67"
-              className={inputClass}
-              {...phoneForm.register("phone_number", { required: true })}
-            />
-          </div>
+        <FormProvider {...phoneForm}>
+          <form
+            onSubmit={phoneForm.handleSubmit((d) =>
+              sendOtp.mutate(d.phone_number)
+            )}
+            className="space-y-4"
+          >
+            <FormControl<PhoneForm>
+              name="phone_number"
+              label="Telefon raqam"
+              required
+              rules={{
+                pattern: {
+                  value: PHONE_PATTERN,
+                  message: "Noto'g'ri format. Masalan: +998901234567",
+                },
+              }}
+            >
+              <Input type="tel" placeholder="+998 90 123 45 67" />
+            </FormControl>
 
-          {errorMsg && (
-            <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
-              {errorMsg}
-            </p>
-          )}
+            {errorMsg && (
+              <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
+                {errorMsg}
+              </p>
+            )}
 
-          <button type="submit" disabled={sendOtp.isPending} className={btnClass}>
-            {sendOtp.isPending ? "Yuborilmoqda..." : "Kod yuborish"}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={sendOtp.isPending}
+              className={btnClass}
+            >
+              {sendOtp.isPending ? "Yuborilmoqda..." : "Kod yuborish"}
+            </button>
+          </form>
+        </FormProvider>
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Esladingizmi?{" "}
-          <Link to="/login" className="text-primary transition-colors hover:text-primary/80">
+          <Link
+            to="/login"
+            className="text-primary transition-colors hover:text-primary/80"
+          >
             Kirish
           </Link>
         </p>
@@ -107,16 +117,19 @@ export default function ForgotPasswordPage() {
         <OtpStep
           phone={phone}
           isPending={verifyOtp.isPending}
-          error={getErrorMsg(verifyOtp.error, "Kod noto'g'ri")}
+          error={getApiError(verifyOtp.error, "Kod noto'g'ri")}
           onSubmit={(otp) => verifyOtp.mutate(otp)}
-          onBack={() => { setStep("phone"); sendOtp.reset() }}
+          onBack={() => {
+            setStep("phone")
+            sendOtp.reset()
+          }}
         />
       </AuthLayout>
     )
   }
 
   // step === "reset"
-  const errorMsg = getErrorMsg(resetPassword.error, "Xatolik yuz berdi")
+  const errorMsg = getApiError(resetPassword.error, "Xatolik yuz berdi")
   const pw = resetForm.watch("new_password")
 
   return (
@@ -128,48 +141,46 @@ export default function ForgotPasswordPage() {
         </p>
       </div>
 
-      <form
-        onSubmit={resetForm.handleSubmit((d) => resetPassword.mutate(d.new_password))}
-        className="space-y-4"
-      >
-        <div>
-          <label className="mb-1.5 block text-sm text-muted-foreground">Yangi parol</label>
-          <input
-            type="password"
-            placeholder="••••••••"
-            className={inputClass}
-            {...resetForm.register("new_password", { required: true, minLength: 8 })}
-          />
-        </div>
+      <FormProvider {...resetForm}>
+        <form
+          onSubmit={resetForm.handleSubmit((d) =>
+            resetPassword.mutate(d.new_password)
+          )}
+          className="space-y-4"
+        >
+          <FormControl<ResetForm>
+            name="new_password"
+            label="Yangi parol"
+            required
+            rules={passwordRules}
+          >
+            <Input type="password" placeholder="••••••••" />
+          </FormControl>
 
-        <div>
-          <label className="mb-1.5 block text-sm text-muted-foreground">Parolni tasdiqlang</label>
-          <input
-            type="password"
-            placeholder="••••••••"
-            className={inputClass}
-            {...resetForm.register("confirm_password", {
-              required: true,
-              validate: (v) => v === pw || "Parollar mos kelmadi",
-            })}
-          />
-          {resetForm.formState.errors.confirm_password && (
-            <p className="mt-1 text-xs text-destructive">
-              {resetForm.formState.errors.confirm_password.message}
+          <FormControl<ResetForm>
+            name="confirm_password"
+            label="Parolni tasdiqlang"
+            required
+            rules={{ validate: (v) => v === pw || "Parollar mos kelmadi" }}
+          >
+            <Input type="password" placeholder="••••••••" />
+          </FormControl>
+
+          {errorMsg && (
+            <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
+              {errorMsg}
             </p>
           )}
-        </div>
 
-        {errorMsg && (
-          <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
-            {errorMsg}
-          </p>
-        )}
-
-        <button type="submit" disabled={resetPassword.isPending} className={btnClass}>
-          {resetPassword.isPending ? "Saqlanmoqda..." : "Parolni yangilash"}
-        </button>
-      </form>
+          <button
+            type="submit"
+            disabled={resetPassword.isPending}
+            className={btnClass}
+          >
+            {resetPassword.isPending ? "Saqlanmoqda..." : "Parolni yangilash"}
+          </button>
+        </form>
+      </FormProvider>
     </AuthLayout>
   )
 }

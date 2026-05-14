@@ -1,19 +1,5 @@
 import { request } from "./index"
 
-export type LoginPayload = {
-  phone_number: string
-  password: string
-}
-
-export type RegisterPayload = {
-  first_name: string
-  last_name: string
-  phone_number: string
-  password: string
-  shop_name: string
-  register_token: string
-}
-
 export type AuthUser = {
   id: string
   first_name: string
@@ -35,82 +21,66 @@ export type AuthData = {
 }
 
 export class AuthApi {
-  static login(data: LoginPayload) {
-    return () =>
-      request<ApiResponse<AuthData>>({
-        method: "POST",
-        url: "/auth/login/",
-        data,
-      })
+  static async login(data: { phone_number: string; password: string }) {
+    return await request<ApiResponse<AuthData>>({ method: "POST", url: "/auth/login/", data })
   }
 
-  static register(data: RegisterPayload) {
-    return () =>
-      request<ApiResponse<AuthData>>({
-        method: "POST",
-        url: "/auth/register/",
-        data,
-      })
+  static async register(data: {
+    first_name: string
+    last_name: string
+    phone_number: string
+    password: string
+    shop_name: string
+    register_token: string
+  }) {
+    return await request<ApiResponse<AuthData>>({ method: "POST", url: "/auth/register/", data })
   }
 
-  static me() {
-    return () =>
-      request<ApiResponse<AuthUser>>({
-        method: "GET",
-        url: "/auth/me/",
-      })
+  static async me() {
+    return await request<ApiResponse<AuthUser>>({ method: "GET", url: "/auth/me/" })
   }
 
-  static sendRegisterOtp(phone_number: string, email?: string) {
-    return () =>
-      request<ApiResponse<{ method?: string }>>({
-        method: "POST",
-        url: "/auth/send-register-otp/",
-        data: email ? { phone_number, email } : { phone_number },
-      })
+  static async sendRegisterOtp(phone_number: string) {
+    return await request<ApiResponse<{ method?: string }>>({
+      method: "POST",
+      url: "/auth/send-register-otp/",
+      data: { phone_number },
+    })
   }
 
-  static verifyRegisterOtp(phone_number: string, otp: string) {
-    return () =>
-      request<ApiResponse<{ register_token: string }>>({
-        method: "POST",
-        url: "/auth/verify-register-otp/",
-        data: { phone_number, otp },
-      })
+  static async verifyRegisterOtp(phone_number: string, otp: string) {
+    return await request<ApiResponse<{ register_token: string }>>({
+      method: "POST",
+      url: "/auth/verify-register-otp/",
+      data: { phone_number, otp },
+    })
   }
 
-  static forgotPassword(phone_number: string) {
-    return () =>
-      request<ApiResponse<object>>({
-        method: "POST",
-        url: "/auth/forgot-password/",
-        data: { phone_number },
-      })
+  static async forgotPassword(phone_number: string) {
+    return await request<ApiResponse<object>>({
+      method: "POST",
+      url: "/auth/forgot-password/",
+      data: { phone_number },
+    })
   }
 
-  static verifyOtp(phone_number: string, otp: string) {
-    return () =>
-      request<ApiResponse<{ reset_token: string }>>({
-        method: "POST",
-        url: "/auth/verify-otp/",
-        data: { phone_number, otp },
-      })
+  static async verifyOtp(phone_number: string, otp: string) {
+    return await request<ApiResponse<{ reset_token: string }>>({
+      method: "POST",
+      url: "/auth/verify-otp/",
+      data: { phone_number, otp },
+    })
   }
 
-  static resetPassword(phone_number: string, reset_token: string, new_password: string) {
-    return () =>
-      request<ApiResponse<object>>({
-        method: "POST",
-        url: "/auth/reset-password/",
-        data: { phone_number, reset_token, new_password },
-      })
+  static async resetPassword(phone_number: string, reset_token: string, new_password: string) {
+    return await request<ApiResponse<object>>({
+      method: "POST",
+      url: "/auth/reset-password/",
+      data: { phone_number, reset_token, new_password },
+    })
   }
 
-  static logout() {
-    return () =>
-      request<ApiResponse<object>>({
-        method: "POST",
-        url: "/auth/logout/",
-      })
+  static async logout() {
+    return await request<ApiResponse<object>>({ method: "POST", url: "/auth/logout/" })
   }
 }

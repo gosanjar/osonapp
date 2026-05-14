@@ -1,10 +1,14 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import { useForm } from "react-hook-form"
+import { useForm, FormProvider } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import AuthLayout from "./layout"
-import { AuthApi, type RegisterPayload } from "@/shared/api/auth"
+import { AuthApi } from "@/shared/api/auth"
 import { OtpStep } from "@/shared/components/otp-step"
+import { Input } from "@/shared/ui/input"
+import { FormControl } from "@/shared/ui/form-control"
+import { PHONE_PATTERN, passwordRules } from "@/shared/utils/validation"
+import { getApiError } from "@/shared/api"
 
 type Step = "phone" | "otp" | "details"
 
@@ -14,17 +18,17 @@ const TelegramIcon = () => (
   </svg>
 )
 
-const inputClass =
-  "w-full rounded-xl border border-border bg-muted px-4 py-3 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-
 const btnClass =
   "mt-2 w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
 
-function getErrorMsg(error: unknown, fallback: string) {
-  return (
-    (error as { response?: { data?: { message?: string } } })?.response?.data
-      ?.message ?? (error ? fallback : null)
-  )
+
+type PhoneForm = { phone_number: string }
+type DetailsForm = {
+  first_name: string
+  last_name: string
+  shop_name: string
+  password: string
+  confirm_password: string
 }
 
 export default function RegisterPage() {
@@ -32,23 +36,19 @@ export default function RegisterPage() {
   const [phone, setPhone] = useState("")
   const [registerToken, setRegisterToken] = useState("")
 
-  const phoneForm = useForm<{ phone_number: string }>()
-  const detailsForm =
-    useForm<Omit<RegisterPayload, "phone_number" | "register_token">>()
-
-  const [email, setEmail] = useState("")
+  const phoneForm = useForm<PhoneForm>()
+  const detailsForm = useForm<DetailsForm>()
 
   const sendOtp = useMutation({
-    mutationFn: ({ phone_number, email }: { phone_number: string; email?: string }) =>
-      AuthApi.sendRegisterOtp(phone_number, email)(),
-    onSuccess: (_, { phone_number }) => {
+    mutationFn: (phone_number: string) => AuthApi.sendRegisterOtp(phone_number),
+    onSuccess: (_, phone_number) => {
       setPhone(phone_number)
       setStep("otp")
     },
   })
 
   const verifyOtp = useMutation({
-    mutationFn: (otp: string) => AuthApi.verifyRegisterOtp(phone, otp)(),
+    mutationFn: (otp: string) => AuthApi.verifyRegisterOtp(phone, otp),
     onSuccess: (res) => {
       setRegisterToken(res.data.register_token)
       setStep("details")
@@ -56,14 +56,15 @@ export default function RegisterPage() {
   })
 
   const register = useMutation({
-    mutationFn: (
-      data: Omit<RegisterPayload, "phone_number" | "register_token">
-    ) =>
+    mutationFn: ({ first_name, last_name, shop_name, password }: DetailsForm) =>
       AuthApi.register({
-        ...data,
+        first_name,
+        last_name,
+        shop_name,
+        password,
         phone_number: phone,
         register_token: registerToken,
-      })(),
+      }),
     onSuccess: (res) => {
       const appUrl = import.meta.env.VITE_APP_URL || "https://app.osonapp.uz"
       const token = res.data.access
@@ -72,7 +73,7 @@ export default function RegisterPage() {
   })
 
   if (step === "phone") {
-    const errorMsg = getErrorMsg(sendOtp.error, "Xatolik yuz berdi")
+    const errorMsg = getApiError(sendOtp.error, "Xatolik yuz berdi")
     const isBotError =
       typeof errorMsg === "string" && errorMsg.includes("@osonapp_bot")
 
@@ -85,35 +86,36 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        <form
-          onSubmit={phoneForm.handleSubmit((d) =>
-            sendOtp.mutate({ phone_number: d.phone_number, email: email || undefined })
-          )}
-          className="space-y-4"
-        >
-          <div>
-            <label className="mb-1.5 block text-sm text-muted-foreground">
-              Telefon raqam
-            </label>
-            <input
-              type="tel"
-              placeholder="+998 90 123 45 67"
-              className={inputClass}
-              {...phoneForm.register("phone_number", { required: true })}
-            />
-          </div>
+        <FormProvider {...phoneForm}>
+          <form
+            onSubmit={phoneForm.handleSubmit((d) =>
+              sendOtp.mutate(d.phone_number)
+            )}
+            className="space-y-4"
+          >
+            <FormControl<PhoneForm>
+              name="phone_number"
+              label="Telefon raqam"
+              required
+              rules={{
+                pattern: {
+                  value: PHONE_PATTERN,
+                  message: "Noto'g'ri format. Masalan: +998901234567",
+                },
+              }}
+            >
+              <Input type="tel" placeholder="+998 90 123 45 67" />
+            </FormControl>
 
-          {isBotError ? (
-            <div className="space-y-3">
+            {isBotError ? (
               <div className="rounded-xl border border-border bg-muted p-4">
-                <p className="mb-2 text-sm font-medium">1-usul: Telegram bot</p>
                 <ol className="mb-3 space-y-1 text-sm text-muted-foreground">
                   <li>1. @osonapp_bot ga o'ting va /start bosing</li>
                   <li>2. Telefon raqamingizni yuboring</li>
                   <li>3. Keyin bu yerga qayting</li>
                 </ol>
                 <a
-                  href="https://t.me/osonapp_bot"
+                  href={`https://t.me/osonapp_bot?start=${(phoneForm.getValues("phone_number") || "").replace(/\D/g, "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#229ED9] py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
@@ -122,32 +124,21 @@ export default function RegisterPage() {
                   @osonapp_bot ga o'tish
                 </a>
               </div>
+            ) : errorMsg ? (
+              <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
+                {errorMsg}
+              </p>
+            ) : null}
 
-              <div className="rounded-xl border border-border bg-muted p-4">
-                <p className="mb-2 text-sm font-medium">2-usul: Email</p>
-                <input
-                  type="email"
-                  placeholder="email@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className={inputClass}
-                />
-              </div>
-            </div>
-          ) : errorMsg ? (
-            <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
-              {errorMsg}
-            </p>
-          ) : null}
-
-          <button
-            type="submit"
-            disabled={sendOtp.isPending}
-            className={btnClass}
-          >
-            {sendOtp.isPending ? "Yuborilmoqda..." : "Tasdiqlash kodi olish"}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={sendOtp.isPending}
+              className={btnClass}
+            >
+              {sendOtp.isPending ? "Yuborilmoqda..." : "Tasdiqlash kodi olish"}
+            </button>
+          </form>
+        </FormProvider>
 
         <p className="mt-6 text-center text-sm text-muted-foreground">
           Akkauntingiz bormi?{" "}
@@ -168,7 +159,7 @@ export default function RegisterPage() {
         <OtpStep
           phone={phone}
           isPending={verifyOtp.isPending}
-          error={getErrorMsg(verifyOtp.error, "Kod noto'g'ri")}
+          error={getApiError(verifyOtp.error, "Kod noto'g'ri")}
           onSubmit={(otp) => verifyOtp.mutate(otp)}
           onBack={() => {
             setStep("phone")
@@ -180,10 +171,11 @@ export default function RegisterPage() {
   }
 
   // step === "details"
-  const errorMsg = getErrorMsg(
+  const errorMsg = getApiError(
     register.error,
     "Ro'yxatdan o'tishda xatolik yuz berdi"
   )
+  const pw = detailsForm.watch("password")
 
   return (
     <AuthLayout>
@@ -194,73 +186,65 @@ export default function RegisterPage() {
         </p>
       </div>
 
-      <form
-        onSubmit={detailsForm.handleSubmit((d) => register.mutate(d))}
-        className="space-y-4"
-      >
-        <div className="grid grid-cols-2 gap-3">
-          <div>
-            <label className="mb-1.5 block text-sm text-muted-foreground">
-              Ism
-            </label>
-            <input
-              placeholder="Ali"
-              className={inputClass}
-              {...detailsForm.register("first_name", { required: true })}
-            />
-          </div>
-          <div>
-            <label className="mb-1.5 block text-sm text-muted-foreground">
-              Familiya
-            </label>
-            <input
-              placeholder="Karimov"
-              className={inputClass}
-              {...detailsForm.register("last_name", { required: true })}
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="mb-1.5 block text-sm text-muted-foreground">
-            Do'kon nomi
-          </label>
-          <input
-            placeholder="Mening do'konim"
-            className={inputClass}
-            {...detailsForm.register("shop_name", { required: true })}
-          />
-        </div>
-
-        <div>
-          <label className="mb-1.5 block text-sm text-muted-foreground">
-            Parol
-          </label>
-          <input
-            type="password"
-            placeholder="Kamida 8 ta belgi"
-            className={inputClass}
-            {...detailsForm.register("password", {
-              required: true,
-              minLength: 8,
-            })}
-          />
-        </div>
-
-        {errorMsg && (
-          <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
-            {errorMsg}
-          </p>
-        )}
-
-        <button
-          type="submit"
-          disabled={register.isPending}
-          className={btnClass}
+      <FormProvider {...detailsForm}>
+        <form
+          onSubmit={detailsForm.handleSubmit((d) => register.mutate(d))}
+          className="space-y-4"
         >
-          {register.isPending ? "Yaratilmoqda..." : "Ro'yxatdan o'tish"}
-        </button>
-      </form>
+          <div className="grid grid-cols-2 gap-3">
+            <FormControl<DetailsForm> name="first_name" label="Ism" required>
+              <Input placeholder="Ali" />
+            </FormControl>
+            <FormControl<DetailsForm>
+              name="last_name"
+              label="Familiya"
+              required
+            >
+              <Input placeholder="Karimov" />
+            </FormControl>
+          </div>
+
+          <FormControl<DetailsForm>
+            name="shop_name"
+            label="Do'kon nomi"
+            required
+          >
+            <Input placeholder="Mening do'konim" />
+          </FormControl>
+
+          <FormControl<DetailsForm>
+            name="password"
+            label="Parol"
+            required
+            rules={passwordRules}
+          >
+            <Input type="password" placeholder="Kamida 8 ta belgi" />
+          </FormControl>
+
+          <FormControl<DetailsForm>
+            name="confirm_password"
+            label="Parolni tasdiqlang"
+            required
+            rules={{ validate: (v) => v === pw || "Parollar mos kelmadi" }}
+          >
+            <Input type="password" placeholder="••••••••" />
+          </FormControl>
+
+          {errorMsg && (
+            <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
+              {errorMsg}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            disabled={register.isPending}
+            className={btnClass}
+          >
+            {register.isPending ? "Yaratilmoqda..." : "Ro'yxatdan o'tish"}
+          </button>
+        </form>
+      </FormProvider>
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         Akkauntingiz bormi?{" "}

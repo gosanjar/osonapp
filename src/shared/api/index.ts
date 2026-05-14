@@ -20,3 +20,9 @@ export function request<T>(config: {
 }): Promise<T> {
   return axiosInstance(config).then((res) => res.data)
 }
+
+export function getApiError(error: unknown, fallback: string): string | null {
+  if (!error) return null
+  const msg = (error as { response?: { data?: { message?: string } } })?.response?.data?.message
+  return msg ?? fallback
+}

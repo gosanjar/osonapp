@@ -35,7 +35,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       window.history.replaceState({}, "", clean)
     }
 
-    AuthApi.me()()
+    AuthApi.me()
       .then((res) => setState({ status: "authenticated", user: res.data }))
       .catch(() => setState({ status: "unauthenticated" }))
   }, [])
@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const logout = useCallback(async () => {
-    await AuthApi.logout()().catch(() => null)
+    await AuthApi.logout().catch(() => null)
     localStorage.removeItem(TOKEN_KEY)
     setState({ status: "unauthenticated" })
   }, [])
