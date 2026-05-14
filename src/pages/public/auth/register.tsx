@@ -14,6 +14,7 @@ type FormValues = {
 
 export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null)
+  const [shopUrl, setShopUrl] = useState<string | null>(null)
   const {
     register,
     handleSubmit,
@@ -23,11 +24,52 @@ export default function RegisterPage() {
   const onSubmit = async (values: FormValues) => {
     setError(null)
     try {
-      await authApi.register(values)
-      window.location.assign(import.meta.env.VITE_APP_URL || "https://app.osonapp.uz")
-    } catch {
-      setError("Ro'yxatdan o'tishda xatolik yuz berdi")
+      const res = await authApi.register(values)
+      const { shopSlug } = res.data.user
+      const host = import.meta.env.VITE_APP_DOMAIN || "osonapp.uz"
+      setShopUrl(`https://${shopSlug}.${host}`)
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message ?? "Ro'yxatdan o'tishda xatolik yuz berdi"
+      setError(msg)
     }
+  }
+
+  if (shopUrl) {
+    return (
+      <AuthLayout>
+        <div className="flex flex-col items-center text-center">
+          <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-3xl">
+            🎉
+          </div>
+          <h1 className="mb-2 text-2xl font-bold">Do'kon yaratildi!</h1>
+          <p className="mb-6 text-sm text-muted-foreground">
+            Endi Telegram botga o'ting va telefon raqamingizni yuboring —
+            bu parolni tiklash uchun kerak bo'ladi.
+          </p>
+
+          <a
+            href="https://t.me/osonapp_bot"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mb-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#229ED9] py-3 font-semibold text-white transition-opacity hover:opacity-90"
+          >
+            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/>
+            </svg>
+            @osonapp_bot ga o'tish
+          </a>
+
+          <a
+            href={shopUrl}
+            className="w-full rounded-xl border border-border py-3 text-center text-sm font-medium transition-colors hover:bg-muted"
+          >
+            Admin panelga o'tish →
+          </a>
+        </div>
+      </AuthLayout>
+    )
   }
 
   return (

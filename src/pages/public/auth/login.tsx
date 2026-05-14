@@ -20,10 +20,15 @@ export default function LoginPage() {
   const onSubmit = async (values: FormValues) => {
     setError(null)
     try {
-      await authApi.login(values)
-      window.location.assign(import.meta.env.VITE_APP_URL || "https://app.osonapp.uz")
-    } catch {
-      setError("Telefon raqam yoki parol noto'g'ri")
+      const res = await authApi.login(values)
+      const { shopSlug } = res.data.user
+      const host = import.meta.env.VITE_APP_DOMAIN || "osonapp.uz"
+      window.location.assign(`https://${shopSlug}.${host}`)
+    } catch (err: unknown) {
+      const msg =
+        (err as { response?: { data?: { message?: string } } })?.response?.data
+          ?.message ?? "Telefon raqam yoki parol noto'g'ri"
+      setError(msg)
     }
   }
 
