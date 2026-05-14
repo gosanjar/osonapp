@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useForm, FormProvider } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import AuthLayout from "./layout"
@@ -30,10 +30,10 @@ type DetailsForm = {
 }
 
 export default function RegisterPage() {
+  const navigate = useNavigate()
   const [step, setStep] = useState<Step>("phone")
   const [phone, setPhone] = useState("")
   const [registerToken, setRegisterToken] = useState("")
-  const [wsError, setWsError] = useState<string | null>(null)
   const [botClicked, setBotClicked] = useState(false)
 
   const phoneForm = useForm<PhoneForm>()
@@ -44,7 +44,6 @@ export default function RegisterPage() {
 
   useEffect(() => {
     setBotClicked(false)
-    setWsError(null)
   }, [phoneValue])
 
   const onRegisterToken = useCallback(
@@ -73,7 +72,7 @@ export default function RegisterPage() {
           already_registered?: boolean
         }
         if (data.already_registered) {
-          setWsError("Bu raqam allaqachon ro'yxatdan o'tgan.")
+          navigate("/login")
         } else if (data.register_token) {
           onRegisterToken(data.register_token)
         }
@@ -84,7 +83,6 @@ export default function RegisterPage() {
 
     ws.onerror = () => ws.close()
 
-    setWsError(null)
     return () => ws.close()
   }, [step, isPhoneValid, phoneValue, botClicked, onRegisterToken])
 
@@ -159,17 +157,9 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {isPhoneValid && botClicked && !wsError && (
+            {isPhoneValid && botClicked && (
               <p className="animate-pulse text-center text-sm text-muted-foreground">
                 Bot tasdiqlashi kutilmoqda...
-              </p>
-            )}
-            {wsError && (
-              <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
-                {wsError}{" "}
-                <Link to="/login" className="font-semibold underline">
-                  Kirish
-                </Link>
               </p>
             )}
           </form>
