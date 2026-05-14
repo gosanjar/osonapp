@@ -20,7 +20,6 @@ const TelegramIcon = () => (
 const btnClass =
   "mt-2 w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
 
-
 type PhoneForm = { phone_number: string }
 type DetailsForm = {
   first_name: string
@@ -35,6 +34,7 @@ export default function RegisterPage() {
   const [phone, setPhone] = useState("")
   const [registerToken, setRegisterToken] = useState("")
   const [wsError, setWsError] = useState<string | null>(null)
+  const [botClicked, setBotClicked] = useState(false)
 
   const phoneForm = useForm<PhoneForm>()
   const detailsForm = useForm<DetailsForm>()
@@ -42,36 +42,51 @@ export default function RegisterPage() {
   const phoneValue = phoneForm.watch("phone_number") || ""
   const isPhoneValid = PHONE_PATTERN.test(phoneValue)
 
-  const onRegisterToken = useCallback((token: string) => {
-    setPhone(phoneForm.getValues("phone_number"))
-    setRegisterToken(token)
-    setStep("details")
-  }, [phoneForm])
+  useEffect(() => {
+    setBotClicked(false)
+    setWsError(null)
+  }, [phoneValue])
+
+  const onRegisterToken = useCallback(
+    (token: string) => {
+      setPhone(phoneForm.getValues("phone_number"))
+      setRegisterToken(token)
+      setStep("details")
+    },
+    [phoneForm]
+  )
 
   useEffect(() => {
-    if (step !== "phone" || !isPhoneValid) return
+    if (step !== "phone" || !isPhoneValid || !botClicked) return
 
-    const wsUrl = (import.meta.env.VITE_API_URL as string)
-      .replace(/^http/, "ws")
+    const wsUrl = (import.meta.env.VITE_API_URL as string).replace(
+      /^http/,
+      "ws"
+    )
     const digits = phoneValue.replace(/\D/g, "")
     const ws = new WebSocket(`${wsUrl}/ws/pre-reg/${digits}/`)
 
     ws.onmessage = (e) => {
       try {
-        const data = JSON.parse(e.data) as { register_token?: string; already_registered?: boolean }
+        const data = JSON.parse(e.data) as {
+          register_token?: string
+          already_registered?: boolean
+        }
         if (data.already_registered) {
           setWsError("Bu raqam allaqachon ro'yxatdan o'tgan.")
         } else if (data.register_token) {
           onRegisterToken(data.register_token)
         }
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
     }
 
     ws.onerror = () => ws.close()
 
     setWsError(null)
     return () => ws.close()
-  }, [step, isPhoneValid, phoneValue, onRegisterToken])
+  }, [step, isPhoneValid, phoneValue, botClicked, onRegisterToken])
 
   const register = useMutation({
     mutationFn: ({ first_name, last_name, shop_name, password }: DetailsForm) =>
@@ -117,7 +132,9 @@ export default function RegisterPage() {
             </FormControl>
 
             <div className="rounded-xl border border-border bg-muted p-4">
-              <p className="mb-2 text-sm font-medium">Telegram bot orqali tasdiqlang</p>
+              <p className="mb-2 text-sm font-medium">
+                Telegram bot orqali tasdiqlang
+              </p>
               <ol className="mb-3 space-y-1 text-sm text-muted-foreground">
                 <li>1. Quyidagi tugmani bosing</li>
                 <li>2. Botda telefon raqamingizni ulashing</li>
@@ -128,6 +145,7 @@ export default function RegisterPage() {
                   href={`https://t.me/osonapp_bot?start=${phoneValue.replace(/\D/g, "")}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  onClick={() => setBotClicked(true)}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#229ED9] py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
                 >
                   <TelegramIcon />
@@ -141,8 +159,8 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {isPhoneValid && !wsError && (
-              <p className="text-center text-sm text-muted-foreground animate-pulse">
+            {isPhoneValid && botClicked && !wsError && (
+              <p className="animate-pulse text-center text-sm text-muted-foreground">
                 Bot tasdiqlashi kutilmoqda...
               </p>
             )}
@@ -196,12 +214,20 @@ export default function RegisterPage() {
             <FormControl<DetailsForm> name="first_name" label="Ism" required>
               <Input placeholder="Ali" autoComplete="given-name" />
             </FormControl>
-            <FormControl<DetailsForm> name="last_name" label="Familiya" required>
+            <FormControl<DetailsForm>
+              name="last_name"
+              label="Familiya"
+              required
+            >
               <Input placeholder="Karimov" autoComplete="family-name" />
             </FormControl>
           </div>
 
-          <FormControl<DetailsForm> name="shop_name" label="Do'kon nomi" required>
+          <FormControl<DetailsForm>
+            name="shop_name"
+            label="Do'kon nomi"
+            required
+          >
             <Input placeholder="Mening do'konim" autoComplete="off" />
           </FormControl>
 
@@ -211,7 +237,11 @@ export default function RegisterPage() {
             required
             rules={passwordRules}
           >
-            <Input type="password" placeholder="Kamida 8 ta belgi" autoComplete="new-password" />
+            <Input
+              type="password"
+              placeholder="Kamida 8 ta belgi"
+              autoComplete="new-password"
+            />
           </FormControl>
 
           <FormControl<DetailsForm>
@@ -220,7 +250,11 @@ export default function RegisterPage() {
             required
             rules={{ validate: (v) => v === pw || "Parollar mos kelmadi" }}
           >
-            <Input type="password" placeholder="••••••••" autoComplete="new-password" />
+            <Input
+              type="password"
+              placeholder="••••••••"
+              autoComplete="new-password"
+            />
           </FormControl>
 
           {errorMsg && (
