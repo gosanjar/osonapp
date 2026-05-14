@@ -1,16 +1,15 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Link } from "react-router-dom"
 import { useForm, FormProvider } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import AuthLayout from "./layout"
 import { AuthApi } from "@/shared/api/auth"
-import { OtpStep } from "@/shared/components/otp-step"
 import { Input } from "@/shared/ui/input"
 import { FormControl } from "@/shared/ui/form-control"
 import { PHONE_PATTERN, passwordRules } from "@/shared/utils/validation"
 import { getApiError } from "@/shared/api"
 
-type Step = "phone" | "otp" | "details"
+type Step = "phone" | "details"
 
 const TelegramIcon = () => (
   <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
@@ -38,44 +37,40 @@ export default function RegisterPage() {
 
   const phoneForm = useForm<PhoneForm>()
   const detailsForm = useForm<DetailsForm>()
-  const pollingRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  const phoneValue = phoneForm.watch("phone_number") || ""
+  const isPhoneValid = PHONE_PATTERN.test(phoneValue)
+
+  const onRegisterToken = useCallback((token: string) => {
+    setPhone(phoneForm.getValues("phone_number"))
+    setRegisterToken(token)
+    setStep("details")
+  }, [phoneForm])
 
   useEffect(() => {
-    if (step !== "phone") return
-    const phoneValue = phoneForm.getValues("phone_number") || ""
-    if (!PHONE_PATTERN.test(phoneValue)) return
+    if (step !== "phone" || !isPhoneValid) return
 
-    pollingRef.current = setInterval(async () => {
+    const apiUrl = import.meta.env.VITE_API_URL as string
+    const es = new EventSource(
+      `${apiUrl}/auth/pre-reg-stream/?phone_number=${encodeURIComponent(phoneValue)}`
+    )
+
+    es.onmessage = (e) => {
       try {
-        const res = await AuthApi.checkPreReg(phoneValue)
-        if (res.data.ready) {
-          clearInterval(pollingRef.current!)
-          sendOtp.mutate(phoneValue)
+        const data = JSON.parse(e.data) as { register_token?: string; timeout?: boolean }
+        if (data.register_token) {
+          es.close()
+          onRegisterToken(data.register_token)
+        } else if (data.timeout) {
+          es.close()
         }
-      } catch {
-        // ignore polling errors
-      }
-    }, 2500)
+      } catch { /* ignore */ }
+    }
 
-    return () => { if (pollingRef.current) clearInterval(pollingRef.current) }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, phoneForm.watch("phone_number")])
+    es.onerror = () => es.close()
 
-  const sendOtp = useMutation({
-    mutationFn: (phone_number: string) => AuthApi.sendRegisterOtp(phone_number),
-    onSuccess: (_, phone_number) => {
-      setPhone(phone_number)
-      setStep("otp")
-    },
-  })
-
-  const verifyOtp = useMutation({
-    mutationFn: (otp: string) => AuthApi.verifyRegisterOtp(phone, otp),
-    onSuccess: (res) => {
-      setRegisterToken(res.data.register_token)
-      setStep("details")
-    },
-  })
+    return () => es.close()
+  }, [step, isPhoneValid, phoneValue, onRegisterToken])
 
   const register = useMutation({
     mutationFn: ({ first_name, last_name, shop_name, password }: DetailsForm) =>
@@ -95,10 +90,6 @@ export default function RegisterPage() {
   })
 
   if (step === "phone") {
-    const errorMsg = getApiError(sendOtp.error, "Xatolik yuz berdi")
-    const phoneValue = phoneForm.watch("phone_number") || ""
-    const isPhoneValid = PHONE_PATTERN.test(phoneValue)
-
     return (
       <AuthLayout>
         <div className="mb-8">
@@ -109,10 +100,7 @@ export default function RegisterPage() {
         </div>
 
         <FormProvider {...phoneForm}>
-          <form
-            onSubmit={phoneForm.handleSubmit((d) => sendOtp.mutate(d.phone_number))}
-            className="space-y-4"
-          >
+          <form className="space-y-4">
             <FormControl<PhoneForm>
               name="phone_number"
               label="Telefon raqam"
@@ -132,7 +120,7 @@ export default function RegisterPage() {
               <ol className="mb-3 space-y-1 text-sm text-muted-foreground">
                 <li>1. Quyidagi tugmani bosing</li>
                 <li>2. Botda telefon raqamingizni ulashing</li>
-                <li>3. Keyin "Tasdiqlash kodi olish" ni bosing</li>
+                <li>3. Tasdiqlanishi bilan avtomatik davom etadi</li>
               </ol>
               {isPhoneValid ? (
                 <a
@@ -152,19 +140,11 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {errorMsg && (
-              <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
-                {errorMsg}
+            {isPhoneValid && (
+              <p className="text-center text-sm text-muted-foreground animate-pulse">
+                Bot tasdiqlashi kutilmoqda...
               </p>
             )}
-
-            <button
-              type="submit"
-              disabled={sendOtp.isPending}
-              className={btnClass}
-            >
-              {sendOtp.isPending ? "Yuborilmoqda..." : "Tasdiqlash kodi olish"}
-            </button>
           </form>
         </FormProvider>
 
@@ -177,23 +157,6 @@ export default function RegisterPage() {
             Kirish
           </Link>
         </p>
-      </AuthLayout>
-    )
-  }
-
-  if (step === "otp") {
-    return (
-      <AuthLayout>
-        <OtpStep
-          phone={phone}
-          isPending={verifyOtp.isPending}
-          error={getApiError(verifyOtp.error, "Kod noto'g'ri")}
-          onSubmit={(otp) => verifyOtp.mutate(otp)}
-          onBack={() => {
-            setStep("phone")
-            sendOtp.reset()
-          }}
-        />
       </AuthLayout>
     )
   }
