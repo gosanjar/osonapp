@@ -22,6 +22,7 @@ const getSubdomain = () => {
 const subdomain = getSubdomain()
 export const isMainDomain = subdomain === null
 export const isAppDomain = subdomain === "app"
+export const isShopDomain = subdomain === "shop"
 
 export const Routes = () => {
   const routes = useMemo(

@@ -6,6 +6,7 @@ import {
   useState,
 } from "react"
 import { AuthApi, type AuthUser } from "@/shared/api/auth"
+import { TOKEN_KEY } from "@/shared/api"
 
 type AuthState =
   | { status: "loading" }
@@ -24,11 +25,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<AuthState>({ status: "loading" })
 
   useEffect(() => {
+    // URL'dan token kelgan bo'lsa localStorage'ga yozib, URL'dan o'chiramiz
+    const params = new URLSearchParams(window.location.search)
+    const urlToken = params.get("token")
+    if (urlToken) {
+      localStorage.setItem(TOKEN_KEY, urlToken)
+      params.delete("token")
+      const clean = window.location.pathname + (params.toString() ? `?${params}` : "")
+      window.history.replaceState({}, "", clean)
+    }
+
     AuthApi.me()()
       .then((res) => setState({ status: "authenticated", user: res.data }))
-      .catch(() => {
-        setState({ status: "unauthenticated" })
-      })
+      .catch(() => setState({ status: "unauthenticated" }))
   }, [])
 
   // agar 3 soniyada javob kelmasa — unauthenticated deb hisobla
@@ -47,6 +56,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = useCallback(async () => {
     await AuthApi.logout()().catch(() => null)
+    localStorage.removeItem(TOKEN_KEY)
     setState({ status: "unauthenticated" })
   }, [])
 

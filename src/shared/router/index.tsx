@@ -3,7 +3,7 @@ import { AuthGuard } from "@/shared/components/auth-guard"
 import { lazy } from "react"
 import { Navigate, type RouteObject } from "react-router-dom"
 import { ROUTES } from "../config/routes"
-import { isAppDomain, isMainDomain } from "../providers/route-provider"
+import { isAppDomain, isMainDomain, isShopDomain } from "../providers/route-provider"
 
 const mainDomainRouter = (): RouteObject[] => [
   {
@@ -358,9 +358,28 @@ const appDomainRouter = (): RouteObject[] => [
   },
 ]
 
+const shopDomainRouter = (): RouteObject[] => [
+  {
+    path: "/",
+    element: (() => {
+      window.location.replace(import.meta.env.VITE_MAIN_URL || "https://osonapp.uz")
+      return null
+    })(),
+  },
+  {
+    path: "/:subdomain",
+    Component: lazy(() => import("@/pages/store/shop")),
+  },
+  {
+    path: "*",
+    Component: lazy(() => import("@/features/not-found")),
+  },
+]
+
 const router = (): RouteObject[] => {
   if (isMainDomain) return mainDomainRouter()
   if (isAppDomain) return appDomainRouter()
+  if (isShopDomain) return shopDomainRouter()
 
   return [{ path: "*", Component: lazy(() => import("@/features/not-found")) }]
 }

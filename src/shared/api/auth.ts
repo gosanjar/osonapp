@@ -61,12 +61,12 @@ export class AuthApi {
       })
   }
 
-  static sendRegisterOtp(phone_number: string) {
+  static sendRegisterOtp(phone_number: string, email?: string) {
     return () =>
-      request<ApiResponse<object>>({
+      request<ApiResponse<{ method?: string }>>({
         method: "POST",
         url: "/auth/send-register-otp/",
-        data: { phone_number },
+        data: email ? { phone_number, email } : { phone_number },
       })
   }
 

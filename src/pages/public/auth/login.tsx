@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import AuthLayout from "./layout"
 import { AuthApi, type LoginPayload } from "@/shared/api/auth"
+const APP_URL = import.meta.env.VITE_APP_URL || "https://app.osonapp.uz"
 
 export default function LoginPage() {
   const {
@@ -13,9 +14,9 @@ export default function LoginPage() {
 
   const { mutate, error, isPending } = useMutation({
     mutationFn: (data: LoginPayload) => AuthApi.login(data)(),
-    onSuccess: () => {
-      const appUrl = import.meta.env.VITE_APP_URL || "https://app.osonapp.uz"
-      window.location.assign(appUrl)
+    onSuccess: (res) => {
+      const token = res.data.access
+      window.location.assign(token ? `${APP_URL}?token=${token}` : APP_URL)
     },
   })
 
@@ -32,7 +33,10 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <form onSubmit={handleSubmit((data) => mutate(data))} className="space-y-4">
+      <form
+        onSubmit={handleSubmit((data) => mutate(data))}
+        className="space-y-4"
+      >
         <div>
           <label className="mb-1.5 block text-sm text-muted-foreground">
             Telefon raqam
