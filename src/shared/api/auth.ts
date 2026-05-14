@@ -26,12 +26,12 @@ export type AuthResponse = {
 }
 
 export const authApi = {
-  login: (data: LoginPayload) => api.post<AuthResponse>("/auth/login", data),
+  login: (data: LoginPayload) => api.post<AuthResponse>("/auth/login/", data),
 
   register: (data: RegisterPayload) =>
-    api.post<AuthResponse>("/auth/register", data),
+    api.post<AuthResponse>("/auth/register/", data),
 
-  logout: () => api.post("/auth/logout"),
+  logout: () => api.post("/auth/logout/"),
 
-  me: () => api.get<AuthUser>("/auth/me"),
+  me: () => api.get<AuthUser>("/auth/me/"),
 }
