@@ -18,6 +18,7 @@ export type AuthUser = {
   firstName: string
   lastName: string
   phone: string
+  shopSlug: string
 }
 
 export type AuthResponse = {
