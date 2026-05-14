@@ -34,6 +34,7 @@ export default function RegisterPage() {
   const [step, setStep] = useState<Step>("phone")
   const [phone, setPhone] = useState("")
   const [registerToken, setRegisterToken] = useState("")
+  const [wsError, setWsError] = useState<string | null>(null)
 
   const phoneForm = useForm<PhoneForm>()
   const detailsForm = useForm<DetailsForm>()
@@ -50,26 +51,26 @@ export default function RegisterPage() {
   useEffect(() => {
     if (step !== "phone" || !isPhoneValid) return
 
-    const apiUrl = import.meta.env.VITE_API_URL as string
-    const es = new EventSource(
-      `${apiUrl}/auth/pre-reg-stream/?phone_number=${phoneValue.replace(/\D/g, "")}`
-    )
+    const wsUrl = (import.meta.env.VITE_API_URL as string)
+      .replace(/^http/, "ws")
+    const digits = phoneValue.replace(/\D/g, "")
+    const ws = new WebSocket(`${wsUrl}/ws/pre-reg/${digits}/`)
 
-    es.onmessage = (e) => {
+    ws.onmessage = (e) => {
       try {
-        const data = JSON.parse(e.data) as { register_token?: string; timeout?: boolean }
-        if (data.register_token) {
-          es.close()
+        const data = JSON.parse(e.data) as { register_token?: string; already_registered?: boolean }
+        if (data.already_registered) {
+          setWsError("Bu raqam allaqachon ro'yxatdan o'tgan.")
+        } else if (data.register_token) {
           onRegisterToken(data.register_token)
-        } else if (data.timeout) {
-          es.close()
         }
       } catch { /* ignore */ }
     }
 
-    es.onerror = () => es.close()
+    ws.onerror = () => ws.close()
 
-    return () => es.close()
+    setWsError(null)
+    return () => ws.close()
   }, [step, isPhoneValid, phoneValue, onRegisterToken])
 
   const register = useMutation({
@@ -140,9 +141,17 @@ export default function RegisterPage() {
               )}
             </div>
 
-            {isPhoneValid && (
+            {isPhoneValid && !wsError && (
               <p className="text-center text-sm text-muted-foreground animate-pulse">
                 Bot tasdiqlashi kutilmoqda...
+              </p>
+            )}
+            {wsError && (
+              <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
+                {wsError}{" "}
+                <Link to="/login" className="font-semibold underline">
+                  Kirish
+                </Link>
               </p>
             )}
           </form>
