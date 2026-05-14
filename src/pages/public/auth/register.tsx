@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useForm, FormProvider } from "react-hook-form"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQuery } from "@tanstack/react-query"
 import AuthLayout from "./layout"
 import { AuthApi } from "@/shared/api/auth"
 import { Input } from "@/shared/ui/input"
@@ -42,9 +42,17 @@ export default function RegisterPage() {
   const phoneValue = phoneForm.watch("phone_number") || ""
   const isPhoneValid = PHONE_PATTERN.test(phoneValue)
 
+  const { data: phoneCheck } = useQuery({
+    queryKey: ["check-phone", phoneValue],
+    queryFn: () => AuthApi.checkPhone(phoneValue),
+    enabled: isPhoneValid,
+    retry: false,
+  })
+
   useEffect(() => {
     setBotClicked(false)
-  }, [phoneValue])
+    if (phoneCheck?.data.exists) navigate("/login")
+  }, [phoneValue, phoneCheck, navigate])
 
   const onRegisterToken = useCallback(
     (token: string) => {
@@ -114,7 +122,7 @@ export default function RegisterPage() {
         </div>
 
         <FormProvider {...phoneForm}>
-          <form className="space-y-4">
+          <form className="space-y-4" noValidate>
             <FormControl<PhoneForm>
               name="phone_number"
               label="Telefon raqam"

@@ -80,6 +80,14 @@ export class AuthApi {
     })
   }
 
+  static async checkPhone(phone_number: string) {
+    return await request<ApiResponse<{ exists: boolean }>>({
+      method: "POST",
+      url: "/auth/check-phone/",
+      data: { phone_number },
+    })
+  }
+
   static async checkPreReg(phone_number: string) {
     return await request<ApiResponse<{ ready: boolean; register_token?: string }>>({
       method: "POST",
