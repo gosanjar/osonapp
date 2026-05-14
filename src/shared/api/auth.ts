@@ -80,6 +80,14 @@ export class AuthApi {
     })
   }
 
+  static async checkPreReg(phone_number: string) {
+    return await request<ApiResponse<{ ready: boolean }>>({
+      method: "POST",
+      url: "/auth/check-pre-reg/",
+      data: { phone_number },
+    })
+  }
+
   static async logout() {
     return await request<ApiResponse<object>>({ method: "POST", url: "/auth/logout/" })
   }
