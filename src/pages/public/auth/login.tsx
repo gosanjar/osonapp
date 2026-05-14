@@ -21,9 +21,9 @@ export default function LoginPage() {
     setError(null)
     try {
       const res = await authApi.login(values)
-      const { shopSlug } = res.data.user
+      const { subdomain } = res.data.user
       const host = import.meta.env.VITE_APP_DOMAIN || "osonapp.uz"
-      window.location.assign(`https://${shopSlug}.${host}`)
+      window.location.assign(`https://${subdomain}.${host}`)
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { message?: string } } })?.response?.data

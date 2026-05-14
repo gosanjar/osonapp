@@ -15,10 +15,10 @@ export type RegisterPayload = {
 
 export type AuthUser = {
   id: string
-  firstName: string
-  lastName: string
-  phone: string
-  shopSlug: string
+  first_name: string
+  last_name: string
+  phone_number: string
+  subdomain: string
 }
 
 export type AuthResponse = {

@@ -25,9 +25,9 @@ export default function RegisterPage() {
     setError(null)
     try {
       const res = await authApi.register(values)
-      const { shopSlug } = res.data.user
+      const { subdomain } = res.data.user
       const host = import.meta.env.VITE_APP_DOMAIN || "osonapp.uz"
-      setShopUrl(`https://${shopSlug}.${host}`)
+      setShopUrl(`https://${subdomain}.${host}`)
     } catch (err: unknown) {
       const msg =
         (err as { response?: { data?: { message?: string } } })?.response?.data
