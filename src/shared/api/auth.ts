@@ -11,6 +11,7 @@ export type RegisterPayload = {
   phone_number: string
   password: string
   shop_name: string
+  register_token: string
 }
 
 export type AuthUser = {
@@ -57,6 +58,51 @@ export class AuthApi {
       request<ApiResponse<AuthUser>>({
         method: "GET",
         url: "/auth/me/",
+      })
+  }
+
+  static sendRegisterOtp(phone_number: string) {
+    return () =>
+      request<ApiResponse<object>>({
+        method: "POST",
+        url: "/auth/send-register-otp/",
+        data: { phone_number },
+      })
+  }
+
+  static verifyRegisterOtp(phone_number: string, otp: string) {
+    return () =>
+      request<ApiResponse<{ register_token: string }>>({
+        method: "POST",
+        url: "/auth/verify-register-otp/",
+        data: { phone_number, otp },
+      })
+  }
+
+  static forgotPassword(phone_number: string) {
+    return () =>
+      request<ApiResponse<object>>({
+        method: "POST",
+        url: "/auth/forgot-password/",
+        data: { phone_number },
+      })
+  }
+
+  static verifyOtp(phone_number: string, otp: string) {
+    return () =>
+      request<ApiResponse<{ reset_token: string }>>({
+        method: "POST",
+        url: "/auth/verify-otp/",
+        data: { phone_number, otp },
+      })
+  }
+
+  static resetPassword(phone_number: string, reset_token: string, new_password: string) {
+    return () =>
+      request<ApiResponse<object>>({
+        method: "POST",
+        url: "/auth/reset-password/",
+        data: { phone_number, reset_token, new_password },
       })
   }
 
