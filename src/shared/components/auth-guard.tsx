@@ -19,7 +19,7 @@ export function AuthGuard() {
   }
 
   if (state.status === "unauthenticated") {
-    window.location.assign(import.meta.env.VITE_MAIN_URL + "/login" || "https://osonapp.uz/login")
+    window.location.assign((import.meta.env.VITE_MAIN_URL || "https://osonapp.uz") + "/login")
     return null
   }
 
