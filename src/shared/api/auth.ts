@@ -1,16 +1,16 @@
 import api from "./index"
 
 export type LoginPayload = {
-  phone: string
+  phone_number: string
   password: string
 }
 
 export type RegisterPayload = {
-  firstName: string
-  lastName: string
-  phone: string
+  first_name: string
+  last_name: string
+  phone_number: string
   password: string
-  shopName: string
+  shop_name: string
 }
 
 export type AuthUser = {

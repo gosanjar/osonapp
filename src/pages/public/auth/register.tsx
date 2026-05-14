@@ -5,11 +5,11 @@ import AuthLayout from "./layout"
 import { authApi } from "@/shared/api/auth"
 
 type FormValues = {
-  firstName: string
-  lastName: string
-  phone: string
+  first_name: string
+  last_name: string
+  phone_number: string
   password: string
-  shopName: string
+  shop_name: string
 }
 
 export default function RegisterPage() {
@@ -90,7 +90,7 @@ export default function RegisterPage() {
             <input
               placeholder="Ali"
               className="w-full rounded-xl border border-border bg-muted px-4 py-3 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-              {...register("firstName", { required: true })}
+              {...register("first_name", { required: true })}
             />
           </div>
           <div>
@@ -100,7 +100,7 @@ export default function RegisterPage() {
             <input
               placeholder="Karimov"
               className="w-full rounded-xl border border-border bg-muted px-4 py-3 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-              {...register("lastName", { required: true })}
+              {...register("last_name", { required: true })}
             />
           </div>
         </div>
@@ -112,7 +112,7 @@ export default function RegisterPage() {
           <input
             placeholder="Mening do'konim"
             className="w-full rounded-xl border border-border bg-muted px-4 py-3 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-            {...register("shopName", { required: true })}
+            {...register("shop_name", { required: true })}
           />
         </div>
 
@@ -124,7 +124,7 @@ export default function RegisterPage() {
             type="tel"
             placeholder="+998 90 123 45 67"
             className="w-full rounded-xl border border-border bg-muted px-4 py-3 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-            {...register("phone", { required: true })}
+            {...register("phone_number", { required: true })}
           />
         </div>
 

@@ -5,7 +5,7 @@ import AuthLayout from "./layout"
 import { authApi } from "@/shared/api/auth"
 
 type FormValues = {
-  phone: string
+  phone_number: string
   password: string
 }
 
@@ -50,7 +50,7 @@ export default function LoginPage() {
             type="tel"
             placeholder="+998 90 123 45 67"
             className="w-full rounded-xl border border-border bg-muted px-4 py-3 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none"
-            {...register("phone", { required: true })}
+            {...register("phone_number", { required: true })}
           />
         </div>
         <div>
