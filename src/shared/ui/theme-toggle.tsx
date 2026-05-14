@@ -4,11 +4,12 @@ import Icon from "./icon"
 import { Button } from "./button"
 
 const ThemeToggle = () => {
-  const [dark, setDark] = useState(
-    () =>
-      localStorage.getItem("theme") === "dark" ||
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-  )
+  const [dark, setDark] = useState(() => {
+    const stored = localStorage.getItem("theme")
+    if (stored === "dark") return true
+    if (stored === "light") return false
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+  })
   const [animating, setAnimating] = useState(false)
 
   useEffect(() => {

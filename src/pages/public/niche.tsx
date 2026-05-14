@@ -1,6 +1,6 @@
 import { Link, useParams, Navigate } from "react-router-dom"
-import PublicNav from "./_public-nav"
-import PublicFooter from "./_public-footer"
+import PublicNav from "./nav"
+import PublicFooter from "./footer"
 import { nicheData, BADGE_ICONS } from "./constants"
 
 export default function NichePage() {

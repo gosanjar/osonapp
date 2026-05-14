@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link } from "react-router-dom"
-import PublicNav from "./_public-nav"
-import PublicFooter from "./_public-footer"
+import PublicNav from "./nav"
+import PublicFooter from "./footer"
 
 const plans = [
   {
@@ -63,13 +63,28 @@ const comparisonRows = [
   { label: "Xodim akkauntlari", start: "2", growth: "10", plus: "Cheksiz" },
   { label: "Telegram bot", start: true, growth: true, plus: true },
   { label: "To'lov tizimlari", start: "3", growth: "6+", plus: "6+" },
-  { label: "Buyurtmalar tahlili", start: "Asosiy", growth: "Kengaytirilgan", plus: "To'liq" },
+  {
+    label: "Buyurtmalar tahlili",
+    start: "Asosiy",
+    growth: "Kengaytirilgan",
+    plus: "To'liq",
+  },
   { label: "Segmentatsiya", start: false, growth: true, plus: true },
   { label: "Ommaviy xabar yuborish", start: false, growth: true, plus: true },
   { label: "API kirish", start: false, growth: true, plus: true },
   { label: "Webhook", start: false, growth: true, plus: true },
-  { label: "Ustuvor qo'llab-quvvatlash", start: false, growth: false, plus: true },
-  { label: "Moslashtirilgan integratsiyalar", start: false, growth: false, plus: true },
+  {
+    label: "Ustuvor qo'llab-quvvatlash",
+    start: false,
+    growth: false,
+    plus: true,
+  },
+  {
+    label: "Moslashtirilgan integratsiyalar",
+    start: false,
+    growth: false,
+    plus: true,
+  },
 ]
 
 function fmt(n: number) {
@@ -79,14 +94,34 @@ function fmt(n: number) {
 function CheckIcon({ ok }: { ok: boolean }) {
   if (ok) {
     return (
-      <svg className="mx-auto h-5 w-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+      <svg
+        className="mx-auto h-5 w-5 text-primary"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={2}
+          d="M5 13l4 4L19 7"
+        />
       </svg>
     )
   }
   return (
-    <svg className="mx-auto h-5 w-5 text-border" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    <svg
+      className="mx-auto h-5 w-5 text-border"
+      fill="none"
+      stroke="currentColor"
+      viewBox="0 0 24 24"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M6 18L18 6M6 6l12 12"
+      />
     </svg>
   )
 }
@@ -118,7 +153,7 @@ export default function PricingPage() {
             <span className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-muted px-4 py-1.5 text-sm text-muted-foreground">
               14 kun bepul · Kartasiz · Istalgan vaqt bekor qilish
             </span>
-            <h1 className="mt-4 mb-4 text-4xl font-extrabold leading-tight tracking-[-0.02em] sm:text-5xl lg:text-[52]">
+            <h1 className="mt-4 mb-4 text-4xl leading-tight font-extrabold tracking-[-0.02em] sm:text-5xl lg:text-[52]">
               Oddiy va shaffof narxlar
             </h1>
             <p className="text-lg leading-relaxed text-muted-foreground">
@@ -131,7 +166,9 @@ export default function PricingPage() {
         {/* Billing toggle */}
         <section className="pb-4">
           <div className="mx-auto flex max-w-xs items-center justify-center gap-3 px-4">
-            <span className={`text-sm font-medium ${!annual ? "text-foreground" : "text-muted-foreground"}`}>
+            <span
+              className={`text-sm font-medium ${!annual ? "text-foreground" : "text-muted-foreground"}`}
+            >
               Oylik
             </span>
             <button
@@ -142,7 +179,9 @@ export default function PricingPage() {
                 className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${annual ? "translate-x-5" : "translate-x-0"}`}
               />
             </button>
-            <span className={`text-sm font-medium ${annual ? "text-foreground" : "text-muted-foreground"}`}>
+            <span
+              className={`text-sm font-medium ${annual ? "text-foreground" : "text-muted-foreground"}`}
+            >
               Yillik
             </span>
             {annual && (
@@ -169,13 +208,17 @@ export default function PricingPage() {
                       </span>
                     </div>
                   )}
-                  <h3 className="mb-1 text-xl font-semibold text-foreground">{p.name}</h3>
+                  <h3 className="mb-1 text-xl font-semibold text-foreground">
+                    {p.name}
+                  </h3>
                   <p className="mb-5 text-sm text-muted-foreground">{p.desc}</p>
                   <div className="mb-2 flex items-baseline gap-1">
                     <span className="text-4xl font-bold text-foreground">
                       {fmt(price(p.monthly))}
                     </span>
-                    <span className="text-sm text-muted-foreground">so'm/oy</span>
+                    <span className="text-sm text-muted-foreground">
+                      so'm/oy
+                    </span>
                   </div>
                   {annual && (
                     <p className="mb-5 text-xs text-muted-foreground line-through">
@@ -185,25 +228,64 @@ export default function PricingPage() {
                   {!annual && <div className="mb-5" />}
                   <ul className="mb-8 flex-1 space-y-3">
                     {p.features.map((f) => (
-                      <li key={f.label} className="flex items-start gap-2.5 text-sm">
+                      <li
+                        key={f.label}
+                        className="flex items-start gap-2.5 text-sm"
+                      >
                         {typeof f.value === "boolean" ? (
                           f.value ? (
-                            <svg className="mt-0.5 h-5 w-5 shrink-0 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            <svg
+                              className="mt-0.5 h-5 w-5 shrink-0 text-primary"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M5 13l4 4L19 7"
+                              />
                             </svg>
                           ) : (
-                            <svg className="mt-0.5 h-5 w-5 shrink-0 text-border" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            <svg
+                              className="mt-0.5 h-5 w-5 shrink-0 text-border"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
                             </svg>
                           )
                         ) : (
-                          <svg className="mt-0.5 h-5 w-5 shrink-0 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          <svg
+                            className="mt-0.5 h-5 w-5 shrink-0 text-primary"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
                           </svg>
                         )}
                         <span className="text-muted-foreground">
-                          <span className="font-medium text-foreground">{f.label}:</span>{" "}
-                          {typeof f.value === "boolean" ? (f.value ? "Ha" : "Yo'q") : f.value}
+                          <span className="font-medium text-foreground">
+                            {f.label}:
+                          </span>{" "}
+                          {typeof f.value === "boolean"
+                            ? f.value
+                              ? "Ha"
+                              : "Yo'q"
+                            : f.value}
                         </span>
                       </li>
                     ))}
@@ -230,7 +312,7 @@ export default function PricingPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-border bg-muted/50">
-                    <th className="py-4 pl-6 pr-4 text-left font-semibold text-foreground">
+                    <th className="py-4 pr-4 pl-6 text-left font-semibold text-foreground">
                       Xususiyat
                     </th>
                     {plans.map((p) => (
@@ -249,9 +331,14 @@ export default function PricingPage() {
                       key={row.label}
                       className={`border-b border-border ${i % 2 === 0 ? "bg-background" : "bg-muted/20"}`}
                     >
-                      <td className="py-3.5 pl-6 pr-4 text-muted-foreground">{row.label}</td>
+                      <td className="py-3.5 pr-4 pl-6 text-muted-foreground">
+                        {row.label}
+                      </td>
                       {[row.start, row.growth, row.plus].map((val, j) => (
-                        <td key={j} className="px-4 py-3.5 text-center text-muted-foreground">
+                        <td
+                          key={j}
+                          className="px-4 py-3.5 text-center text-muted-foreground"
+                        >
                           {typeof val === "boolean" ? (
                             <CheckIcon ok={val} />
                           ) : (
@@ -262,7 +349,7 @@ export default function PricingPage() {
                     </tr>
                   ))}
                   <tr className="bg-background">
-                    <td className="py-4 pl-6 pr-4" />
+                    <td className="py-4 pr-4 pl-6" />
                     {plans.map((p) => (
                       <td key={p.name} className="px-4 py-4 text-center">
                         <Link
@@ -321,19 +408,25 @@ export default function PricingPage() {
                   <div className="mb-1 text-2xl font-bold text-foreground">
                     {fmt(annualRevenue)}
                   </div>
-                  <div className="text-sm text-muted-foreground">Joriy yillik daromad</div>
+                  <div className="text-sm text-muted-foreground">
+                    Joriy yillik daromad
+                  </div>
                 </div>
                 <div className="rounded-2xl border border-primary bg-primary/5 p-6 text-center">
                   <div className="mb-1 text-2xl font-bold text-primary">
                     {fmt(projected)}
                   </div>
-                  <div className="text-sm text-muted-foreground">Oson App bilan (+40%)</div>
+                  <div className="text-sm text-muted-foreground">
+                    Oson App bilan (+40%)
+                  </div>
                 </div>
                 <div className="rounded-2xl border border-border bg-muted/50 p-6 text-center">
                   <div className="mb-1 text-2xl font-bold text-foreground">
                     +{fmt(extra)}
                   </div>
-                  <div className="text-sm text-muted-foreground">Qo'shimcha daromad</div>
+                  <div className="text-sm text-muted-foreground">
+                    Qo'shimcha daromad
+                  </div>
                 </div>
               </div>
               <p className="mt-4 text-center text-xs text-muted-foreground">
@@ -384,10 +477,17 @@ export default function PricingPage() {
                       stroke="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
                     </svg>
                   </summary>
-                  <p className="px-6 pb-6 leading-relaxed text-muted-foreground">{f.a}</p>
+                  <p className="px-6 pb-6 leading-relaxed text-muted-foreground">
+                    {f.a}
+                  </p>
                 </details>
               ))}
             </div>
@@ -398,7 +498,7 @@ export default function PricingPage() {
         <section className="relative overflow-hidden bg-muted/30 py-16 lg:py-24">
           <div className="pointer-events-none absolute top-1/2 left-1/2 h-100 w-100 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/10 blur-[120]" />
           <div className="relative z-10 mx-auto max-w-2xl px-4 text-center sm:px-6">
-            <h2 className="mb-4 text-3xl font-bold leading-tight tracking-[-0.02em] text-foreground sm:text-4xl">
+            <h2 className="mb-4 text-3xl leading-tight font-bold tracking-[-0.02em] text-foreground sm:text-4xl">
               14 kun bepul. Keyin qaror qiling.
             </h2>
             <p className="mb-8 text-lg text-muted-foreground">

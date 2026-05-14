@@ -18,7 +18,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         </div>
       </div>
 
-      <div className="hidden flex-col items-center justify-center gap-6 rounded-l-3xl bg-linear-to-br from-blue-600 to-indigo-700 lg:flex">
+      <div className="hidden flex-col items-center justify-center gap-6 rounded-l-3xl bg-linear-to-br from-blue-600 to-indigo-700 text-white lg:flex">
         <div className="text-7xl">🛍️</div>
         <div className="px-12 text-center">
           <div className="mb-4 inline-block rounded-2xl bg-white/10 px-6 py-3 backdrop-blur-sm">
@@ -27,7 +27,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           <h2 className="mb-3 text-3xl font-bold">
             Do'koningizni online olib chiqing
           </h2>
-          <p className="text-sm leading-relaxed text-blue-100">
+          <p className="text-sm leading-relaxed">
             15 daqiqada do'kon yarating va buyurtmalar qabul qiling
           </p>
         </div>
@@ -39,7 +39,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
           ].map(([v, l]) => (
             <div key={l}>
               <div className="text-2xl font-bold">{v}</div>
-              <div className="text-xs text-blue-200">{l}</div>
+              <div className="text-xs">{l}</div>
             </div>
           ))}
         </div>

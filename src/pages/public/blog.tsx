@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
-import PublicNav from "./_public-nav"
-import PublicFooter from "./_public-footer"
+import PublicNav from "./nav"
+import PublicFooter from "./footer"
 
 const categories = [
   { slug: "all", label: "Barchasi" },
@@ -15,7 +15,8 @@ const posts = [
     slug: "telegram-dukoni-qanday-ochiladi",
     category: "guides",
     categoryLabel: "Qo'llanmalar",
-    title: "Telegram orqali do'kon qanday ochiladi: bosqichma-bosqich qo'llanma",
+    title:
+      "Telegram orqali do'kon qanday ochiladi: bosqichma-bosqich qo'llanma",
     excerpt:
       "Hisob yaratishdan tortib birinchi buyurtma qabul qilishgacha. Texnik bilim kerak emas — faqat 15 daqiqa va telefon.",
     author: "Oson App jamoasi",
@@ -51,7 +52,8 @@ const posts = [
     slug: "ommaviy-xabar-yuborish",
     category: "marketing",
     categoryLabel: "Marketing",
-    title: "Ommaviy xabar yuborish: mijozlarni qaytarib keltiradigan matn qanday yoziladi",
+    title:
+      "Ommaviy xabar yuborish: mijozlarni qaytarib keltiradigan matn qanday yoziladi",
     excerpt:
       "Spam emas, foyda. Qaysi vaqtda, qanday matn bilan va qancha tez-tez xabar yuborish kerakligini real holatlar bilan ko'rib chiqamiz.",
     author: "Oson App jamoasi",
@@ -87,7 +89,8 @@ const posts = [
     slug: "chegirma-kuponlari",
     category: "marketing",
     categoryLabel: "Marketing",
-    title: "Chegirma kuponlari: yangi mijozlarni jalb qilish va takroriy xaridni oshirish",
+    title:
+      "Chegirma kuponlari: yangi mijozlarni jalb qilish va takroriy xaridni oshirish",
     excerpt:
       "Bir martalik, foizli va minimal summali kuponlar. Qaysi vaziyatda qaysi kupon ishlaydi — real misollar.",
     author: "Oson App jamoasi",
@@ -100,8 +103,18 @@ const posts = [
 function PostPlaceholder() {
   return (
     <div className="flex items-center justify-center">
-      <svg className="h-12 w-12 text-border" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+      <svg
+        className="h-12 w-12 text-border"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          strokeWidth={1}
+          d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
+        />
       </svg>
     </div>
   )
@@ -133,11 +146,12 @@ export default function BlogPage() {
             <div className="absolute top-10 right-1/4 h-75 w-75 rounded-full bg-primary/5 blur-[100]" />
           </div>
           <div className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6">
-            <h1 className="mb-6 text-4xl font-extrabold leading-[1.1] tracking-[-0.02em] text-foreground sm:text-5xl lg:text-6xl">
+            <h1 className="mb-6 text-4xl leading-[1.1] font-extrabold tracking-[-0.02em] text-foreground sm:text-5xl lg:text-6xl">
               Oson App Blog
             </h1>
             <p className="mx-auto max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-              Telegram orqali savdo qilish bo'yicha qo'llanmalar, keyslar va foydali maslahatlar
+              Telegram orqali savdo qilish bo'yicha qo'llanmalar, keyslar va
+              foydali maslahatlar
             </p>
           </div>
         </section>
@@ -178,7 +192,7 @@ export default function BlogPage() {
                   <span className="mb-4 inline-flex w-fit items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                     {featured.categoryLabel}
                   </span>
-                  <h2 className="mb-4 text-2xl font-bold leading-tight text-foreground transition-colors group-hover:text-primary sm:text-3xl">
+                  <h2 className="mb-4 text-2xl leading-tight font-bold text-foreground transition-colors group-hover:text-primary sm:text-3xl">
                     {featured.title}
                   </h2>
                   <p className="mb-6 text-base leading-relaxed text-muted-foreground">
@@ -216,7 +230,7 @@ export default function BlogPage() {
                     <span className="mb-3 inline-flex w-fit items-center rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                       {post.categoryLabel}
                     </span>
-                    <h3 className="mb-2 text-lg font-bold leading-snug text-foreground transition-colors group-hover:text-primary">
+                    <h3 className="mb-2 text-lg leading-snug font-bold text-foreground transition-colors group-hover:text-primary">
                       {post.title}
                     </h3>
                     <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-muted-foreground">
@@ -251,7 +265,8 @@ export default function BlogPage() {
               Dayjestga obuna bo'ling
             </h2>
             <p className="mx-auto mb-8 max-w-lg text-base text-muted-foreground">
-              Haftada bir marta — Telegram savdosi haqida eng yaxshi materiallar. Spamlarsiz.
+              Haftada bir marta — Telegram savdosi haqida eng yaxshi
+              materiallar. Spamlarsiz.
             </p>
             {subscribed ? (
               <p className="font-medium text-primary">
@@ -264,7 +279,7 @@ export default function BlogPage() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email manzilingiz"
-                  className="flex-1 rounded-xl border border-border bg-background px-5 py-3 text-sm text-foreground placeholder-muted-foreground outline-none transition-colors focus:border-primary"
+                  className="flex-1 rounded-xl border border-border bg-background px-5 py-3 text-sm text-foreground placeholder-muted-foreground transition-colors outline-none focus:border-primary"
                 />
                 <button
                   onClick={() => email && setSubscribed(true)}

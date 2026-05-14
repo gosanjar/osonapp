@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
-import PublicNav from "../_public-nav"
-import PublicFooter from "../_public-footer"
+import PublicNav from "../nav"
+import PublicFooter from "../footer"
 
 const TABS = [
   {
