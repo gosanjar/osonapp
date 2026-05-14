@@ -56,6 +56,7 @@ export function FormControl<T extends FieldValues>({
           )}
           {cloneElement(children, {
             ...field,
+            value: field.value ?? "",
             "aria-invalid": !!error,
             error: error?.message,
             required,
