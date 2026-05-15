@@ -5,15 +5,25 @@ import {
   BubbleChatQuestionIcon,
   MoreVerticalIcon,
 } from "@hugeicons/core-free-icons"
-import { NavLink, useLocation } from "react-router-dom"
+import { NavLink, useLocation, useParams } from "react-router-dom"
 import Icon from "@/shared/ui/icon"
-import { ROUTES } from "@/shared/config/routes"
 import Flex from "@/shared/ui/flex"
 import { useState } from "react"
+import { useAuthStore } from "@/shared/store/auth.store"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/shared/ui/dropdown-menu"
+import { useAuth } from "@/shared/providers/auth-provider"
 
 const Sidebar = ({ onNavigate }: { onNavigate?: () => void }) => {
   const { pathname } = useLocation()
   const { menuList } = useSidebar()
+  const user = useAuthStore((s) => s.user)
+  const { logout } = useAuth()
+  const { lang } = useParams<{ lang: string }>()
 
   const activeItem =
     menuList.find((item) =>
@@ -35,10 +45,12 @@ const Sidebar = ({ onNavigate }: { onNavigate?: () => void }) => {
         align="center"
         className="sticky top-0 z-50 h-16 w-full border-b border-gray-800 p-3.5"
       >
-        <NavLink to={ROUTES.ROOT} onClick={onNavigate}>
+        <NavLink to={`/${lang ?? "uz"}`} onClick={onNavigate}>
           <img className="size-9 rounded" src="/logo.png" alt="logo" />
         </NavLink>
-        <div className="grow text-lg font-medium">Salom</div>
+        <div className="grow text-lg font-medium">
+          {user?.subdomain.toUpperCase()}
+        </div>
       </Flex>
 
       <Accordion
@@ -72,13 +84,27 @@ const Sidebar = ({ onNavigate }: { onNavigate?: () => void }) => {
             A
           </Flex>
           <Flex direction="column" gap={0}>
-            <span className="font-bold">Admin</span>
-            <span className="text-xs font-light">Growth</span>
+            <span className="font-bold">{user?.first_name}</span>
+            <span className="text-xs font-light">{user?.last_name}</span>
           </Flex>
         </Flex>
         <Flex gap={2}>
           <Icon icon={BubbleChatQuestionIcon} />
-          <Icon icon={MoreVerticalIcon} />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="cursor-pointer rounded p-0.5 hover:bg-white/10">
+                <Icon icon={MoreVerticalIcon} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent side="right" align="end">
+              <DropdownMenuItem
+                className="cursor-pointer text-destructive focus:text-destructive"
+                onClick={() => logout()}
+              >
+                Chiqish
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </Flex>
       </Flex>
     </Flex>

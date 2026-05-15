@@ -17,17 +17,26 @@ export default function PublicFooter() {
             <h4 className="mb-4 font-semibold text-foreground">Mahsulot</h4>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link to="/pricing" className="transition-colors hover:text-foreground">
+                <Link
+                  to="/pricing"
+                  className="transition-colors hover:text-foreground"
+                >
                   Narxlar
                 </Link>
               </li>
               <li>
-                <a href="#faq" className="transition-colors hover:text-foreground">
+                <a
+                  href="#faq"
+                  className="transition-colors hover:text-foreground"
+                >
                   FAQ
                 </a>
               </li>
               <li>
-                <Link to="/register" className="transition-colors hover:text-foreground">
+                <Link
+                  to="/register"
+                  className="transition-colors hover:text-foreground"
+                >
                   Boshlash
                 </Link>
               </li>
@@ -77,14 +86,19 @@ export default function PublicFooter() {
           </div>
         </div>
 
-        <div className="mt-12 mb-4 overflow-hidden select-none" aria-hidden="true">
+        <div
+          className="mt-12 mb-4 overflow-hidden select-none"
+          aria-hidden="true"
+        >
           <p className="text-center text-[12vw] leading-none font-extrabold tracking-tight whitespace-nowrap text-foreground/5 lg:text-[10vw]">
             OSON APP
           </p>
         </div>
 
         <div className="flex flex-col items-center justify-between gap-4 border-t border-border pt-6 sm:flex-row">
-          <p className="text-sm">© 2026 Oson App. Barcha huquqlar himoyalangan.</p>
+          <p className="text-sm">
+            © 2026 Oson App. Barcha huquqlar himoyalangan.
+          </p>
           <div className="flex items-center gap-6 text-sm">
             <a href="#" className="transition-colors hover:text-foreground">
               Foydalanish shartlari

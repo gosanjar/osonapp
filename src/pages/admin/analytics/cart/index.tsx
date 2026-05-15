@@ -47,7 +47,13 @@ Siz xaridni yakunlashni unutdingiz! Savatchangizda mahsulotlar qoldi.
 
 Hozir buyurtmani yakunlang va ularni tezroq oling.`
 
-function ReminderDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+function ReminderDialog({
+  open,
+  onClose,
+}: {
+  open: boolean
+  onClose: () => void
+}) {
   const form = useForm<ReminderForm>({
     defaultValues: {
       enabled: false,
@@ -76,12 +82,18 @@ function ReminderDialog({ open, onClose }: { open: boolean; onClose: () => void 
               checked={enabled}
               onCheckedChange={(v) => form.setValue("enabled", !!v)}
             />
-            <Label htmlFor="enabled" className="cursor-pointer">Eslatmalarni yoqish</Label>
+            <Label htmlFor="enabled" className="cursor-pointer">
+              Eslatmalarni yoqish
+            </Label>
           </Flex>
 
           <Flex direction="column" gap={4} className="w-full">
             <Label>Jo'natish kechikishi (daqiqa)</Label>
-            <Input type="number" {...form.register("delay", { valueAsNumber: true })} className="w-full" />
+            <Input
+              type="number"
+              {...form.register("delay", { valueAsNumber: true })}
+              className="w-full"
+            />
           </Flex>
 
           <Flex align="center" gap={4} className="w-full">
@@ -90,17 +102,25 @@ function ReminderDialog({ open, onClose }: { open: boolean; onClose: () => void 
               checked={promoEnabled}
               onCheckedChange={(v) => form.setValue("promoEnabled", !!v)}
             />
-            <Label htmlFor="promoEnabled" className="cursor-pointer">Promokod qo'shish</Label>
+            <Label htmlFor="promoEnabled" className="cursor-pointer">
+              Promokod qo'shish
+            </Label>
           </Flex>
 
           <Flex direction="column" gap={4} className="w-full">
             <Label>Xabar matni</Label>
-            <Flex align="center" gap={4} className="w-full rounded-md border p-1">
+            <Flex
+              align="center"
+              gap={4}
+              className="w-full rounded-md border p-1"
+            >
               <button
                 type="button"
                 onClick={() => setTab("ru")}
                 className={`flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors ${
-                  tab === "ru" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+                  tab === "ru"
+                    ? "bg-foreground text-background"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 RU
@@ -109,21 +129,35 @@ function ReminderDialog({ open, onClose }: { open: boolean; onClose: () => void 
                 type="button"
                 onClick={() => setTab("uz")}
                 className={`flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors ${
-                  tab === "uz" ? "bg-foreground text-background" : "text-muted-foreground hover:text-foreground"
+                  tab === "uz"
+                    ? "bg-foreground text-background"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 UZ
               </button>
             </Flex>
             {tab === "ru" ? (
-              <Textarea {...form.register("textRu")} rows={6} className="w-full resize-none" />
+              <Textarea
+                {...form.register("textRu")}
+                rows={6}
+                className="w-full resize-none"
+              />
             ) : (
-              <Textarea {...form.register("textUz")} rows={6} className="w-full resize-none" />
+              <Textarea
+                {...form.register("textUz")}
+                rows={6}
+                className="w-full resize-none"
+              />
             )}
           </Flex>
 
           <Flex align="center" justify="end" gap={4} className="w-full">
-            <Button variant="default" className="bg-foreground text-background hover:bg-foreground/90" onClick={onClose}>
+            <Button
+              variant="default"
+              className="bg-foreground text-background hover:bg-foreground/90"
+              onClick={onClose}
+            >
               Yopish
             </Button>
             <SaveButton onClick={() => form.handleSubmit(() => onClose())()} />
@@ -142,9 +176,13 @@ const CartAnalytics = () => {
       <h1 className="text-2xl font-bold">Savatcha bo'yicha analitika</h1>
 
       <Card className="w-full">
-        <CardContent className="pt-4">
+        <CardContent>
           <Flex align="center" justify="between" gap={4} className="w-full">
-            <Flex align="center" gap={0} className="flex-1 overflow-hidden rounded-md border">
+            <Flex
+              align="center"
+              gap={0}
+              className="flex-1 overflow-hidden rounded-md border"
+            >
               <div className="shrink-0 border-r bg-muted px-4 py-2 text-sm font-medium">
                 Sanani tanlang
               </div>
@@ -154,7 +192,11 @@ const CartAnalytics = () => {
                 className="border-0 shadow-none focus-visible:ring-0"
               />
             </Flex>
-            <Button variant="outline" className="shrink-0 gap-2" onClick={() => setDialogOpen(true)}>
+            <Button
+              variant="outline"
+              className="shrink-0 gap-2"
+              onClick={() => setDialogOpen(true)}
+            >
               <Settings2 size={16} />
               Eslatma sozlamalari
             </Button>
@@ -165,7 +207,7 @@ const CartAnalytics = () => {
       <div className="grid w-full grid-cols-3 gap-4">
         {statCards.map((s) => (
           <Card key={s.label} className="w-full">
-            <CardContent className="pt-4">
+            <CardContent>
               <span className="text-sm text-muted-foreground">{s.label}</span>
               <p className="mt-1 text-3xl font-bold">{s.value}</p>
             </CardContent>

@@ -39,7 +39,7 @@ const SearchAnalytics = () => {
       <h1 className="text-2xl font-bold">Qidirish bo'yicha analitika</h1>
 
       <Card className="w-full">
-        <CardContent className="pt-4">
+        <CardContent>
           <Flex
             align="center"
             gap={0}
@@ -57,10 +57,10 @@ const SearchAnalytics = () => {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid w-full grid-cols-4 gap-4">
         {statCards.map((s) => (
           <Card key={s.label} className="w-full">
-            <CardContent className="pt-4">
+            <CardContent>
               <span className="text-sm text-muted-foreground">{s.label}</span>
               <p className="mt-1 text-3xl font-bold">{s.value}</p>
               {s.sub && (
@@ -71,7 +71,7 @@ const SearchAnalytics = () => {
         ))}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid w-full grid-cols-2 gap-4">
         <Card className="w-full">
           <CardHeader>
             <CardTitle>Qidiruv hajmi</CardTitle>

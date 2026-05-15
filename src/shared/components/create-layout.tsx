@@ -9,6 +9,7 @@ interface CreateLayoutProps<T extends FieldValues> {
   form: UseFormReturn<T>
   title: string
   saveLabel?: string
+  onSave?: () => void
   children: ReactNode
 }
 
@@ -16,20 +17,24 @@ export default function CreateLayout<T extends FieldValues>({
   form,
   title,
   saveLabel,
+  onSave,
   children,
 }: CreateLayoutProps<T>) {
   return (
     <FormProvider {...form}>
-      <Flex direction="column" className="w-full" gap={4}>
-        <PageHeader title={title}>
-          <CancelButton />
-          <SaveButton>{saveLabel}</SaveButton>
-        </PageHeader>
+      <form onSubmit={onSave} autoComplete="off" noValidate className="w-full">
+        <input type="password" autoComplete="new-password" className="hidden" aria-hidden="true" />
+        <Flex direction="column" className="w-full" gap={4}>
+          <PageHeader title={title}>
+            <CancelButton />
+            <SaveButton type="submit">{saveLabel}</SaveButton>
+          </PageHeader>
 
-        <hr className="w-full" />
+          <hr className="w-full" />
 
-        {children}
-      </Flex>
+          {children}
+        </Flex>
+      </form>
     </FormProvider>
   )
 }

@@ -11,15 +11,19 @@ export function AuthGuard() {
     return (
       <Flex
         direction="column"
-        className="h-screen w-screen items-center justify-center"
+        align="center"
+        justify="center"
+        className="h-screen w-screen"
       >
-        <HugeiconsIcon icon={Loading03Icon} size={32} />
+        <HugeiconsIcon icon={Loading03Icon} size={32} className="animate-spin" />
       </Flex>
     )
   }
 
   if (state.status === "unauthenticated") {
-    window.location.assign((import.meta.env.VITE_MAIN_URL || "https://osonapp.uz") + "/login")
+    window.location.assign(
+      (import.meta.env.VITE_MAIN_URL || "https://osonapp.uz") + "/login"
+    )
     return null
   }
 

@@ -1,12 +1,9 @@
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from "react"
-import { AuthApi, type AuthUser } from "@/shared/api/auth"
-import { TOKEN_KEY } from "@/shared/api"
+import { createContext, useCallback, useContext, useEffect } from "react"
+import { useQuery, useQueryClient } from "@tanstack/react-query"
+import { AuthApi } from "@/entities/auth/api"
+import type { AuthUser } from "@/entities/auth/types"
+import { TOKEN_KEY, REFRESH_KEY } from "@/shared/api"
+import { useAuthStore } from "@/shared/store/auth.store"
 
 type AuthState =
   | { status: "loading" }
@@ -22,43 +19,63 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [state, setState] = useState<AuthState>({ status: "loading" })
+  const queryClient = useQueryClient()
+  const storeSetUser = useAuthStore((s) => s.setUser)
+  const storeClearUser = useAuthStore((s) => s.clearUser)
 
   useEffect(() => {
-    // URL'dan token kelgan bo'lsa localStorage'ga yozib, URL'dan o'chiramiz
     const params = new URLSearchParams(window.location.search)
     const urlToken = params.get("token")
+    const urlRefresh = params.get("refresh")
     if (urlToken) {
       localStorage.setItem(TOKEN_KEY, urlToken)
       params.delete("token")
+    }
+    if (urlRefresh) {
+      localStorage.setItem(REFRESH_KEY, urlRefresh)
+      params.delete("refresh")
+    }
+    if (urlToken || urlRefresh) {
       const clean = window.location.pathname + (params.toString() ? `?${params}` : "")
       window.history.replaceState({}, "", clean)
     }
-
-    AuthApi.me()
-      .then((res) => setState({ status: "authenticated", user: res.data }))
-      .catch(() => setState({ status: "unauthenticated" }))
   }, [])
 
-  // agar 3 soniyada javob kelmasa — unauthenticated deb hisobla
+  const { data, isPending, isError } = useQuery({
+    queryKey: ["me"],
+    queryFn: () => AuthApi.me(),
+    retry: false,
+    staleTime: 5 * 60 * 1000,
+  })
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setState((prev) =>
-        prev.status === "loading" ? { status: "unauthenticated" } : prev
-      )
-    }, 3000)
-    return () => clearTimeout(timer)
-  }, [])
+    if (data) storeSetUser(data.data.user)
+  }, [data, storeSetUser])
 
-  const setUser = useCallback((user: AuthUser) => {
-    setState({ status: "authenticated", user })
-  }, [])
+  const state: AuthState = isPending
+    ? { status: "loading" }
+    : isError || !data
+      ? { status: "unauthenticated" }
+      : { status: "authenticated", user: data.data.user }
+
+  const setUser = useCallback(
+    (user: AuthUser) => {
+      queryClient.setQueryData(["me"], { data: user })
+      storeSetUser(user)
+    },
+    [queryClient, storeSetUser]
+  )
 
   const logout = useCallback(async () => {
     await AuthApi.logout().catch(() => null)
     localStorage.removeItem(TOKEN_KEY)
-    setState({ status: "unauthenticated" })
-  }, [])
+    localStorage.removeItem(REFRESH_KEY)
+    queryClient.removeQueries({ queryKey: ["me"] })
+    storeClearUser()
+    window.location.assign(
+      (import.meta.env.VITE_MAIN_URL || "https://osonapp.uz") + "/login"
+    )
+  }, [queryClient, storeClearUser])
 
   return (
     <AuthContext.Provider value={{ state, setUser, logout }}>

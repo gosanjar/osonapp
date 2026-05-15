@@ -18,8 +18,11 @@ import {
 import type { ISidebarMenuTree } from "./types"
 import { useMemo } from "react"
 import Icon from "@/shared/ui/icon"
+import { useAuthStore } from "@/shared/store/auth.store"
 
 const useSidebar = () => {
+  const user = useAuthStore((s) => s.user)
+
   const menuList: ISidebarMenuTree[] = useMemo((): ISidebarMenuTree[] => {
     return [
       {
@@ -37,18 +40,9 @@ const useSidebar = () => {
         icon: <Icon icon={ShoppingCart02Icon} />,
         label: "Buyurtmalar",
         children: [
-          {
-            path: ROUTES.ORDERS_ALL,
-            label: "Barcha buyurtmalar",
-          },
-          {
-            path: ROUTES.ORDERS_PREORDERS,
-            label: "Oldindan buyurtma",
-          },
-          {
-            path: ROUTES.ORDERS_SETTINGS,
-            label: "Sozlamalar",
-          },
+          { path: ROUTES.ORDERS_ALL, label: "Barcha buyurtmalar", permission: "can_order_edit" },
+          { path: ROUTES.ORDERS_PREORDERS, label: "Oldindan buyurtma", permission: "can_order_edit" },
+          { path: ROUTES.ORDERS_SETTINGS, label: "Sozlamalar", permission: "can_order_edit" },
         ],
       },
       {
@@ -56,26 +50,11 @@ const useSidebar = () => {
         icon: <Icon icon={Store01Icon} />,
         label: "Katalog",
         children: [
-          {
-            path: ROUTES.CATALOG_PRODUCTS,
-            label: "Mahsulotlar",
-          },
-          {
-            path: ROUTES.CATALOG_CATEGORIES,
-            label: "Kategoriyalar",
-          },
-          {
-            path: ROUTES.CATALOG_INVENTORY,
-            label: "Inventarizatsiya",
-          },
-          {
-            path: ROUTES.CATALOG_PRODUCT_RECOMMENDATIONS,
-            label: "Mahsulot tavsiyalari",
-          },
-          {
-            path: ROUTES.CATALOG_IMPORT_PRODUCTS,
-            label: "Import",
-          },
+          { path: ROUTES.CATALOG_PRODUCTS, label: "Mahsulotlar", permission: "can_product_edit" },
+          { path: ROUTES.CATALOG_CATEGORIES, label: "Kategoriyalar", permission: "can_category_edit" },
+          { path: ROUTES.CATALOG_INVENTORY, label: "Inventarizatsiya", permission: "can_product_edit" },
+          { path: ROUTES.CATALOG_PRODUCT_RECOMMENDATIONS, label: "Mahsulot tavsiyalari", permission: "can_recommendation_edit" },
+          { path: ROUTES.CATALOG_IMPORT_PRODUCTS, label: "Import", permission: "can_products_import" },
         ],
       },
       {
@@ -83,14 +62,8 @@ const useSidebar = () => {
         icon: <Icon icon={User03Icon} />,
         label: "Mijozlar",
         children: [
-          {
-            path: ROUTES.CUSTOMERS_ALL,
-            label: "Barcha mijozlar",
-          },
-          {
-            path: ROUTES.CUSTOMERS_SEGMENTS,
-            label: "Segmentlar",
-          },
+          { path: ROUTES.CUSTOMERS_ALL, label: "Barcha mijozlar", permission: "can_customer_edit" },
+          { path: ROUTES.CUSTOMERS_SEGMENTS, label: "Segmentlar", permission: "can_customer_edit" },
         ],
       },
       {
@@ -98,34 +71,13 @@ const useSidebar = () => {
         icon: <Icon icon={DiscountIcon} />,
         label: "Marketing",
         children: [
-          {
-            path: ROUTES.MARKETING_DISCOUNT,
-            label: "Promo kodlar",
-          },
-          {
-            path: ROUTES.MARKETING_GIFT_PROMOTIONS,
-            label: "Sovg'alar",
-          },
-          {
-            path: ROUTES.MARKETING_NEWSLETTER,
-            label: "SMS yuborish",
-          },
-          {
-            path: ROUTES.MARKETING_REVIEWS,
-            label: "Izohlar",
-          },
-          {
-            path: ROUTES.MARKETING_REWARD_POINTS,
-            label: "Sodiqlik dasturi",
-          },
-          {
-            path: ROUTES.MARKETING_CHANNEL_POST,
-            label: "Kanal uchun post",
-          },
-          {
-            path: ROUTES.MARKETING_GIVEAWAY,
-            label: "Giveaway",
-          },
+          { path: ROUTES.MARKETING_DISCOUNT, label: "Promo kodlar" },
+          { path: ROUTES.MARKETING_GIFT_PROMOTIONS, label: "Sovg'alar" },
+          { path: ROUTES.MARKETING_NEWSLETTER, label: "SMS yuborish", permission: "can_newsletter_create" },
+          { path: ROUTES.MARKETING_REVIEWS, label: "Izohlar" },
+          { path: ROUTES.MARKETING_REWARD_POINTS, label: "Sodiqlik dasturi" },
+          { path: ROUTES.MARKETING_CHANNEL_POST, label: "Kanal uchun post" },
+          { path: ROUTES.MARKETING_GIVEAWAY, label: "Giveaway" },
         ],
       },
       {
@@ -133,30 +85,12 @@ const useSidebar = () => {
         icon: <Icon icon={WaterfallUp01Icon} />,
         label: "Metrikalar",
         children: [
-          {
-            path: ROUTES.ANALYTICS_GOOGLE,
-            label: "Google Analitika",
-          },
-          {
-            path: ROUTES.ANALYTICS_SALES,
-            label: "Buyurtmalar bo`yicha analitika",
-          },
-          {
-            path: ROUTES.ANALYTICS_HITS,
-            label: "Ko`rishlar bo`yicha analitika",
-          },
-          {
-            path: ROUTES.ANALYTICS_PRODUCTS,
-            label: "Mahsulotlar bo`yicha analitika",
-          },
-          {
-            path: ROUTES.ANALYTICS_CART,
-            label: "Savatcha bo`yicha analitika",
-          },
-          {
-            path: ROUTES.ANALYTICS_SEARCH,
-            label: "Qidirish bo`yicha analitika",
-          },
+          { path: ROUTES.ANALYTICS_GOOGLE, label: "Google Analitika" },
+          { path: ROUTES.ANALYTICS_SALES, label: "Buyurtmalar bo`yicha analitika" },
+          { path: ROUTES.ANALYTICS_HITS, label: "Ko`rishlar bo`yicha analitika" },
+          { path: ROUTES.ANALYTICS_PRODUCTS, label: "Mahsulotlar bo`yicha analitika" },
+          { path: ROUTES.ANALYTICS_CART, label: "Savatcha bo`yicha analitika" },
+          { path: ROUTES.ANALYTICS_SEARCH, label: "Qidirish bo`yicha analitika" },
         ],
       },
       {
@@ -164,6 +98,7 @@ const useSidebar = () => {
         icon: <Icon icon={TelegramIcon} />,
         label: "Telegram bot",
         section: "Kanallar",
+        permission: "can_telegram_connect",
       },
       {
         path: ROUTES.CONVERSATIONS,
@@ -176,18 +111,9 @@ const useSidebar = () => {
         label: "Sozlamalar",
         section: "Sozlamalar",
         children: [
-          {
-            path: ROUTES.SETTINGS_SHOP,
-            label: "Do'kon sozlamalari",
-          },
-          {
-            path: ROUTES.SETTINGS_SHIPPING,
-            label: "Yetkazib berish usullari",
-          },
-          {
-            path: ROUTES.SETTINGS_LOCATION,
-            label: "Filiallar",
-          },
+          { path: ROUTES.SETTINGS_SHOP, label: "Do'kon sozlamalari" },
+          { path: ROUTES.SETTINGS_SHIPPING, label: "Yetkazib berish usullari", permission: "can_shipping_edit" },
+          { path: ROUTES.SETTINGS_LOCATION, label: "Filiallar" },
         ],
       },
       {
@@ -195,18 +121,9 @@ const useSidebar = () => {
         icon: <Icon icon={BankIcon} />,
         label: "To'lovlar",
         children: [
-          {
-            path: ROUTES.PAYMENTS_ALL,
-            label: "To'lov tizimlari",
-          },
-          {
-            path: ROUTES.PAYMENTS_TRANSACTIONS,
-            label: "To`lov tranzaksiyalari",
-          },
-          {
-            path: ROUTES.PAYMENTS_IKPU,
-            label: "IKPU",
-          },
+          { path: ROUTES.PAYMENTS_ALL, label: "To'lov tizimlari", permission: "can_payment_edit" },
+          { path: ROUTES.PAYMENTS_TRANSACTIONS, label: "To`lov tranzaksiyalari", permission: "can_transaction_delete" },
+          { path: ROUTES.PAYMENTS_IKPU, label: "IKPU", permission: "can_ikpu_edit" },
         ],
       },
       {
@@ -214,14 +131,8 @@ const useSidebar = () => {
         icon: <Icon icon={UserMultiple02Icon} />,
         label: "Xodimlar",
         children: [
-          {
-            path: ROUTES.MANAGEMENT_EMPLOYEES,
-            label: "Xodimlar",
-          },
-          {
-            path: ROUTES.MANAGEMENT_ROLES,
-            label: "Rollar",
-          },
+          { path: ROUTES.MANAGEMENT_EMPLOYEES, label: "Xodimlar", permission: "can_user_edit" },
+          { path: ROUTES.MANAGEMENT_ROLES, label: "Rollar", permission: "can_role_edit" },
         ],
       },
       {
@@ -237,7 +148,24 @@ const useSidebar = () => {
     ]
   }, [])
 
-  return { menuList }
+  function canAccess(permission?: string): boolean {
+    if (!permission) return true
+    if (!user) return false
+    if (user.role === "owner") return true
+    if (user.role === "staff") return user.permissions.includes(permission as never)
+    return false
+  }
+
+  function filterMenu(items: ISidebarMenuTree[]): ISidebarMenuTree[] {
+    return items
+      .filter((item) => canAccess(item.permission))
+      .map((item) => ({
+        ...item,
+        children: item.children ? filterMenu(item.children) : undefined,
+      }))
+  }
+
+  return { menuList: filterMenu(menuList) }
 }
 
 export default useSidebar

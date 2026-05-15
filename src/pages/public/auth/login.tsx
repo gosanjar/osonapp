@@ -1,25 +1,37 @@
-import { Link } from "react-router-dom"
+import { ROUTES } from "@/shared/config/routes"
+import { AuthRedirectLink } from "./components/auth-redirect-link"
 import { useForm, FormProvider } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import AuthLayout from "./layout"
-import { AuthApi } from "@/shared/api/auth"
-import { Input } from "@/shared/ui/input"
+import { AuthApi } from "@/entities/auth/api"
+import { PhoneInput } from "@/shared/ui/phone-input"
 import { FormControl } from "@/shared/ui/form-control"
 import { PHONE_PATTERN } from "@/shared/utils/validation"
 import { getApiError } from "@/shared/api"
+import { Input } from "@/shared/ui/input"
+import { Button } from "@/shared/ui/button"
+import { Alert, AlertDescription } from "@/shared/ui/alert"
+import { Link, useLocation } from "react-router-dom"
 
 const APP_URL = import.meta.env.VITE_APP_URL || "https://app.osonapp.uz"
 
 type FormValues = { phone_number: string; password: string }
 
 export default function LoginPage() {
-  const form = useForm<FormValues>()
+  const { state } = useLocation()
+  const locationState = state as { phone?: string; alreadyRegistered?: boolean } | null
+  const form = useForm<FormValues>({
+    defaultValues: { phone_number: locationState?.phone ?? "" },
+  })
 
   const { mutate, error, isPending } = useMutation({
     mutationFn: (data: FormValues) => AuthApi.login(data),
     onSuccess: (res) => {
-      const token = res.data.access
-      window.location.assign(token ? `${APP_URL}?token=${token}` : APP_URL)
+      const { access, refresh } = res.data
+      const params = new URLSearchParams()
+      if (access) params.set("token", access)
+      if (refresh) params.set("refresh", refresh)
+      window.location.assign(`${APP_URL}?${params}`)
     },
   })
 
@@ -33,6 +45,14 @@ export default function LoginPage() {
           Telefon raqam va parol bilan kiring
         </p>
       </div>
+
+      {locationState?.alreadyRegistered && (
+        <Alert variant="destructive" className="mb-4">
+          <AlertDescription>
+            Bu raqam allaqachon ro'yxatdan o'tgan. Parolingizni kiriting.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <FormProvider {...form}>
         <form
@@ -51,7 +71,7 @@ export default function LoginPage() {
               },
             }}
           >
-            <Input type="tel" placeholder="+998 90 123 45 67" />
+            <PhoneInput placeholder="90 123 45 67" />
           </FormControl>
 
           <div className="space-y-1.5">
@@ -59,43 +79,36 @@ export default function LoginPage() {
               <span className="text-sm leading-none font-medium">
                 Parol <span className="text-destructive">*</span>
               </span>
-              <Link
-                to="/forgot-password"
-                className="text-sm text-primary transition-colors hover:text-primary/80"
-              >
-                Parolni unutdingizmi?
-              </Link>
+              <Button variant="link" size="sm" asChild className="h-auto p-0">
+                <Link to={ROUTES.FORGOT_PASSWORD}>Parolni unutdingizmi?</Link>
+              </Button>
             </div>
             <FormControl<FormValues> name="password" required>
-              <Input type="password" placeholder="••••••••" />
+              <Input type="password" placeholder="Kamida 8 ta belgi" />
             </FormControl>
           </div>
 
           {errorMsg && (
-            <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
-              {errorMsg}
-            </p>
+            <Alert variant="destructive">
+              <AlertDescription>{errorMsg}</AlertDescription>
+            </Alert>
           )}
 
-          <button
+          <Button
             type="submit"
             disabled={isPending || form.formState.isSubmitting}
-            className="mt-2 w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+            className="mt-2 w-full"
           >
             {isPending ? "Kirilmoqda..." : "Kirish"}
-          </button>
+          </Button>
         </form>
       </FormProvider>
 
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        Akkauntingiz yo'qmi?{" "}
-        <Link
-          to="/register"
-          className="text-primary transition-colors hover:text-primary/80"
-        >
-          Ro'yxatdan o'tish
-        </Link>
-      </p>
+      <AuthRedirectLink
+        text="Akkauntingiz yo'qmi?"
+        linkText="Ro'yxatdan o'tish"
+        to={ROUTES.REGISTER}
+      />
     </AuthLayout>
   )
 }

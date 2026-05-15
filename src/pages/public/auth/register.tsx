@@ -1,12 +1,21 @@
 import { useState, useEffect, useCallback } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { useForm, FormProvider } from "react-hook-form"
+import { useNavigate } from "react-router-dom"
+import { AuthRedirectLink } from "./components/auth-redirect-link"
+import { ROUTES } from "@/shared/config/routes"
+import { useForm, useWatch, FormProvider } from "react-hook-form"
 import { useMutation, useQuery } from "@tanstack/react-query"
+import { Loader2 } from "lucide-react"
 import AuthLayout from "./layout"
-import { AuthApi } from "@/shared/api/auth"
+import { AuthApi } from "@/entities/auth/api"
+import { Button } from "@/shared/ui/button"
+import { PhoneInput } from "@/shared/ui/phone-input"
 import { Input } from "@/shared/ui/input"
 import { FormControl } from "@/shared/ui/form-control"
-import { PHONE_PATTERN, passwordRules } from "@/shared/utils/validation"
+import {
+  PHONE_PATTERN,
+  passwordRules,
+  shopNameRules,
+} from "@/shared/utils/validation"
 import { getApiError } from "@/shared/api"
 
 type Step = "phone" | "details"
@@ -16,9 +25,6 @@ const TelegramIcon = () => (
     <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z" />
   </svg>
 )
-
-const btnClass =
-  "mt-2 w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
 
 type PhoneForm = { phone_number: string }
 type DetailsForm = {
@@ -34,15 +40,17 @@ export default function RegisterPage() {
   const [step, setStep] = useState<Step>("phone")
   const [phone, setPhone] = useState("")
   const [registerToken, setRegisterToken] = useState("")
-  const [botClicked, setBotClicked] = useState(false)
+  const [botClickedPhone, setBotClickedPhone] = useState("")
 
   const phoneForm = useForm<PhoneForm>()
   const detailsForm = useForm<DetailsForm>()
 
-  const phoneValue = phoneForm.watch("phone_number") || ""
+  const phoneValue =
+    useWatch({ control: phoneForm.control, name: "phone_number" }) || ""
+  const botClicked = botClickedPhone === phoneValue
   const isPhoneValid = PHONE_PATTERN.test(phoneValue)
 
-  const { data: phoneCheck } = useQuery({
+  const { data: phoneCheck, isFetching: isCheckingPhone } = useQuery({
     queryKey: ["check-phone", phoneValue],
     queryFn: () => AuthApi.checkPhone(phoneValue),
     enabled: isPhoneValid,
@@ -50,9 +58,8 @@ export default function RegisterPage() {
   })
 
   useEffect(() => {
-    setBotClicked(false)
-    if (phoneCheck?.data.exists) navigate("/login")
-  }, [phoneValue, phoneCheck, navigate])
+    if (phoneCheck?.data.exists) navigate(ROUTES.LOGIN, { state: { phone: phoneValue } })
+  }, [phoneCheck, navigate])
 
   const onRegisterToken = useCallback(
     (token: string) => {
@@ -80,7 +87,7 @@ export default function RegisterPage() {
           already_registered?: boolean
         }
         if (data.already_registered) {
-          navigate("/login")
+          navigate(ROUTES.LOGIN, { state: { phone: phoneValue, alreadyRegistered: true } })
         } else if (data.register_token) {
           onRegisterToken(data.register_token)
         }
@@ -93,6 +100,15 @@ export default function RegisterPage() {
 
     return () => ws.close()
   }, [step, isPhoneValid, phoneValue, botClicked, onRegisterToken])
+
+  const shopName =
+    useWatch({ control: detailsForm.control, name: "shop_name" }) || ""
+  const pw = useWatch({ control: detailsForm.control, name: "password" })
+
+  useEffect(() => {
+    const cleaned = shopName.replace(/[^a-zA-Z\s]/g, "")
+    if (cleaned !== shopName) detailsForm.setValue("shop_name", cleaned)
+  }, [shopName, detailsForm])
 
   const register = useMutation({
     mutationFn: ({ first_name, last_name, shop_name, password }: DetailsForm) =>
@@ -127,6 +143,11 @@ export default function RegisterPage() {
               name="phone_number"
               label="Telefon raqam"
               required
+              labelRight={
+                isCheckingPhone ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : null
+              }
               rules={{
                 pattern: {
                   value: PHONE_PATTERN,
@@ -134,7 +155,7 @@ export default function RegisterPage() {
                 },
               }}
             >
-              <Input type="tel" placeholder="+998 90 123 45 67" />
+              <PhoneInput placeholder="90 123 45 67" />
             </FormControl>
 
             <div className="rounded-xl border border-border bg-muted p-4">
@@ -146,22 +167,23 @@ export default function RegisterPage() {
                 <li>2. Botda telefon raqamingizni ulashing</li>
                 <li>3. Tasdiqlanishi bilan avtomatik davom etadi</li>
               </ol>
-              {isPhoneValid ? (
-                <a
-                  href={`https://t.me/osonapp_bot?start=${phoneValue.replace(/\D/g, "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => setBotClicked(true)}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#229ED9] py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              {isPhoneValid && !isCheckingPhone ? (
+                <Button
+                  className="w-full bg-[#229ED9] text-white hover:bg-[#229ED9]/90"
+                  onClick={() => {
+                    setBotClickedPhone(phoneValue)
+                    const tab = window.open(`https://t.me/osonapp_bot?start=${phoneValue.replace(/\D/g, "")}`, "_blank")
+                    if (tab) setTimeout(() => tab.close(), 2000)
+                  }}
                 >
                   <TelegramIcon />
                   @osonapp_bot ga o'tish
-                </a>
+                </Button>
               ) : (
-                <span className="flex w-full cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-[#229ED9] py-2.5 text-sm font-semibold text-white opacity-40">
+                <Button disabled className="w-full bg-[#229ED9] text-white">
                   <TelegramIcon />
                   @osonapp_bot ga o'tish
-                </span>
+                </Button>
               )}
             </div>
 
@@ -173,15 +195,11 @@ export default function RegisterPage() {
           </form>
         </FormProvider>
 
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          Akkauntingiz bormi?{" "}
-          <Link
-            to="/login"
-            className="text-primary transition-colors hover:text-primary/80"
-          >
-            Kirish
-          </Link>
-        </p>
+        <AuthRedirectLink
+          text="Akkauntingiz bormi?"
+          linkText="Kirish"
+          to={ROUTES.LOGIN}
+        />
       </AuthLayout>
     )
   }
@@ -191,8 +209,6 @@ export default function RegisterPage() {
     register.error,
     "Ro'yxatdan o'tishda xatolik yuz berdi"
   )
-  const pw = detailsForm.watch("password")
-
   return (
     <AuthLayout>
       <div className="mb-8">
@@ -225,8 +241,9 @@ export default function RegisterPage() {
             name="shop_name"
             label="Do'kon nomi"
             required
+            rules={shopNameRules}
           >
-            <Input placeholder="Mening do'konim" autoComplete="off" />
+            <Input placeholder="Mening dokonim" autoComplete="off" />
           </FormControl>
 
           <FormControl<DetailsForm>
@@ -250,7 +267,7 @@ export default function RegisterPage() {
           >
             <Input
               type="password"
-              placeholder="••••••••"
+              placeholder="Kamida 8 ta belgi"
               autoComplete="new-password"
             />
           </FormControl>
@@ -261,25 +278,21 @@ export default function RegisterPage() {
             </p>
           )}
 
-          <button
+          <Button
             type="submit"
             disabled={register.isPending}
-            className={btnClass}
+            className="mt-2 w-full"
           >
             {register.isPending ? "Yaratilmoqda..." : "Ro'yxatdan o'tish"}
-          </button>
+          </Button>
         </form>
       </FormProvider>
 
-      <p className="mt-6 text-center text-sm text-muted-foreground">
-        Akkauntingiz bormi?{" "}
-        <Link
-          to="/login"
-          className="text-primary transition-colors hover:text-primary/80"
-        >
-          Kirish
-        </Link>
-      </p>
+      <AuthRedirectLink
+        text="Akkauntingiz bormi?"
+        linkText="Kirish"
+        to={ROUTES.LOGIN}
+      />
     </AuthLayout>
   )
 }

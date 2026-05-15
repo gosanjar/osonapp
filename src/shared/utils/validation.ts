@@ -1,5 +1,13 @@
 export const PHONE_PATTERN = /^\+?998\s?\d{2}\s?\d{3}\s?\d{2}\s?\d{2}$/
 
+export const shopNameRules = {
+  pattern: {
+    value: /^[a-zA-Z\s]+$/,
+    message: "Faqat harflar bo'lishi kerak",
+  },
+  minLength: { value: 2, message: "Kamida 2 ta belgi bo'lishi kerak" },
+}
+
 export const passwordRules = {
   minLength: { value: 8, message: "Kamida 8 ta belgi bo'lishi kerak" },
   validate: {

@@ -22,6 +22,7 @@ interface ChildProps {
 interface FormControlProps<T extends FieldValues> {
   name: Path<T>
   label?: string
+  labelRight?: React.ReactNode
   required?: boolean
   rules?: RegisterOptions<T, Path<T>>
   className?: string
@@ -31,6 +32,7 @@ interface FormControlProps<T extends FieldValues> {
 export function FormControl<T extends FieldValues>({
   name,
   label,
+  labelRight,
   required,
   rules,
   className,
@@ -49,10 +51,13 @@ export function FormControl<T extends FieldValues>({
       render={({ field, fieldState: { error } }) => (
         <div className={cn("flex flex-col gap-1.5", className)}>
           {label && (
-            <Label htmlFor={name}>
-              {label}
-              {required && <span className="text-destructive">*</span>}
-            </Label>
+            <div className="flex items-center gap-2">
+              <Label htmlFor={name}>
+                {label}
+                {required && <span className="text-destructive">*</span>}
+              </Label>
+              {labelRight}
+            </div>
           )}
           {cloneElement(children, {
             ...field,

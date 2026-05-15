@@ -42,7 +42,7 @@ function StatCard({
 }) {
   return (
     <Card className="w-full">
-      <CardContent className="pt-4">
+      <CardContent>
         <Flex justify="between" align="start" className="mb-2 w-full">
           <span className="text-sm text-muted-foreground">{title}</span>
           <PeriodSelect options={periodOptions} />
@@ -70,7 +70,7 @@ function SessionChartCard({
 }) {
   return (
     <Card className="w-full">
-      <CardContent className="pt-4">
+      <CardContent>
         <Flex justify="between" align="center" className="mb-4 w-full">
           <Flex align="center" gap={2}>
             <Icon size={18} className={color} />
@@ -90,7 +90,7 @@ function SessionChartCard({
 function TableCard({ title }: { title: string }) {
   return (
     <Card className="w-full">
-      <CardContent className="pt-4">
+      <CardContent>
         <Flex justify="between" align="center" className="mb-4 w-full">
           <span className="text-sm text-muted-foreground">{title}</span>
           <PeriodSelect />

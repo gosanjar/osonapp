@@ -73,7 +73,11 @@ const MainLayout = () => {
           className="h-full w-full overflow-y-auto p-4"
         >
           <Suspense
-            fallback={<Icon icon={Loading03Icon} className="animate-spin" />}
+            fallback={
+              <div className="flex flex-1 w-full items-center justify-center">
+                <Icon icon={Loading03Icon} className="animate-spin" />
+              </div>
+            }
           >
             <Outlet />
             <Flex justify="between" className="mt-auto w-full text-sm">

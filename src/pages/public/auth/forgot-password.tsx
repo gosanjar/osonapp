@@ -1,9 +1,11 @@
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import { useForm, FormProvider } from "react-hook-form"
+import { useNavigate } from "react-router-dom"
+import { AuthRedirectLink } from "./components/auth-redirect-link"
+import { ROUTES } from "@/shared/config/routes"
+import { useForm, useWatch, FormProvider } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import AuthLayout from "./layout"
-import { AuthApi } from "@/shared/api/auth"
+import { AuthApi } from "@/entities/auth/api"
 import { OtpStep } from "@/shared/components/otp-step"
 import { Input } from "@/shared/ui/input"
 import { FormControl } from "@/shared/ui/form-control"
@@ -46,7 +48,7 @@ export default function ForgotPasswordPage() {
   const resetPassword = useMutation({
     mutationFn: (new_password: string) =>
       AuthApi.resetPassword(phone, resetToken, new_password),
-    onSuccess: () => navigate("/login"),
+    onSuccess: () => navigate(ROUTES.LOGIN),
   })
 
   if (step === "phone") {
@@ -98,15 +100,11 @@ export default function ForgotPasswordPage() {
           </form>
         </FormProvider>
 
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          Esladingizmi?{" "}
-          <Link
-            to="/login"
-            className="text-primary transition-colors hover:text-primary/80"
-          >
-            Kirish
-          </Link>
-        </p>
+        <AuthRedirectLink
+          text="Esladingizmi?"
+          linkText="Kirish"
+          to={ROUTES.LOGIN}
+        />
       </AuthLayout>
     )
   }
@@ -130,7 +128,7 @@ export default function ForgotPasswordPage() {
 
   // step === "reset"
   const errorMsg = getApiError(resetPassword.error, "Xatolik yuz berdi")
-  const pw = resetForm.watch("new_password")
+  const pw = useWatch({ control: resetForm.control, name: "new_password" })
 
   return (
     <AuthLayout>

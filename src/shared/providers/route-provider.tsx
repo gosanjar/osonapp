@@ -35,9 +35,15 @@ export const Routes = () => {
       fallback={
         <Flex
           direction="column"
-          className="h-screen w-screen items-center justify-center"
+          align="center"
+          justify="center"
+          className="h-screen w-screen"
         >
-          <HugeiconsIcon icon={Loading03Icon} size={32} />
+          <HugeiconsIcon
+            icon={Loading03Icon}
+            size={32}
+            className="animate-spin"
+          />
         </Flex>
       }
     >
