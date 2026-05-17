@@ -1,15 +1,7 @@
 import { useState } from "react"
 import { Trash2 } from "lucide-react"
 import { Button } from "@/shared/ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/shared/ui/dialog"
+import Modal from "./modal"
 
 type DeleteConfirmDialogProps = {
   onConfirm: () => void
@@ -20,21 +12,19 @@ export function DeleteConfirmDialog({ onConfirm, isPending }: DeleteConfirmDialo
   const [open, setOpen] = useState(false)
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <button className="flex items-center gap-1.5 text-sm font-medium text-destructive hover:text-destructive/80">
+    <Modal
+      open={open}
+      onOpenChange={setOpen}
+      trigger={
+        <Button variant="ghost" className="flex items-center gap-1.5 text-sm font-medium text-destructive hover:text-destructive/80">
           <Trash2 size={14} />
           O'chirish
-        </button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>O'chirishni tasdiqlang</DialogTitle>
-          <DialogDescription>
-            Bu amalni qaytarib bo'lmaydi. Ma'lumot butunlay o'chirib tashlanadi.
-          </DialogDescription>
-        </DialogHeader>
-        <DialogFooter>
+        </Button>
+      }
+      title="O'chirishni tasdiqlang"
+      description="Bu amalni qaytarib bo'lmaydi. Ma'lumot butunlay o'chirib tashlanadi."
+      footer={
+        <>
           <Button variant="outline" onClick={() => setOpen(false)}>
             Bekor qilish
           </Button>
@@ -45,8 +35,8 @@ export function DeleteConfirmDialog({ onConfirm, isPending }: DeleteConfirmDialo
           >
             {isPending ? "O'chirilmoqda..." : "O'chirish"}
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </>
+      }
+    />
   )
 }

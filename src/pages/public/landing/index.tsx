@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
 import PublicNav from "../nav"
 import PublicFooter from "../footer"
+import { Button } from "@/shared/ui/button"
 
 const TABS = [
   {
@@ -503,8 +504,10 @@ export default function LandingPage() {
             {/* Tab strip */}
             <div className="mb-10 flex flex-wrap justify-center gap-2">
               {TABS.map((tab, i) => (
-                <button
+                <Button
                   key={tab.id}
+                  type="button"
+                  variant="ghost"
                   onClick={() => setActiveTab(i)}
                   className={`rounded-full px-5 py-2.5 text-sm font-medium transition-all ${
                     activeTab === i
@@ -513,7 +516,7 @@ export default function LandingPage() {
                   }`}
                 >
                   {tab.label}
-                </button>
+                </Button>
               ))}
             </div>
             {/* Tab content */}
@@ -692,13 +695,17 @@ export default function LandingPage() {
               </p>
               {/* Toggle */}
               <div className="inline-flex items-center gap-3 rounded-full border border-border bg-background p-1.5">
-                <button
+                <Button
+                  type="button"
+                  variant="ghost"
                   onClick={() => setAnnual(false)}
                   className={`rounded-full px-5 py-2 text-sm font-medium transition-all ${!annual ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
                 >
                   Oylik
-                </button>
-                <button
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
                   onClick={() => setAnnual(true)}
                   className={`rounded-full px-5 py-2 text-sm font-medium transition-all ${annual ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
                 >
@@ -706,7 +713,7 @@ export default function LandingPage() {
                   <span className="ml-1 text-xs font-semibold text-emerald-500">
                     −20%
                   </span>
-                </button>
+                </Button>
               </div>
             </div>
             <div className="grid items-start gap-6 md:grid-cols-3 lg:gap-8">

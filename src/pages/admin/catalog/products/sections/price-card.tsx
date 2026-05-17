@@ -1,8 +1,7 @@
-import { useMemo, useState } from "react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card"
+import { useMemo } from "react"
+import { useFormContext } from "react-hook-form"
+import Card from "@shared/card"
 import { Input } from "@/shared/ui/input"
-import { Label } from "@/shared/ui/label"
-import { Checkbox } from "@/shared/ui/checkbox"
 import { Separator } from "@/shared/ui/separator"
 import {
   InputGroup,
@@ -10,99 +9,73 @@ import {
   InputGroupInput,
   InputGroupText,
 } from "@/shared/ui/input-group"
-import Flex from "@/shared/ui/flex"
+import { FormControl } from "@shared/form-control"
+import Flex from "@shared/flex"
+import type { ProductFormData } from "../create"
 
 export default function PriceCard() {
-  const [sale, setSale] = useState(0)
-  const [cost, setCost] = useState(0)
-  const [tax, setTax] = useState(false)
+  const { watch } = useFormContext<ProductFormData>()
+  const price = Number(watch("price")) || 0
+  const cost = Number(watch("cost")) || 0
 
-  const profit = useMemo(() => sale - cost, [sale, cost])
-
-  const margin = useMemo(() => {
-    if (!sale) return 0
-    return (profit / sale) * 100
-  }, [profit, sale])
+  const profit = useMemo(() => price - cost, [price, cost])
+  const margin = useMemo(() => (price ? (profit / price) * 100 : 0), [profit, price])
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle>Narxlar</CardTitle>
-      </CardHeader>
+    <Card title="Narxlar" gap={4}>
+      <div className="grid w-full grid-cols-2 gap-4">
+        <FormControl<ProductFormData> name="price" label="Sotuv narxi" required>
+          <InputGroup>
+            <InputGroupAddon>
+              <InputGroupText>UZS</InputGroupText>
+            </InputGroupAddon>
+            <InputGroupInput type="number" placeholder="0" />
+          </InputGroup>
+        </FormControl>
 
-      <CardContent>
-        <Flex className="w-full" direction="column" gap={4}>
-          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2">
-            <Flex direction="column">
-              <Label>Sotuv narxi</Label>
-              <InputGroup>
-                <InputGroupAddon>
-                  <InputGroupText>UZS</InputGroupText>
-                </InputGroupAddon>
-                <InputGroupInput
-                  value={sale}
-                  onChange={(e) => setSale(Number(e.target.value))}
-                  placeholder="0.00"
-                />
-              </InputGroup>
-            </Flex>
+        <FormControl<ProductFormData> name="compare_price" label="Solishtirish narxi">
+          <InputGroup>
+            <InputGroupAddon>
+              <InputGroupText>UZS</InputGroupText>
+            </InputGroupAddon>
+            <InputGroupInput type="number" placeholder="0" />
+          </InputGroup>
+        </FormControl>
+      </div>
 
-            <Flex direction="column">
-              <Label>Solishtirish narxi</Label>
-              <InputGroup>
-                <InputGroupAddon>
-                  <InputGroupText>UZS</InputGroupText>
-                </InputGroupAddon>
-                <InputGroupInput placeholder="0.00" />
-              </InputGroup>
-            </Flex>
-          </div>
+      <Separator />
 
-          <div className="flex w-full items-center gap-2 rounded-md bg-muted p-3">
-            <Checkbox checked={tax} onCheckedChange={(v) => setTax(!!v)} />
-            <Label>Ushbu mahsulotdan soliq undirish</Label>
-          </div>
+      <div className="grid w-full grid-cols-3 gap-4">
+        <FormControl<ProductFormData> name="cost" label="Tannarx">
+          <InputGroup>
+            <InputGroupAddon>
+              <InputGroupText>UZS</InputGroupText>
+            </InputGroupAddon>
+            <InputGroupInput type="number" placeholder="0" />
+          </InputGroup>
+        </FormControl>
 
-          <Separator />
-
-          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-3">
-            <Flex direction="column">
-              <Label>Tannarx</Label>
-              <InputGroup>
-                <InputGroupAddon>
-                  <InputGroupText>UZS</InputGroupText>
-                </InputGroupAddon>
-                <InputGroupInput
-                  value={cost}
-                  onChange={(e) => setCost(Number(e.target.value))}
-                  placeholder="0.00"
-                />
-              </InputGroup>
-            </Flex>
-
-            <Flex direction="column">
-              <Label>Foyda</Label>
-              <InputGroup>
-                <InputGroupAddon>
-                  <InputGroupText>UZS</InputGroupText>
-                </InputGroupAddon>
-                <InputGroupInput value={profit} disabled />
-              </InputGroup>
-              <p className="text-xs text-muted-foreground">
-                {profit > 0 ? "Ijobiy" : "Salbiy"}
-              </p>
-            </Flex>
-
-            <Flex direction="column">
-              <Label>Marja</Label>
-              <Input value={`${margin.toFixed(0)}%`} disabled />
-              <p className="text-xs text-muted-foreground">
-                {margin > 50 ? "Rentabel" : "Oddiy"}
-              </p>
-            </Flex>
-          </div>
+        <Flex direction="column" gap={1}>
+          <span className="text-sm font-medium">Foyda</span>
+          <InputGroup>
+            <InputGroupAddon>
+              <InputGroupText>UZS</InputGroupText>
+            </InputGroupAddon>
+            <InputGroupInput value={profit.toLocaleString()} disabled />
+          </InputGroup>
+          <p className="text-xs text-muted-foreground">
+            {profit >= 0 ? "Ijobiy" : "Salbiy"}
+          </p>
         </Flex>
-      </CardContent>
+
+        <Flex direction="column" gap={1}>
+          <span className="text-sm font-medium">Marja</span>
+          <Input value={`${margin.toFixed(0)}%`} disabled />
+          <p className="text-xs text-muted-foreground">
+            {margin >= 50 ? "Rentabel" : "Oddiy"}
+          </p>
+        </Flex>
+      </div>
     </Card>
   )
 }

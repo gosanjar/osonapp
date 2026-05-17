@@ -6,8 +6,8 @@ import {
   type Path,
   type RegisterOptions,
 } from "react-hook-form"
-import { Label } from "./label"
-import { FieldError } from "./field"
+import { Label } from "@/shared/ui/label"
+import { FieldError } from "@/shared/ui/field"
 import { PhoneInput } from "./phone-input"
 import { cn } from "@utils/utils"
 

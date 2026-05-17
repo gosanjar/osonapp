@@ -1,38 +1,37 @@
-import { Button } from "@/shared/ui/button"
-import { Card, CardContent, CardHeader } from "@/shared/ui/card"
-import Editor from "@/shared/ui/editor"
-import Flex from "@/shared/ui/flex"
+import Card from "@shared/card"
 import { Input } from "@/shared/ui/input"
-import { Sparkles } from "lucide-react"
+import { Textarea } from "@/shared/ui/textarea"
+import { FormControl } from "@shared/form-control"
+import type { ProductFormData } from "../create"
 
 export default function MainCard() {
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <span className="text-base font-semibold">Asosiy ma'lumotlar</span>
-      </CardHeader>
-      <CardContent>
-        <Flex direction="column" gap={4} className="w-full">
-          <Input
-            placeholder="Masalan: Samsung Galaxy S23 smartfoni"
-            label="O'zbek tilida nomi"
-          />
-          <Input
-            placeholder="Masalan: Samsung Galaxy S23 smartfoni"
-            label="Rus tilida nomi"
-          />
-          <Flex direction="column" className="w-full">
-            <Flex align="center" justify="between" className="w-full">
-              <span>Tavsif</span>
-              <Button variant="outline">
-                <Sparkles />
-                AI Tavsif
-              </Button>
-            </Flex>
-            <Editor />
-          </Flex>
-        </Flex>
-      </CardContent>
+    <Card title="Asosiy ma'lumotlar" gap={4}>
+      <FormControl<ProductFormData>
+        name="title.uz"
+        label="O'zbek tilida nomi"
+        required
+      >
+        <Input placeholder="Masalan: Samsung Galaxy S23 smartfoni" />
+      </FormControl>
+
+      <FormControl<ProductFormData> name="title.ru" label="Rus tilida nomi">
+        <Input placeholder="Например: Смартфон Samsung Galaxy S23" />
+      </FormControl>
+
+      <FormControl<ProductFormData>
+        name="description.uz"
+        label="Tavsif (O'zbek)"
+      >
+        <Textarea placeholder="Mahsulot tavsifi..." rows={4} />
+      </FormControl>
+
+      <FormControl<ProductFormData>
+        name="description.ru"
+        label="Tavsif (Rus)"
+      >
+        <Textarea placeholder="Описание продукта..." rows={4} />
+      </FormControl>
     </Card>
   )
 }

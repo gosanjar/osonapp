@@ -1,5 +1,4 @@
 import MainLayout from "@/layouts/main-layout"
-import { AuthGuard } from "@/shared/components/auth-guard"
 import { lazy } from "react"
 import { Navigate, type RouteObject } from "react-router-dom"
 import { ROUTES } from "../config/routes"
@@ -8,16 +7,35 @@ import {
   isMainDomain,
   isShopDomain,
 } from "../providers/route-provider"
+import { AuthGuard } from "@shared/auth-guard"
 
 const mainDomainRoutes = (): RouteObject[] => [
   { index: true, Component: lazy(() => import("@/pages/public/landing")) },
-  { path: ROUTES.LOGIN, Component: lazy(() => import("@/pages/public/auth/login")) },
-  { path: ROUTES.REGISTER, Component: lazy(() => import("@/pages/public/auth/register")) },
-  { path: ROUTES.FORGOT_PASSWORD, Component: lazy(() => import("@/pages/public/auth/forgot-password")) },
-  { path: ROUTES.RESET_PASSWORD, Component: lazy(() => import("@/pages/public/auth/reset-password")) },
-  { path: ROUTES.PRICING, Component: lazy(() => import("@/pages/public/pricing")) },
+  {
+    path: ROUTES.LOGIN,
+    Component: lazy(() => import("@/pages/public/auth/login")),
+  },
+  {
+    path: ROUTES.REGISTER,
+    Component: lazy(() => import("@/pages/public/auth/register")),
+  },
+  {
+    path: ROUTES.FORGOT_PASSWORD,
+    Component: lazy(() => import("@/pages/public/auth/forgot-password")),
+  },
+  {
+    path: ROUTES.RESET_PASSWORD,
+    Component: lazy(() => import("@/pages/public/auth/reset-password")),
+  },
+  {
+    path: ROUTES.PRICING,
+    Component: lazy(() => import("@/pages/public/pricing")),
+  },
   { path: ROUTES.BLOG, Component: lazy(() => import("@/pages/public/blog")) },
-  { path: ROUTES.FOR_NICHE, Component: lazy(() => import("@/pages/public/niche")) },
+  {
+    path: ROUTES.FOR_NICHE,
+    Component: lazy(() => import("@/pages/public/niche")),
+  },
 ]
 
 const appDomainRoutes = (): RouteObject[] => [
@@ -300,15 +318,21 @@ const appDomainRoutes = (): RouteObject[] => [
             children: [
               {
                 path: ROUTES.MANAGEMENT_EMPLOYEES,
-                Component: lazy(() => import("@pages/admin/management/employees")),
+                Component: lazy(
+                  () => import("@pages/admin/management/employees")
+                ),
               },
               {
                 path: ROUTES.MANAGEMENT_EMPLOYEES_CREATE,
-                Component: lazy(() => import("@pages/admin/management/employees/create")),
+                Component: lazy(
+                  () => import("@pages/admin/management/employees/create")
+                ),
               },
               {
                 path: ROUTES.MANAGEMENT_EMPLOYEES_EDIT,
-                Component: lazy(() => import("@pages/admin/management/employees/create")),
+                Component: lazy(
+                  () => import("@pages/admin/management/employees/create")
+                ),
               },
               {
                 path: ROUTES.MANAGEMENT_ROLES,
@@ -316,11 +340,15 @@ const appDomainRoutes = (): RouteObject[] => [
               },
               {
                 path: ROUTES.MANAGEMENT_ROLES_CREATE,
-                Component: lazy(() => import("@pages/admin/management/roles/create")),
+                Component: lazy(
+                  () => import("@pages/admin/management/roles/create")
+                ),
               },
               {
                 path: ROUTES.MANAGEMENT_ROLES_EDIT,
-                Component: lazy(() => import("@pages/admin/management/roles/create")),
+                Component: lazy(
+                  () => import("@pages/admin/management/roles/create")
+                ),
               },
             ],
           },
@@ -345,9 +373,21 @@ const shopDomainRoutes = (): RouteObject[] => {
 }
 
 const router = (): RouteObject[] => {
-  if (isMainDomain) return [...mainDomainRoutes(), { path: "*", Component: lazy(() => import("@/features/not-found")) }]
-  if (isAppDomain) return [...appDomainRoutes(), { path: "*", Component: lazy(() => import("@/features/not-found")) }]
-  if (isShopDomain) return [...shopDomainRoutes(), { path: "*", Component: lazy(() => import("@/features/not-found")) }]
+  if (isMainDomain)
+    return [
+      ...mainDomainRoutes(),
+      { path: "*", Component: lazy(() => import("@/features/not-found")) },
+    ]
+  if (isAppDomain)
+    return [
+      ...appDomainRoutes(),
+      { path: "*", Component: lazy(() => import("@/features/not-found")) },
+    ]
+  if (isShopDomain)
+    return [
+      ...shopDomainRoutes(),
+      { path: "*", Component: lazy(() => import("@/features/not-found")) },
+    ]
   return [{ path: "*", Component: lazy(() => import("@/features/not-found")) }]
 }
 

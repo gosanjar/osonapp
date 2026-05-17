@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Input } from "./input"
+import { Input } from "@/shared/ui/input"
 
 interface PhoneInputProps extends Omit<
   React.ComponentProps<"input">,

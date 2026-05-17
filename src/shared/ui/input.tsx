@@ -1,16 +1,17 @@
 import * as React from "react"
+import type { ReactNode } from "react"
 
 import { cn } from "@utils/utils"
-import Flex from "./flex"
+import Flex from "@shared/flex"
 
 function Input({
   className,
   type,
   label,
   ...props
-}: React.ComponentProps<"input"> & { label?: string }) {
+}: React.ComponentProps<"input"> & { label?: ReactNode }) {
   return (
-    <Flex direction="column" className="w-full">
+    <Flex direction="column">
       {label && <label>{label}</label>}
       <input
         type={type}

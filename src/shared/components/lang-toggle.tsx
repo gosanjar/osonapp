@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react"
 import { Globe, ChevronDown, Check } from "lucide-react"
+import { Button } from "@/shared/ui/button"
 
 type LangCode = "uz" | "ru"
 
@@ -36,7 +37,9 @@ const LangToggle = () => {
 
   return (
     <div ref={ref} className="relative">
-      <button
+      <Button
+        type="button"
+        variant="ghost"
         onClick={() => setOpen(!open)}
         className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
       >
@@ -47,14 +50,16 @@ const LangToggle = () => {
           strokeWidth={2}
           className={`transition-transform ${open ? "rotate-180" : ""}`}
         />
-      </button>
+      </Button>
 
       {open && (
         <div className="absolute top-full right-0 z-50 mt-1.5 w-44 overflow-hidden rounded-xl border border-border bg-background shadow-lg shadow-black/10">
           <div className="py-1">
             {LANGUAGES.map((l) => (
-              <button
+              <Button
                 key={l.code}
+                type="button"
+                variant="ghost"
                 onClick={() => { setLang(l.code); setOpen(false) }}
                 className="flex w-full items-center gap-3 px-4 py-2.5 text-sm transition-colors hover:bg-muted"
               >
@@ -67,7 +72,7 @@ const LangToggle = () => {
                 {l.code === lang && (
                   <Check size={16} strokeWidth={2} className="ml-auto text-primary" />
                 )}
-              </button>
+              </Button>
             ))}
           </div>
         </div>

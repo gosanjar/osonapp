@@ -6,6 +6,7 @@ interface FlexProps extends React.HTMLAttributes<HTMLDivElement> {
   justify?: "start" | "center" | "end" | "between" | "around" | "evenly"
   wrap?: "wrap" | "nowrap" | "wrap-reverse"
   gap?: number
+  full?: boolean
   children: React.ReactNode
 }
 
@@ -32,6 +33,7 @@ const Flex = ({
   justify = "start",
   wrap = "nowrap",
   gap = 2.5,
+  full = true,
   className,
   children,
   ...props
@@ -45,6 +47,7 @@ const Flex = ({
         justifyContent: justifyMap[justify],
         flexWrap: wrap,
         gap: gap * 4,
+        ...(full && { width: "100%" }),
       }}
       className={cn(className)}
       {...props}

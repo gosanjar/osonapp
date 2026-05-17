@@ -1,7 +1,8 @@
 import type { Employee } from "@/entities/employees/types"
-import StatusBadge from "@/shared/components/status-badge"
-import { DeleteConfirmDialog } from "@/shared/components/delete-confirm-dialog"
+import StatusBadge from "@shared/status-badge"
+import { DeleteConfirmDialog } from "@shared/delete-confirm-dialog"
 import { DataTableColumnHeader } from "@/shared/ui/data-table/data-table-column-header"
+import Flex from "@shared/flex"
 import { type ColumnDef } from "@tanstack/react-table"
 import { Link } from "react-router-dom"
 import { ROUTES } from "@/shared/config/routes"
@@ -39,7 +40,7 @@ export function getColumns({ onDelete, isDeleting }: Options): ColumnDef<Employe
     {
       id: "actions",
       cell: ({ row }) => (
-        <div className="flex items-center gap-4">
+        <Flex align="center" gap={4} full={false}>
           <Link
             to={ROUTES.MANAGEMENT_EMPLOYEES_EDIT.replace(":id", row.original.id)}
             className="flex items-center gap-1.5 text-sm font-medium text-orange-500 hover:text-orange-600"
@@ -51,7 +52,7 @@ export function getColumns({ onDelete, isDeleting }: Options): ColumnDef<Employe
             onConfirm={() => onDelete(row.original.id)}
             isPending={isDeleting}
           />
-        </div>
+        </Flex>
       ),
     },
   ]

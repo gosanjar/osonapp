@@ -1,6 +1,6 @@
 import type { Customer } from "@/entities/customer/types"
 import { DataTable } from "@/shared/ui/data-table/data-table"
-import Flex from "@/shared/ui/flex"
+import Flex from "@shared/flex"
 import { useParams } from "react-router-dom"
 import { segmentViewColumns } from "./columns"
 
@@ -18,7 +18,7 @@ const SegmentView = () => {
   const name = (id && mockSegmentNames[id]) ?? "Segment"
 
   return (
-    <Flex direction="column" className="w-full" gap={4}>
+    <Flex direction="column" gap={4}>
       <h1 className="text-2xl font-bold">{name}</h1>
 
       <DataTable<Customer, unknown>

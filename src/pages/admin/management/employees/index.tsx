@@ -1,8 +1,8 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { EmployeesApi } from "@/entities/employees/api"
 import { DataTable } from "@/shared/ui/data-table/data-table"
-import Flex from "@/shared/ui/flex"
-import AddButton from "@/shared/ui/predefined/add-button"
+import Flex from "@shared/flex"
+import AddButton from "@shared/predefined/add-button"
 import { ROUTES } from "@/shared/config/routes"
 import { getColumns } from "./columns"
 
@@ -22,8 +22,8 @@ const EmployeesPage = () => {
   const employees = data?.data?.results ?? []
 
   return (
-    <Flex direction="column" className="w-full">
-      <Flex justify="between" align="center" className="w-full">
+    <Flex direction="column">
+      <Flex justify="between" align="center">
         <h1 className="text-xl font-semibold">Xodimlar</h1>
         <AddButton to={ROUTES.MANAGEMENT_EMPLOYEES_CREATE} />
       </Flex>

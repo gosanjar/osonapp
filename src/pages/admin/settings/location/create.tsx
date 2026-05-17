@@ -1,10 +1,8 @@
 import { useForm } from "react-hook-form"
 import { Input } from "@/shared/ui/input"
-import { Label } from "@/shared/ui/label"
-import Flex from "@/shared/ui/flex"
-import StatusCard from "@/shared/components/status-card"
-import CreateLayout from "@/shared/components/create-layout"
-import FormCard from "@/shared/components/form-card"
+import StatusCard from "@shared/status-card"
+import CreateLayout from "@shared/create-layout"
+import Card from "@shared/card"
 
 type BranchForm = {
   name: string
@@ -22,27 +20,31 @@ const LocationCreate = () => {
   return (
     <CreateLayout form={form} title="Filiallar">
       <div className="grid w-full grid-cols-[1fr_280px] items-start gap-4">
-        <FormCard title="Umumiy">
-          <Flex direction="column" gap={4} className="w-full">
-            <Label>Nomi <span className="text-destructive">*</span></Label>
-            <Input {...form.register("name")} className="w-full" />
-          </Flex>
+        <Card title="Umumiy" gap={4}>
+          <Input
+            label={<>Nomi <span className="text-destructive">*</span></>}
+            {...form.register("name")}
+            className="w-full"
+          />
 
-          <Flex direction="column" gap={4} className="w-full">
-            <Label>Manzil <span className="text-destructive">*</span></Label>
-            <Input {...form.register("address")} className="w-full" />
-          </Flex>
+          <Input
+            label={<>Manzil <span className="text-destructive">*</span></>}
+            {...form.register("address")}
+            className="w-full"
+          />
 
-          <Flex direction="column" gap={4} className="w-full">
-            <Label>Uy, ofis</Label>
-            <Input {...form.register("office")} className="w-full" />
-          </Flex>
+          <Input
+            label="Uy, ofis"
+            {...form.register("office")}
+            className="w-full"
+          />
 
-          <Flex direction="column" gap={4} className="w-full">
-            <Label>Shahar <span className="text-destructive">*</span></Label>
-            <Input {...form.register("city")} className="w-full" />
-          </Flex>
-        </FormCard>
+          <Input
+            label={<>Shahar <span className="text-destructive">*</span></>}
+            {...form.register("city")}
+            className="w-full"
+          />
+        </Card>
 
         <StatusCard description="Filial holatini belgilang." />
       </div>

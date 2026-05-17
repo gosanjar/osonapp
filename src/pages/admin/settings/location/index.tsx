@@ -1,11 +1,11 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Flex from "@/shared/ui/flex"
+import Flex from "@shared/flex"
 import { ROUTES } from "@/shared/config/routes"
 import { DataTable } from "@/shared/ui/data-table/data-table"
 import { createColumns, type Branch } from "./columns"
-import { AddButton } from "@/shared/ui/predefined"
-import PageHeader from "@/shared/components/page-header"
+import { AddButton } from "@shared/predefined"
+import PageHeader from "@shared/page-header"
 
 const mockBranches: Branch[] = [
   {
@@ -32,7 +32,7 @@ const LocationSettings = () => {
   )
 
   return (
-    <Flex direction="column" className="w-full" gap={4}>
+    <Flex direction="column" gap={4}>
       <PageHeader title="Filiallar">
         <AddButton to={ROUTES.SETTINGS_LOCATION_CREATE} />
       </PageHeader>

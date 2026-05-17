@@ -1,6 +1,6 @@
-import Flex from "@/shared/ui/flex"
-import AddButton from "@/shared/ui/predefined/add-button"
-import StatusBadge from "@/shared/components/status-badge"
+import Flex from "@shared/flex"
+import AddButton from "@shared/predefined/add-button"
+import StatusBadge from "@shared/status-badge"
 import { Button } from "@/shared/ui/button"
 import { Eye, Pencil, Filter, Users } from "lucide-react"
 import { useNavigate } from "react-router-dom"
@@ -63,8 +63,8 @@ const Segments = () => {
   const navigate = useNavigate()
 
   return (
-    <Flex direction="column" gap={4} className="w-full">
-      <Flex justify="between" align="center" className="w-full">
+    <Flex direction="column" gap={4}>
+      <Flex justify="between" align="center">
         <h1 className="text-2xl font-bold">Segmentlar</h1>
         <AddButton to={ROUTES.CUSTOMERS_SEGMENTS_CREATE} />
       </Flex>
@@ -75,7 +75,7 @@ const Segments = () => {
             key={segment.id}
             align="center"
             justify="between"
-            className="w-full px-4 py-3"
+            className="px-4 py-3"
           >
             <Flex align="center" gap={3}>
               <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-muted">

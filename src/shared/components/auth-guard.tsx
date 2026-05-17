@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom"
 import { useAuth } from "@/shared/providers/auth-provider"
-import Flex from "@/shared/ui/flex"
+import Flex from "@shared/flex"
 import { Loader2 } from "lucide-react"
 
 export function AuthGuard() {

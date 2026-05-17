@@ -1,6 +1,6 @@
 import { Moon, Sun } from "lucide-react"
 import { useEffect, useState } from "react"
-import { Button } from "./button"
+import { Button } from "../ui/button"
 
 const ThemeToggle = () => {
   const [dark, setDark] = useState(() => {
@@ -33,7 +33,9 @@ const ThemeToggle = () => {
         style={{
           display: "inline-flex",
           transition: "transform 0.3s ease, opacity 0.3s ease",
-          transform: animating ? "rotate(180deg) scale(0)" : "rotate(0deg) scale(1)",
+          transform: animating
+            ? "rotate(180deg) scale(0)"
+            : "rotate(0deg) scale(1)",
           opacity: animating ? 0 : 1,
         }}
       >

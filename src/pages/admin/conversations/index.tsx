@@ -1,6 +1,7 @@
 import { useState } from "react"
-import Flex from "@/shared/ui/flex"
+import Flex from "@shared/flex"
 import { Input } from "@/shared/ui/input"
+import { Button } from "@/shared/ui/button"
 import {
   Select,
   SelectContent,
@@ -33,10 +34,12 @@ const ConversationsPage = () => {
           </div>
 
           {/* Tabs */}
-          <Flex align="center" gap={1} className="w-full">
+          <Flex align="center" gap={1}>
             {TABS.map((tab) => (
-              <button
+              <Button
                 key={tab}
+                type="button"
+                variant="ghost"
                 onClick={() => setActiveTab(tab)}
                 className={`rounded-full px-3 py-1 text-sm font-medium transition-colors ${
                   activeTab === tab
@@ -45,14 +48,14 @@ const ConversationsPage = () => {
                 }`}
               >
                 {tab}
-              </button>
+              </Button>
             ))}
           </Flex>
         </div>
 
         {/* Filters */}
         <div className="border-b px-4 py-2">
-          <Flex align="center" gap={2} className="w-full">
+          <Flex align="center" gap={2}>
             <SlidersHorizontal size={15} className="shrink-0 text-muted-foreground" />
             <Select defaultValue="all">
               <SelectTrigger className="h-7 border-0 p-0 text-sm shadow-none focus:ring-0">
@@ -78,7 +81,7 @@ const ConversationsPage = () => {
         </div>
 
         {/* Empty state */}
-        <Flex direction="column" align="center" justify="center" gap={2} className="h-full w-full">
+        <Flex direction="column" align="center" justify="center" gap={2} className="h-full">
           <div className="flex size-12 items-center justify-center rounded-full bg-muted">
             <Inbox size={20} className="text-muted-foreground" />
           </div>

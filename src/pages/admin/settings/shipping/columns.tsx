@@ -1,6 +1,7 @@
 import { type ColumnDef } from "@tanstack/react-table"
 import { DataTableColumnHeader } from "@/shared/ui/data-table/data-table-column-header"
 import { Switch } from "@/shared/ui/switch"
+import { Button } from "@/shared/ui/button"
 import { Pencil, Trash2 } from "lucide-react"
 
 export type ShippingMethod = {
@@ -42,20 +43,22 @@ export const createColumns = (
     id: "actions",
     cell: ({ row }) => (
       <div className="flex items-center justify-end gap-4">
-        <button
+        <Button
+          variant="ghost"
           className="flex items-center gap-1 text-sm text-orange-500 hover:text-orange-600"
           onClick={(e) => { e.stopPropagation(); onEdit(row.original.id) }}
         >
           <Pencil size={14} />
           Tahrirlash
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="ghost"
           className="flex items-center gap-1 text-sm text-destructive hover:text-destructive/80"
           onClick={(e) => { e.stopPropagation(); onDelete(row.original) }}
         >
           <Trash2 size={14} />
           O'chirish
-        </button>
+        </Button>
       </div>
     ),
   },

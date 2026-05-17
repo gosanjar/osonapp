@@ -3,10 +3,10 @@ import Sidebar from "../sidebar"
 import { NavLink, Outlet, useLocation } from "react-router-dom"
 import { Loader2, Menu } from "lucide-react"
 import useSidebar from "@/entities/sidebar/use-sidebar"
-import Flex from "@/shared/ui/flex"
-import Icon from "@/shared/ui/icon"
-import ThemeToggle from "@/shared/ui/theme-toggle"
-import LangToggle from "@/shared/ui/lang-toggle"
+import Flex from "@shared/flex"
+import Icon from "@shared/icon"
+import ThemeToggle from "@shared/theme-toggle"
+import LangToggle from "@shared/lang-toggle"
 import { Button } from "@/shared/ui/button"
 
 const MainLayout = () => {
@@ -45,14 +45,10 @@ const MainLayout = () => {
         gap={0}
         align="start"
         direction="column"
-        className="w-full overflow-x-auto overflow-y-hidden bg-secondary text-secondary-foreground"
+        className="overflow-x-auto overflow-y-hidden bg-secondary text-secondary-foreground"
       >
-        <Flex
-          justify="between"
-          align="center"
-          className="h-16 w-full border-b p-4"
-        >
-          <Flex align="center">
+        <Flex justify="between" align="center" className="h-16 border-b p-4">
+          <Flex full={false} align="center">
             <Button className="lg:hidden" onClick={() => setOpen(true)}>
               <Icon icon={Menu} />
             </Button>
@@ -60,33 +56,35 @@ const MainLayout = () => {
               {currentLabel}
             </div>
           </Flex>
-          <Flex>
+          <Flex full={false}>
             <LangToggle />
             <ThemeToggle />
           </Flex>
         </Flex>
 
-        <Flex
-          gap={4}
-          direction="column"
-          className="h-full w-full overflow-y-auto p-4"
-        >
+        <Flex gap={4} direction="column" className="h-full overflow-y-auto p-4">
           <Suspense
             fallback={
-              <div className="flex flex-1 w-full items-center justify-center">
+              <div className="flex w-full flex-1 items-center justify-center">
                 <Loader2 size={18} strokeWidth={2} className="animate-spin" />
               </div>
             }
           >
             <Outlet />
-            <Flex justify="between" className="mt-auto w-full text-sm">
+            <Flex justify="between" className="mt-auto text-sm">
               <div>
                 <span className="text-gray-400">2026© </span>
-                <NavLink to="https://osonapp.uz" className="hover:text-blue-500">
+                <NavLink
+                  to="https://osonapp.uz"
+                  className="hover:text-blue-500"
+                >
                   Osonapp
                 </NavLink>
               </div>
-              <NavLink to="https://osonapp.uz/support" className="hover:text-blue-500">
+              <NavLink
+                to="https://osonapp.uz/support"
+                className="hover:text-blue-500"
+              >
                 Support
               </NavLink>
             </Flex>

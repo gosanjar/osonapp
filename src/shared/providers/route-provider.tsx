@@ -6,8 +6,8 @@ import {
 } from "react-router-dom"
 import router from "../router"
 import { Loader2 } from "lucide-react"
-import Flex from "@/shared/ui/flex"
 import { AuthProvider } from "./auth-provider"
+import Flex from "@shared/flex"
 
 const getSubdomain = () => {
   const hostname = window.location.hostname

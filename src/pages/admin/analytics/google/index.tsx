@@ -1,5 +1,5 @@
-import Flex from "@/shared/ui/flex"
-import { Card, CardContent } from "@/shared/ui/card"
+import Flex from "@shared/flex"
+import Card from "@shared/card"
 import {
   Select,
   SelectContent,
@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/shared/ui/select"
+import StatusBadge from "@shared/status-badge"
 import { ArrowLeftRight, Monitor, Globe } from "lucide-react"
 
 const periods = ["Bugun", "Kecha", "Hafta", "Oy"]
@@ -41,20 +42,18 @@ function StatCard({
   periodOptions?: string[]
 }) {
   return (
-    <Card className="w-full">
-      <CardContent>
-        <Flex justify="between" align="start" className="mb-2 w-full">
-          <span className="text-sm text-muted-foreground">{title}</span>
-          <PeriodSelect options={periodOptions} />
+    <Card>
+      <Flex justify="between" align="start" className="mb-2">
+        <span className="text-sm text-muted-foreground">{title}</span>
+        <PeriodSelect options={periodOptions} />
+      </Flex>
+      <span className="text-3xl font-bold">{value}</span>
+      {showChange && (
+        <Flex align="center" gap={1} className="mt-2">
+          <span className="text-sm text-muted-foreground">0% Barqaror</span>
+          <ArrowLeftRight size={13} className="text-muted-foreground" />
         </Flex>
-        <span className="text-3xl font-bold">{value}</span>
-        {showChange && (
-          <Flex align="center" gap={1} className="mt-2">
-            <span className="text-sm text-muted-foreground">0% Barqaror</span>
-            <ArrowLeftRight size={13} className="text-muted-foreground" />
-          </Flex>
-        )}
-      </CardContent>
+      )}
     </Card>
   )
 }
@@ -69,41 +68,35 @@ function SessionChartCard({
   color: string
 }) {
   return (
-    <Card className="w-full">
-      <CardContent>
-        <Flex justify="between" align="center" className="mb-4 w-full">
-          <Flex align="center" gap={2}>
-            <Icon size={18} className={color} />
-            <span className="font-medium">{title}</span>
-            <span className="ml-1 rounded-full bg-yellow-100 px-2 py-0.5 text-xs font-semibold text-yellow-700">
-              0
-            </span>
-          </Flex>
-          <PeriodSelect />
+    <Card>
+      <Flex justify="between" align="center" className="mb-4">
+        <Flex align="center" gap={2}>
+          <Icon size={18} className={color} />
+          <span className="font-medium">{title}</span>
+          <StatusBadge label="0" variant="yellow" />
         </Flex>
-        <div className="h-32 w-full rounded bg-muted/30" />
-      </CardContent>
+        <PeriodSelect />
+      </Flex>
+      <div className="h-32 w-full rounded bg-muted/30" />
     </Card>
   )
 }
 
 function TableCard({ title }: { title: string }) {
   return (
-    <Card className="w-full">
-      <CardContent>
-        <Flex justify="between" align="center" className="mb-4 w-full">
-          <span className="text-sm text-muted-foreground">{title}</span>
-          <PeriodSelect />
-        </Flex>
-        <div className="h-24 w-full" />
-      </CardContent>
+    <Card>
+      <Flex justify="between" align="center" className="mb-4">
+        <span className="text-sm text-muted-foreground">{title}</span>
+        <PeriodSelect />
+      </Flex>
+      <div className="h-24 w-full" />
     </Card>
   )
 }
 
 const GoogleAnalytics = () => {
   return (
-    <Flex direction="column" className="w-full" gap={4}>
+    <Flex direction="column" gap={4}>
       <h1 className="text-2xl font-bold">Google Analitika</h1>
 
       <div className="grid w-full grid-cols-2 gap-4">

@@ -2,6 +2,8 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import PublicNav from "./nav"
 import PublicFooter from "./footer"
+import { Button } from "@/shared/ui/button"
+import { Input } from "@/shared/ui/input"
 
 const plans = [
   {
@@ -171,14 +173,16 @@ export default function PricingPage() {
             >
               Oylik
             </span>
-            <button
+            <Button
+              type="button"
+              variant="ghost"
               onClick={() => setAnnual(!annual)}
               className={`relative h-6 w-11 rounded-full transition-colors ${annual ? "bg-primary" : "bg-muted"}`}
             >
               <span
                 className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${annual ? "translate-x-5" : "translate-x-0"}`}
               />
-            </button>
+            </Button>
             <span
               className={`text-sm font-medium ${annual ? "text-foreground" : "text-muted-foreground"}`}
             >
@@ -384,7 +388,7 @@ export default function PricingPage() {
                   <label className="mb-2 block text-sm font-medium text-foreground">
                     O'rtacha buyurtma narxi (so'm)
                   </label>
-                  <input
+                  <Input
                     type="number"
                     value={avgOrder}
                     onChange={(e) => setAvgOrder(Number(e.target.value))}
@@ -395,7 +399,7 @@ export default function PricingPage() {
                   <label className="mb-2 block text-sm font-medium text-foreground">
                     Oylik buyurtmalar soni
                   </label>
-                  <input
+                  <Input
                     type="number"
                     value={monthlyOrders}
                     onChange={(e) => setMonthlyOrders(Number(e.target.value))}

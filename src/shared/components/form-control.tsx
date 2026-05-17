@@ -6,8 +6,8 @@ import {
   type Path,
   type RegisterOptions,
 } from "react-hook-form"
-import { Label } from "./label"
-import { FieldError } from "./field"
+import { Label } from "@/shared/ui/label"
+import { FieldError } from "@/shared/ui/field"
 import { cn } from "@utils/utils"
 
 interface ChildProps {
@@ -49,7 +49,7 @@ export function FormControl<T extends FieldValues>({
         ...rules,
       }}
       render={({ field, fieldState: { error } }) => (
-        <div className={cn("flex flex-col gap-1.5", className)}>
+        <div className={cn("flex w-full flex-col gap-1.5", className)}>
           {label && (
             <div className="flex items-center gap-2">
               <Label htmlFor={name}>

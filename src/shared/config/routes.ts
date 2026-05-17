@@ -23,11 +23,11 @@ export const ROUTES = {
   CATALOG: "/catalog",
   CATALOG_PRODUCTS: "/catalog/products",
   CATALOG_PRODUCTS_CREATE: "/catalog/products/create",
-  CATALOG_PRODUCTS_EDIT: "/catalog/products/edit",
+  CATALOG_PRODUCTS_EDIT: "/catalog/products/edit/:id",
 
   CATALOG_CATEGORIES: "/catalog/categories",
   CATALOG_CATEGORIES_CREATE: "/catalog/categories/create",
-  CATALOG_CATEGORIES_EDIT: "/catalog/categories/edit",
+  CATALOG_CATEGORIES_EDIT: "/catalog/categories/edit/:id",
 
   CATALOG_INVENTORY: "/catalog/inventory",
   CATALOG_PRODUCT_RECOMMENDATIONS: "/catalog/product/recommendations",

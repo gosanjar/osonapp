@@ -5,7 +5,7 @@ import {
   AccordionTrigger,
 } from "@/shared/ui/accordion"
 import type { ISidebarMenuTree } from "@/entities/sidebar/types"
-import Flex from "@/shared/ui/flex"
+import Flex from "@shared/flex"
 
 const ITEM_CLASS =
   "flex w-full cursor-pointer items-center rounded-md px-2.5 py-2 text-sm"
@@ -28,9 +28,9 @@ const SidebarItem = ({
   const marginLeft = depth * 28
 
   return (
-    <Flex direction="column" gap={1.5} className="w-full">
+    <Flex direction="column" gap={1.5}>
       {menu?.section && (
-        <Flex className="mt-6 w-full px-2.5 text-lg text-gray-400">
+        <Flex className="mt-6 px-2.5 text-lg text-gray-400">
           {menu.section}
         </Flex>
       )}

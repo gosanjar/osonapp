@@ -1,4 +1,4 @@
-import Flex from "@/shared/ui/flex"
+import Flex from "@shared/flex"
 import { columns } from "./columns"
 import { DataTable } from "@/shared/ui/data-table/data-table"
 import type { Order } from "@/entities/order/types"
@@ -7,7 +7,7 @@ import NoResults from "@/features/no-results"
 
 const PreOrders = () => {
   return (
-    <Flex direction="column" className="w-full">
+    <Flex direction="column">
       {orderMocks(5).length > 0 ? (
         <DataTable<Order, unknown> columns={columns} data={orderMocks(5)} />
       ) : (

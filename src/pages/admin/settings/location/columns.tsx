@@ -1,6 +1,7 @@
 import { type ColumnDef } from "@tanstack/react-table"
 import { DataTableColumnHeader } from "@/shared/ui/data-table/data-table-column-header"
 import { Switch } from "@/shared/ui/switch"
+import { Button } from "@/shared/ui/button"
 import { Pencil } from "lucide-react"
 
 export type Branch = {
@@ -41,13 +42,14 @@ export const createColumns = (
     id: "actions",
     cell: ({ row }) => (
       <div className="flex justify-end">
-        <button
+        <Button
+          variant="ghost"
           className="flex items-center gap-1 text-sm text-orange-500 hover:text-orange-600"
           onClick={(e) => { e.stopPropagation(); onEdit(row.original.id) }}
         >
           <Pencil size={14} />
           Tahrirlash
-        </button>
+        </Button>
       </div>
     ),
   },

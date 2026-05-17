@@ -14,7 +14,7 @@ import {
   SelectItem,
 } from "@/shared/ui/select"
 import { useState } from "react"
-import Flex from "@/shared/ui/flex"
+import Flex from "@shared/flex"
 import { AreaChart, CartesianGrid, XAxis, Area } from "recharts"
 import { CardHeader, CardTitle, CardContent, Card } from "@/shared/ui/card"
 
@@ -58,7 +58,7 @@ const Chart = () => {
   })
 
   return (
-    <Flex className="w-full">
+    <Flex>
       <Card className="w-full pt-0">
         <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
           <div className="grid flex-1 gap-1">

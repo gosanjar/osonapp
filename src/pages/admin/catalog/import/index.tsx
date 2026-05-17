@@ -1,16 +1,23 @@
+import { useQuery } from "@tanstack/react-query"
+import { ImportsApi } from "@/entities/catalog/api"
 import { DataTable } from "@/shared/ui/data-table/data-table"
-import Flex from "@/shared/ui/flex"
-import AddButton from "@/shared/ui/predefined/add-button"
-import GuideButton from "@/shared/ui/predefined/guide-button"
+import Flex from "@shared/flex"
+import AddButton from "@shared/predefined/add-button"
+import GuideButton from "@shared/predefined/guide-button"
 import { ROUTES } from "@/shared/config/routes"
-import { columns, type ImportRecord } from "./columns"
-
-const data: ImportRecord[] = []
+import { getColumns } from "./columns"
 
 const ImportProducts = () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["imports"],
+    queryFn: () => ImportsApi.list(),
+  })
+
+  const imports = data?.data?.results ?? []
+
   return (
-    <Flex direction="column" className="w-full" gap={4}>
-      <Flex justify="between" align="center" className="w-full">
+    <Flex direction="column" gap={4}>
+      <Flex justify="between" align="center">
         <h1 className="text-2xl font-bold">Import</h1>
         <Flex>
           <GuideButton />
@@ -19,9 +26,9 @@ const ImportProducts = () => {
       </Flex>
 
       <DataTable
-        columns={columns}
-        data={data}
-        noResultsTitle="Hech qanday import topilmadi"
+        columns={getColumns()}
+        data={imports}
+        noResultsTitle={isLoading ? "Yuklanmoqda..." : "Hech qanday import topilmadi"}
         noResultsContent="Mahsulotlarni import qilish uchun 'Yangi import' tugmasini bosing."
       />
     </Flex>

@@ -1,20 +1,14 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useWatch } from "react-hook-form"
-import Flex from "@/shared/ui/flex"
-import { Card, CardContent } from "@/shared/ui/card"
+import Flex from "@shared/flex"
+import Card from "@shared/card"
 import { Input } from "@/shared/ui/input"
 import { Button } from "@/shared/ui/button"
-import { SaveButton } from "@/shared/ui/predefined"
-import { Checkbox } from "@/shared/ui/checkbox"
+import { SaveButton } from "@shared/predefined"
+import { CheckboxInput } from "@shared/checkbox-input"
 import { Textarea } from "@/shared/ui/textarea"
-import { Label } from "@/shared/ui/label"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/shared/ui/dialog"
+import Modal from "@shared/modal"
 import { Settings2 } from "lucide-react"
 import { DataTable } from "@/shared/ui/data-table/data-table"
 import { columns, type CartRow } from "./columns"
@@ -69,102 +63,82 @@ function ReminderDialog({
   const promoEnabled = useWatch({ control: form.control, name: "promoEnabled" })
 
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg">
-        <DialogHeader>
-          <DialogTitle>Eslatma sozlamalari</DialogTitle>
-        </DialogHeader>
+    <Modal open={open} onOpenChange={onClose} title="Eslatma sozlamalari">
+      <Flex direction="column" gap={4}>
+        <CheckboxInput
+          value={enabled}
+          onChange={(v) => form.setValue("enabled", v)}
+          label="Eslatmalarni yoqish"
+        />
 
-        <Flex direction="column" gap={4} className="w-full">
-          <Flex align="center" gap={4} className="w-full">
-            <Checkbox
-              id="enabled"
-              checked={enabled}
-              onCheckedChange={(v) => form.setValue("enabled", !!v)}
-            />
-            <Label htmlFor="enabled" className="cursor-pointer">
-              Eslatmalarni yoqish
-            </Label>
-          </Flex>
+        <Input
+          type="number"
+          label="Jo'natish kechikishi (daqiqa)"
+          {...form.register("delay", { valueAsNumber: true })}
+          className="w-full"
+        />
 
-          <Flex direction="column" gap={4} className="w-full">
-            <Label>Jo'natish kechikishi (daqiqa)</Label>
-            <Input
-              type="number"
-              {...form.register("delay", { valueAsNumber: true })}
-              className="w-full"
-            />
-          </Flex>
+        <CheckboxInput
+          value={promoEnabled}
+          onChange={(v) => form.setValue("promoEnabled", v)}
+          label="Promokod qo'shish"
+        />
 
-          <Flex align="center" gap={4} className="w-full">
-            <Checkbox
-              id="promoEnabled"
-              checked={promoEnabled}
-              onCheckedChange={(v) => form.setValue("promoEnabled", !!v)}
-            />
-            <Label htmlFor="promoEnabled" className="cursor-pointer">
-              Promokod qo'shish
-            </Label>
-          </Flex>
-
-          <Flex direction="column" gap={4} className="w-full">
-            <Label>Xabar matni</Label>
-            <Flex
-              align="center"
-              gap={4}
-              className="w-full rounded-md border p-1"
-            >
-              <button
-                type="button"
-                onClick={() => setTab("ru")}
-                className={`flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors ${
-                  tab === "ru"
-                    ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                RU
-              </button>
-              <button
-                type="button"
-                onClick={() => setTab("uz")}
-                className={`flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors ${
-                  tab === "uz"
-                    ? "bg-foreground text-background"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                UZ
-              </button>
-            </Flex>
-            {tab === "ru" ? (
-              <Textarea
-                {...form.register("textRu")}
-                rows={6}
-                className="w-full resize-none"
-              />
-            ) : (
-              <Textarea
-                {...form.register("textUz")}
-                rows={6}
-                className="w-full resize-none"
-              />
-            )}
-          </Flex>
-
-          <Flex align="center" justify="end" gap={4} className="w-full">
+        <Flex direction="column" gap={4}>
+          <span className="text-sm font-medium">Xabar matni</span>
+          <Flex align="center" gap={4} className="rounded-md border p-1">
             <Button
-              variant="default"
-              className="bg-foreground text-background hover:bg-foreground/90"
-              onClick={onClose}
+              type="button"
+              variant="ghost"
+              onClick={() => setTab("ru")}
+              className={`flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors ${
+                tab === "ru"
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
-              Yopish
+              RU
             </Button>
-            <SaveButton onClick={() => form.handleSubmit(() => onClose())()} />
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => setTab("uz")}
+              className={`flex-1 rounded px-3 py-1.5 text-sm font-medium transition-colors ${
+                tab === "uz"
+                  ? "bg-foreground text-background"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              UZ
+            </Button>
           </Flex>
+          {tab === "ru" ? (
+            <Textarea
+              {...form.register("textRu")}
+              rows={6}
+              className="w-full resize-none"
+            />
+          ) : (
+            <Textarea
+              {...form.register("textUz")}
+              rows={6}
+              className="w-full resize-none"
+            />
+          )}
         </Flex>
-      </DialogContent>
-    </Dialog>
+
+        <Flex align="center" justify="end" gap={4}>
+          <Button
+            variant="default"
+            className="bg-foreground text-background hover:bg-foreground/90"
+            onClick={onClose}
+          >
+            Yopish
+          </Button>
+          <SaveButton onClick={() => form.handleSubmit(() => onClose())()} />
+        </Flex>
+      </Flex>
+    </Modal>
   )
 }
 
@@ -172,45 +146,41 @@ const CartAnalytics = () => {
   const [dialogOpen, setDialogOpen] = useState(false)
 
   return (
-    <Flex direction="column" className="w-full" gap={4}>
+    <Flex direction="column" gap={4}>
       <h1 className="text-2xl font-bold">Savatcha bo'yicha analitika</h1>
 
-      <Card className="w-full">
-        <CardContent>
-          <Flex align="center" justify="between" gap={4} className="w-full">
-            <Flex
-              align="center"
-              gap={0}
-              className="flex-1 overflow-hidden rounded-md border"
-            >
-              <div className="shrink-0 border-r bg-muted px-4 py-2 text-sm font-medium">
-                Sanani tanlang
-              </div>
-              <Input
-                name="dateRange"
-                type="date"
-                className="border-0 shadow-none focus-visible:ring-0"
-              />
-            </Flex>
-            <Button
-              variant="outline"
-              className="shrink-0 gap-2"
-              onClick={() => setDialogOpen(true)}
-            >
-              <Settings2 size={16} />
-              Eslatma sozlamalari
-            </Button>
+      <Card>
+        <Flex align="center" justify="between" gap={4}>
+          <Flex
+            align="center"
+            gap={0}
+            className="flex-1 overflow-hidden rounded-md border"
+          >
+            <div className="shrink-0 border-r bg-muted px-4 py-2 text-sm font-medium">
+              Sanani tanlang
+            </div>
+            <Input
+              name="dateRange"
+              type="date"
+              className="border-0 shadow-none focus-visible:ring-0"
+            />
           </Flex>
-        </CardContent>
+          <Button
+            variant="outline"
+            className="shrink-0 gap-2"
+            onClick={() => setDialogOpen(true)}
+          >
+            <Settings2 size={16} />
+            Eslatma sozlamalari
+          </Button>
+        </Flex>
       </Card>
 
       <div className="grid w-full grid-cols-3 gap-4">
         {statCards.map((s) => (
-          <Card key={s.label} className="w-full">
-            <CardContent>
-              <span className="text-sm text-muted-foreground">{s.label}</span>
-              <p className="mt-1 text-3xl font-bold">{s.value}</p>
-            </CardContent>
+          <Card key={s.label}>
+            <span className="text-sm text-muted-foreground">{s.label}</span>
+            <p className="mt-1 text-3xl font-bold">{s.value}</p>
           </Card>
         ))}
       </div>

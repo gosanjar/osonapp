@@ -1,5 +1,5 @@
-import Flex from "@/shared/ui/flex"
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card"
+import Flex from "@shared/flex"
+import Card from "@shared/card"
 import { Input } from "@/shared/ui/input"
 import {
   LineChart,
@@ -35,82 +35,68 @@ const searchData: SearchRow[] = []
 
 const SearchAnalytics = () => {
   return (
-    <Flex direction="column" className="w-full" gap={4}>
+    <Flex direction="column" gap={4}>
       <h1 className="text-2xl font-bold">Qidirish bo'yicha analitika</h1>
 
-      <Card className="w-full">
-        <CardContent>
-          <Flex
-            align="center"
-            gap={0}
-            className="w-full overflow-hidden rounded-md border"
-          >
-            <div className="shrink-0 border-r bg-muted px-4 py-2 text-sm font-medium">
-              Sanani tanlang
-            </div>
-            <Input
-              name="dateRange"
-              type="date"
-              className="border-0 shadow-none focus-visible:ring-0"
-            />
-          </Flex>
-        </CardContent>
+      <Card>
+        <Flex
+          align="center"
+          gap={0}
+          className="overflow-hidden rounded-md border"
+        >
+          <div className="shrink-0 border-r bg-muted px-4 py-2 text-sm font-medium">
+            Sanani tanlang
+          </div>
+          <Input
+            name="dateRange"
+            type="date"
+            className="border-0 shadow-none focus-visible:ring-0"
+          />
+        </Flex>
       </Card>
 
       <div className="grid w-full grid-cols-4 gap-4">
         {statCards.map((s) => (
-          <Card key={s.label} className="w-full">
-            <CardContent>
-              <span className="text-sm text-muted-foreground">{s.label}</span>
-              <p className="mt-1 text-3xl font-bold">{s.value}</p>
-              {s.sub && (
-                <p className="mt-1 text-sm text-muted-foreground">{s.sub}</p>
-              )}
-            </CardContent>
+          <Card key={s.label}>
+            <span className="text-sm text-muted-foreground">{s.label}</span>
+            <p className="mt-1 text-3xl font-bold">{s.value}</p>
+            {s.sub && (
+              <p className="mt-1 text-sm text-muted-foreground">{s.sub}</p>
+            )}
           </Card>
         ))}
       </div>
 
       <div className="grid w-full grid-cols-2 gap-4">
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Qidiruv hajmi</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={hourlyData}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis
-                  dataKey="time"
-                  tick={{ fontSize: 9 }}
-                  interval={1}
-                  angle={-45}
-                  textAnchor="end"
-                  height={60}
-                />
-                <YAxis tick={{ fontSize: 11 }} />
-                <Tooltip />
-                <Line
-                  type="monotone"
-                  dataKey="value"
-                  stroke="#3b82f6"
-                  dot={{ r: 3 }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
-          </CardContent>
+        <Card title="Qidiruv hajmi">
+          <ResponsiveContainer width="100%" height={220}>
+            <LineChart data={hourlyData}>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis
+                dataKey="time"
+                tick={{ fontSize: 9 }}
+                interval={1}
+                angle={-45}
+                textAnchor="end"
+                height={60}
+              />
+              <YAxis tick={{ fontSize: 11 }} />
+              <Tooltip />
+              <Line
+                type="monotone"
+                dataKey="value"
+                stroke="#3b82f6"
+                dot={{ r: 3 }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </Card>
 
-        <Card className="w-full">
-          <CardHeader>
-            <CardTitle>Top qidiruv so'rovlari</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Flex align="center" justify="between" className="h-48 w-full">
-              <span className="text-sm text-muted-foreground">0</span>
-              <span className="text-sm text-muted-foreground">1</span>
-            </Flex>
-          </CardContent>
+        <Card title="Top qidiruv so'rovlari">
+          <Flex align="center" justify="between" className="h-48">
+            <span className="text-sm text-muted-foreground">0</span>
+            <span className="text-sm text-muted-foreground">1</span>
+          </Flex>
         </Card>
       </div>
 

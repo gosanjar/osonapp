@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react"
 import { Link, useLocation } from "react-router-dom"
-import ThemeToggle from "@/shared/ui/theme-toggle"
-import LangToggle from "@/shared/ui/lang-toggle"
+import ThemeToggle from "@shared/theme-toggle"
+import LangToggle from "@shared/lang-toggle"
+import { Button } from "@/shared/ui/button"
 
 const niches = [
   { slug: "clothes", label: "Kiyim" },
@@ -104,7 +105,7 @@ export default function PublicNav() {
               onMouseEnter={() => setSolutionsOpen(true)}
               onMouseLeave={() => setSolutionsOpen(false)}
             >
-              <button className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
+              <Button type="button" variant="ghost" className="flex items-center gap-1 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground">
                 Yechimlar
                 <svg
                   className={`h-3.5 w-3.5 transition-transform ${solutionsOpen ? "rotate-180" : ""}`}
@@ -119,7 +120,7 @@ export default function PublicNav() {
                     d="M19 9l-7 7-7-7"
                   />
                 </svg>
-              </button>
+              </Button>
               {solutionsOpen && (
                 <div className="absolute top-full left-0 mt-1 w-56 overflow-hidden rounded-xl border border-border bg-background shadow-lg">
                   <div className="px-3 py-2 text-xs font-semibold text-muted-foreground">
@@ -156,7 +157,9 @@ export default function PublicNav() {
             >
               Bepul boshlash
             </Link>
-            <button
+            <Button
+              type="button"
+              variant="ghost"
               onClick={() => setMobileMenu(!mobileMenu)}
               className="rounded-lg p-2 text-foreground transition-colors hover:bg-muted lg:hidden"
               aria-label="Menu"
@@ -190,7 +193,7 @@ export default function PublicNav() {
                   />
                 </svg>
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </nav>
@@ -200,7 +203,9 @@ export default function PublicNav() {
         <div className="fixed inset-x-0 top-17 bottom-0 z-999 flex flex-col bg-background lg:hidden">
           <div className="flex-1 overflow-y-auto">
             <div className="border-b border-border">
-              <button
+              <Button
+                type="button"
+                variant="ghost"
                 onClick={() => setSolutionsMobileOpen(!solutionsMobileOpen)}
                 className="flex w-full items-center justify-between px-5 py-4 font-medium text-[15]"
               >
@@ -218,7 +223,7 @@ export default function PublicNav() {
                     d="M19 9l-7 7-7-7"
                   />
                 </svg>
-              </button>
+              </Button>
               {solutionsMobileOpen && (
                 <div className="grid grid-cols-2 gap-1 px-5 pb-4">
                   {niches.map((n) => (

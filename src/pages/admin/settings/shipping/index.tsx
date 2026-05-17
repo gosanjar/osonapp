@@ -1,14 +1,14 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
-import Flex from "@/shared/ui/flex"
+import Flex from "@shared/flex"
 import { Button } from "@/shared/ui/button"
-import { Dialog, DialogContent } from "@/shared/ui/dialog"
+import Modal from "@shared/modal"
 import { AlertTriangle } from "lucide-react"
 import { ROUTES } from "@/shared/config/routes"
 import { DataTable } from "@/shared/ui/data-table/data-table"
 import { createColumns, type ShippingMethod } from "./columns"
-import { AddButton } from "@/shared/ui/predefined"
-import PageHeader from "@/shared/components/page-header"
+import { AddButton } from "@shared/predefined"
+import PageHeader from "@shared/page-header"
 
 const mockMethods: ShippingMethod[] = [
   {
@@ -45,7 +45,7 @@ const ShippingSettings = () => {
   )
 
   return (
-    <Flex direction="column" className="w-full" gap={4}>
+    <Flex direction="column" gap={4}>
       <PageHeader title="Yetkazib berish usullari">
         <AddButton to={ROUTES.SETTINGS_SHIPPING_CREATE} />
       </PageHeader>
@@ -57,36 +57,30 @@ const ShippingSettings = () => {
         noResultsTitle="Yetkazib berish usullari yo'q"
       />
 
-      <Dialog open={!!deleteTarget} onOpenChange={() => setDeleteTarget(null)}>
-        <DialogContent className="max-w-md text-center">
-          <Flex direction="column" align="center" className="w-full pt-2">
-            <div className="flex size-14 items-center justify-center rounded-full bg-red-100">
-              <AlertTriangle size={24} className="text-destructive" />
-            </div>
-            <h2 className="text-lg font-bold">Ogohlantirish</h2>
-            <p className="text-sm text-muted-foreground">
-              Siz rostdan ham ushbu yetkazib berish usulini o'chirmoqchimisiz:{" "}
-              {deleteTarget?.name}?
-            </p>
-            <div className="grid w-full grid-cols-2 gap-4">
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => setDeleteTarget(null)}
-              >
-                Qaytarish
-              </Button>
-              <Button
-                variant="destructive"
-                className="w-full"
-                onClick={handleDelete}
-              >
-                Yetkazib berish usulini o'chirish
-              </Button>
-            </div>
-          </Flex>
-        </DialogContent>
-      </Dialog>
+      <Modal
+        open={!!deleteTarget}
+        onOpenChange={() => setDeleteTarget(null)}
+        className="max-w-md text-center"
+      >
+        <Flex direction="column" align="center" className="pt-2">
+          <div className="flex size-14 items-center justify-center rounded-full bg-red-100">
+            <AlertTriangle size={24} className="text-destructive" />
+          </div>
+          <h2 className="text-lg font-bold">Ogohlantirish</h2>
+          <p className="text-sm text-muted-foreground">
+            Siz rostdan ham ushbu yetkazib berish usulini o'chirmoqchimisiz:{" "}
+            {deleteTarget?.name}?
+          </p>
+          <div className="grid w-full grid-cols-2 gap-4">
+            <Button variant="outline" className="w-full" onClick={() => setDeleteTarget(null)}>
+              Qaytarish
+            </Button>
+            <Button variant="destructive" className="w-full" onClick={handleDelete}>
+              Yetkazib berish usulini o'chirish
+            </Button>
+          </div>
+        </Flex>
+      </Modal>
     </Flex>
   )
 }

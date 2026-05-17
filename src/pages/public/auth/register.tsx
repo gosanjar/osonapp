@@ -7,11 +7,12 @@ import { Loader2 } from "lucide-react"
 import AuthLayout from "./layout"
 import { AuthApi } from "@/entities/auth/api"
 import { Button } from "@/shared/ui/button"
-import { PhoneFormControl } from "@/shared/ui/phone-form-control"
+import { PhoneFormControl } from "@shared/phone-form-control"
 import { TelegramBotCard } from "./components/telegram-bot-card"
 import { openBot, getDeepLink } from "./components/telegram-bot"
 import { Input } from "@/shared/ui/input"
-import { FormControl } from "@/shared/ui/form-control"
+import { FormControl } from "@shared/form-control"
+import { PasswordInput } from "@shared/password-input"
 import {
   PHONE_PATTERN,
   passwordRules,
@@ -225,11 +226,7 @@ export default function RegisterPage() {
             required
             rules={passwordRules}
           >
-            <Input
-              type="password"
-              placeholder="Kamida 8 ta belgi"
-              autoComplete="new-password"
-            />
+            <PasswordInput placeholder="Kamida 8 ta belgi" autoComplete="new-password" />
           </FormControl>
 
           <FormControl<DetailsForm>
@@ -238,11 +235,7 @@ export default function RegisterPage() {
             required
             rules={{ validate: (v) => v === pw || "Parollar mos kelmadi" }}
           >
-            <Input
-              type="password"
-              placeholder="Kamida 8 ta belgi"
-              autoComplete="new-password"
-            />
+            <PasswordInput placeholder="Kamida 8 ta belgi" autoComplete="new-password" />
           </FormControl>
 
           {errorMsg && (

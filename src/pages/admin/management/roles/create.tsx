@@ -7,10 +7,10 @@ import type { RoleCreateData, Permission } from "@/entities/roles/types"
 import { getApiError } from "@/shared/api"
 import { Input } from "@/shared/ui/input"
 import { Checkbox } from "@/shared/ui/checkbox"
-import { FormControl } from "@/shared/ui/form-control"
-import Flex from "@/shared/ui/flex"
-import CreateLayout from "@/shared/components/create-layout"
-import FormCard from "@/shared/components/form-card"
+import { FormControl } from "@shared/form-control"
+import Flex from "@shared/flex"
+import CreateLayout from "@shared/create-layout"
+import Card from "@shared/card"
 import { ROUTES } from "@/shared/config/routes"
 
 function groupPermissions(permissions: Permission[]) {
@@ -78,8 +78,8 @@ const RoleCreate = () => {
       saveLabel={isPending ? "Saqlanmoqda..." : undefined}
       onSave={form.handleSubmit((data) => save(data))}
     >
-      <Flex direction="column" gap={4} className="w-full">
-        <FormCard title="Umumiy">
+      <Flex direction="column" gap={4}>
+        <Card title="Umumiy" gap={4}>
           {form.formState.errors.root && (
             <p className="text-sm text-destructive">
               {form.formState.errors.root.message}
@@ -120,14 +120,14 @@ const RoleCreate = () => {
               )}
             />
           </div>
-        </FormCard>
+        </Card>
 
-        <FormCard title="Ruxsatlar">
+        <Card title="Ruxsatlar" gap={4}>
           <Controller
             control={form.control}
             name="permissions"
             render={({ field }) => (
-              <Flex direction="column" gap={6} className="w-full">
+              <Flex direction="column" gap={6}>
                 {Object.entries(grouped).map(([group, perms]) => (
                   <div key={group} className="w-full">
                     <p className="mb-3 text-xs font-semibold tracking-wider text-muted-foreground uppercase">
@@ -159,7 +159,7 @@ const RoleCreate = () => {
               </Flex>
             )}
           />
-        </FormCard>
+        </Card>
       </Flex>
     </CreateLayout>
   )

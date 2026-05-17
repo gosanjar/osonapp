@@ -1,5 +1,5 @@
-import Flex from "@/shared/ui/flex"
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card"
+import Flex from "@shared/flex"
+import Card from "@shared/card"
 import { Input } from "@/shared/ui/input"
 import {
   LineChart,
@@ -51,98 +51,84 @@ const statCards = [
 
 const SalesAnalytics = () => {
   return (
-    <Flex direction="column" className="w-full" gap={4}>
+    <Flex direction="column" gap={4}>
       <h1 className="text-2xl font-bold">Buyurtmalar bo'yicha analitika</h1>
 
-      <Card className="w-full">
-        <CardContent>
-          <Flex
-            align="center"
-            gap={0}
-            className="w-full overflow-hidden rounded-md border"
-          >
-            <div className="shrink-0 border-r bg-muted px-4 py-2 text-sm font-medium">
-              Sanani tanlang
-            </div>
-            <Input
-              name="dateRange"
-              type="date"
-              placeholder="Sana oralig'ini tanlang"
-              className="border-0 shadow-none focus-visible:ring-0"
-            />
-          </Flex>
-        </CardContent>
+      <Card>
+        <Flex
+          align="center"
+          gap={0}
+          className="overflow-hidden rounded-md border"
+        >
+          <div className="shrink-0 border-r bg-muted px-4 py-2 text-sm font-medium">
+            Sanani tanlang
+          </div>
+          <Input
+            name="dateRange"
+            type="date"
+            placeholder="Sana oralig'ini tanlang"
+            className="border-0 shadow-none focus-visible:ring-0"
+          />
+        </Flex>
       </Card>
 
       <div className="grid w-full grid-cols-3 gap-4">
         {statCards.map((s) => (
-          <Card key={s.label} className="w-full">
-            <CardContent>
-              <span className="text-sm text-muted-foreground">{s.label}</span>
-              <p className="mt-1 text-2xl font-bold">{s.value}</p>
-            </CardContent>
+          <Card key={s.label}>
+            <span className="text-sm text-muted-foreground">{s.label}</span>
+            <p className="mt-1 text-2xl font-bold">{s.value}</p>
           </Card>
         ))}
       </div>
 
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Jami sotuvlar</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={220}>
-            <LineChart data={hourlyData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis
-                dataKey="time"
-                tick={{ fontSize: 10 }}
-                interval={0}
-                angle={-45}
-                textAnchor="end"
-                height={60}
-              />
-              <YAxis tick={{ fontSize: 11 }} />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="value"
-                name="Bugungi umumiy sotuvlar"
-                stroke="#22c55e"
-                dot={{ r: 3 }}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </CardContent>
+      <Card title="Jami sotuvlar">
+        <ResponsiveContainer width="100%" height={220}>
+          <LineChart data={hourlyData}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis
+              dataKey="time"
+              tick={{ fontSize: 10 }}
+              interval={0}
+              angle={-45}
+              textAnchor="end"
+              height={60}
+            />
+            <YAxis tick={{ fontSize: 11 }} />
+            <Tooltip />
+            <Legend />
+            <Line
+              type="monotone"
+              dataKey="value"
+              name="Bugungi umumiy sotuvlar"
+              stroke="#22c55e"
+              dot={{ r: 3 }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </Card>
 
-      <Card className="w-full">
-        <CardHeader>
-          <CardTitle>Oylar bo'yicha buyurtma statistikasi</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={monthlyData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} />
-              <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-              <YAxis tick={{ fontSize: 11 }} />
-              <Tooltip />
-              <Legend />
-              <Bar
-                dataKey="avgOrder"
-                name="O'rtacha buyurtma summasi"
-                fill="#22c55e"
-                barSize={8}
-              />
-              <Bar
-                dataKey="totalSales"
-                name="Umumiy savdo hajmi"
-                fill="#3b82f6"
-                barSize={8}
-              />
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
+      <Card title="Oylar bo'yicha buyurtma statistikasi">
+        <ResponsiveContainer width="100%" height={280}>
+          <BarChart data={monthlyData}>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+            <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+            <YAxis tick={{ fontSize: 11 }} />
+            <Tooltip />
+            <Legend />
+            <Bar
+              dataKey="avgOrder"
+              name="O'rtacha buyurtma summasi"
+              fill="#22c55e"
+              barSize={8}
+            />
+            <Bar
+              dataKey="totalSales"
+              name="Umumiy savdo hajmi"
+              fill="#3b82f6"
+              barSize={8}
+            />
+          </BarChart>
+        </ResponsiveContainer>
       </Card>
     </Flex>
   )

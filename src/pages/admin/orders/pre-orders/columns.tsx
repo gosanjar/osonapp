@@ -1,6 +1,16 @@
 import type { Order } from "@/entities/order/types"
 import { DataTableColumnHeader } from "@/shared/ui/data-table/data-table-column-header"
 import { type ColumnDef } from "@tanstack/react-table"
+import StatusBadge from "@shared/status-badge"
+
+const statusMap: Record<
+  string,
+  { label: string; variant: "yellow" | "green" | "red" }
+> = {
+  pending: { label: "Kutilmoqda", variant: "yellow" },
+  paid: { label: "To'langan", variant: "green" },
+  cancelled: { label: "Bekor qilingan", variant: "red" },
+}
 
 export const columns: ColumnDef<Order>[] = [
   {
@@ -45,24 +55,8 @@ export const columns: ColumnDef<Order>[] = [
     header: "Holati",
     cell: ({ row }) => {
       const status = row.original.status
-
-      const styles = {
-        pending: "bg-yellow-100 text-yellow-700",
-        paid: "bg-green-100 text-green-700",
-        cancelled: "bg-red-100 text-red-700",
-      }
-
-      const labels = {
-        pending: "Kutilmoqda",
-        paid: "To‘langan",
-        cancelled: "Bekor qilingan",
-      }
-
-      return (
-        <span className={`rounded px-2 py-1 text-xs ${styles[status]}`}>
-          {labels[status]}
-        </span>
-      )
+      const s = statusMap[status]
+      return s ? <StatusBadge variant={s.variant} label={s.label} /> : status
     },
   },
 ]

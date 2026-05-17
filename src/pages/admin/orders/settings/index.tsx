@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/shared/ui/tabs"
-import { Label } from "@/shared/ui/label"
 import { Textarea } from "@/shared/ui/textarea"
 import { Alert, AlertTitle } from "@/shared/ui/alert"
 import { FileSearchCorner } from "lucide-react"
@@ -82,9 +81,9 @@ const OrdersSettings = () => {
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 md:grid-cols-[200px_1fr]">
                 {Object.keys(TEMPLATES[lang].fields).map((field) => (
                   <div key={field} className="contents">
-                    <Label className="md:pt-2 md:text-end">
+                    <span className="text-sm font-medium md:pt-2 md:text-end">
                       {field.replace(/([A-Z])/g, " $1").trim()}
-                    </Label>
+                    </span>
                     <Textarea
                       value={texts[`${lang}_${field}`]}
                       onChange={(e) =>
@@ -95,9 +94,9 @@ const OrdersSettings = () => {
                   </div>
                 ))}
 
-                <Label className="md:pt-2 md:text-end">
+                <span className="text-sm font-medium md:pt-2 md:text-end">
                   Mavjud o`zgaruvchilar
-                </Label>
+                </span>
                 <Alert variant="default" className="items-center">
                   <FileSearchCorner />
                   <AlertTitle className="flex flex-col gap-1 text-sm font-normal">

@@ -1,12 +1,6 @@
 import { ROUTES } from "@/shared/config/routes"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/shared/ui/card"
-import Flex from "@/shared/ui/flex"
+import Card from "@shared/card"
+import Flex from "@shared/flex"
 import { ArrowUpRight, Bell } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import Chart from "./chart"
@@ -59,10 +53,10 @@ const Dashboard = () => {
   ]
 
   return (
-    <Flex direction="column" className="w-full" gap={5}>
+    <Flex direction="column" gap={5}>
       <Flex
         align="center"
-        className="w-full rounded-lg bg-blue-500 p-3 text-white"
+        className="rounded-lg bg-blue-500 p-3 text-white"
       >
         <Bell size={18} strokeWidth={2} />
         <div>
@@ -97,59 +91,43 @@ const Dashboard = () => {
       </div>
 
       <div className="grid w-full grid-cols-1 gap-5 sm:grid-cols-3">
-        <Card className="w-full">
-          <CardHeader>Jami sotuvlar</CardHeader>
-          <CardContent className="text-2xl">0 so'm</CardContent>
-        </Card>
-        <Card className="w-full">
-          <CardHeader>Buyurtmalar soni</CardHeader>
-          <CardContent className="text-2xl">0</CardContent>
-        </Card>
-        <Card className="w-full">
-          <CardHeader>O'rtacha buyurtmalar summasi</CardHeader>
-          <CardContent className="text-2xl">0 so'm</CardContent>
-        </Card>
+        <Card title="Jami sotuvlar" contentClassName="text-2xl">0 so'm</Card>
+        <Card title="Buyurtmalar soni" contentClassName="text-2xl">0</Card>
+        <Card title="O'rtacha buyurtmalar summasi" contentClassName="text-2xl">0 so'm</Card>
       </div>
 
       <Chart />
 
-      <Flex className="w-full">
-        <Card className="w-full pt-0">
-          <CardHeader className="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row">
-            <div className="grid flex-1 gap-1">
-              <CardTitle>Birinchi 10 ta sotuv qiling</CardTitle>
-            </div>
-          </CardHeader>
-          <CardContent className="flex flex-col gap-4">
-            <CardDescription>
-              Botingizga ko'proq tashrif buyuruvchilarni jalb qilish,
-              mijozlaringizning ishonchini qozonish va sotishni boshlash uchun
-              quyidagi amallarni bajaring.
-            </CardDescription>
-
-            {setupSteps.map((step) => (
-              <Flex key={step.to} align="center" gap={4}>
-                <span className={`h-10 w-1 rounded-full ${step.color}`} />
-                <Checkbox />
-                <Flex direction="column" gap={0}>
-                  <NavLink
-                    to={step.to}
-                    className="font-medium hover:text-blue-400"
-                  >
-                    {step.title}
-                  </NavLink>
-                  <span className="text-xs">{step.description}</span>
-                </Flex>
+      <Flex>
+        <Card
+          className="pt-0"
+          title="Birinchi 10 ta sotuv qiling"
+          headerClassName="flex items-center gap-2 space-y-0 border-b py-5 sm:flex-row"
+          description="Botingizga ko'proq tashrif buyuruvchilarni jalb qilish, mijozlaringizning ishonchini qozonish va sotishni boshlash uchun quyidagi amallarni bajaring."
+          contentClassName="flex flex-col gap-4"
+        >
+          {setupSteps.map((step) => (
+            <Flex key={step.to} align="center" gap={4}>
+              <span className={`h-10 w-1 rounded-full ${step.color}`} />
+              <Checkbox />
+              <Flex direction="column" gap={0}>
+                <NavLink
+                  to={step.to}
+                  className="font-medium hover:text-blue-400"
+                >
+                  {step.title}
+                </NavLink>
+                <span className="text-xs">{step.description}</span>
               </Flex>
-            ))}
-          </CardContent>
+            </Flex>
+          ))}
         </Card>
       </Flex>
 
       <Flex
         gap={0}
         direction="column"
-        className="w-full rounded-lg bg-violet-600 p-3.5 text-sm"
+        className="rounded-lg bg-violet-600 p-3.5 text-sm"
       >
         <span className="text-white">
           Bizning Telegram kanalimizga obuna bo`ling

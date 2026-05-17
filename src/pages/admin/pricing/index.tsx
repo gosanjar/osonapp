@@ -1,9 +1,10 @@
 import { useState } from "react"
-import Flex from "@/shared/ui/flex"
+import Flex from "@shared/flex"
 import { Button } from "@/shared/ui/button"
 import { Badge } from "@/shared/ui/badge"
 import { CheckCircle2 } from "lucide-react"
 import { cn } from "@utils/utils"
+import StatusBadge from "@shared/status-badge"
 
 type Period = "monthly" | "biannual" | "yearly"
 
@@ -78,7 +79,7 @@ const Pricing = () => {
   const [period, setPeriod] = useState<Period>("monthly")
 
   return (
-    <Flex direction="column" align="center" className="w-full" gap={8}>
+    <Flex direction="column" align="center" gap={8}>
       <Flex direction="column" align="center" gap={2}>
         <h1 className="text-3xl font-bold">Tarifingizni tanlang</h1>
         <p className="text-sm text-muted-foreground">
@@ -88,8 +89,10 @@ const Pricing = () => {
 
       <div className="flex items-center gap-1 rounded-xl border bg-muted p-1">
         {(["monthly", "biannual", "yearly"] as Period[]).map((p) => (
-          <button
+          <Button
             key={p}
+            type="button"
+            variant="ghost"
             onClick={() => setPeriod(p)}
             className={cn(
               "flex items-center gap-1.5 rounded-lg px-4 py-1.5 text-sm font-medium transition-colors",
@@ -100,11 +103,9 @@ const Pricing = () => {
           >
             {periodLabels[p]}
             {discounts[p] && (
-              <span className="rounded-md bg-green-100 px-1.5 py-0.5 text-xs font-semibold text-green-700 dark:bg-green-900 dark:text-green-300">
-                {discounts[p]}
-              </span>
+              <StatusBadge label={discounts[p]!} variant="green" />
             )}
-          </button>
+          </Button>
         ))}
       </div>
 

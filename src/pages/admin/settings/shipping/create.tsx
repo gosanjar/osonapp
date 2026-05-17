@@ -1,19 +1,12 @@
 import { useForm, useWatch } from "react-hook-form"
 import { Input } from "@/shared/ui/input"
-import { Label } from "@/shared/ui/label"
-import { Checkbox } from "@/shared/ui/checkbox"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/ui/select"
+import { SelectInput } from "@shared/select-input"
+import { CheckboxInput } from "@shared/checkbox-input"
 import { Info } from "lucide-react"
-import Flex from "@/shared/ui/flex"
-import StatusCard from "@/shared/components/status-card"
-import CreateLayout from "@/shared/components/create-layout"
-import FormCard from "@/shared/components/form-card"
+import Flex from "@shared/flex"
+import StatusCard from "@shared/status-card"
+import CreateLayout from "@shared/create-layout"
+import Card from "@shared/card"
 
 type ShippingForm = {
   name: string
@@ -45,34 +38,41 @@ const ShippingCreate = () => {
   return (
     <CreateLayout form={form} title="Yetkazib berish usullari">
       <div className="grid w-full grid-cols-[1fr_280px] items-start gap-4">
-        <FormCard title="Umumiy">
-          <Flex direction="column" gap={4} className="w-full">
-            <Label>Nomi <span className="text-destructive">*</span></Label>
-            <Input {...form.register("name")} placeholder="Доставка" className="w-full" />
+        <Card title="Umumiy" gap={4}>
+          <Input
+            label={<>Nomi <span className="text-destructive">*</span></>}
+            {...form.register("name")}
+            placeholder="Доставка"
+            className="w-full"
+          />
+
+          <Flex direction="column" gap={1}>
+            <span className="text-sm font-medium">Yetkazib berish turi <span className="text-destructive">*</span></span>
+            <SelectInput
+              defaultValue="fixed"
+              options={[
+                { value: "fixed", label: "Belgilangan summa" },
+                { value: "free", label: "Bepul" },
+                { value: "calculated", label: "Hisoblanadigan" },
+              ]}
+            />
           </Flex>
 
-          <Flex direction="column" gap={4} className="w-full">
-            <Label>Yetkazib berish turi <span className="text-destructive">*</span></Label>
-            <Select defaultValue="fixed">
-              <SelectTrigger className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="fixed">Belgilangan summa</SelectItem>
-                <SelectItem value="free">Bepul</SelectItem>
-                <SelectItem value="calculated">Hisoblanadigan</SelectItem>
-              </SelectContent>
-            </Select>
-          </Flex>
+          <Input
+            label={<>Yetkazib berish narxi <span className="text-destructive">*</span></>}
+            {...form.register("price")}
+            placeholder="20,000"
+            className="w-full"
+          />
 
-          <Flex direction="column" gap={4} className="w-full">
-            <Label>Yetkazib berish narxi <span className="text-destructive">*</span></Label>
-            <Input {...form.register("price")} placeholder="20,000" className="w-full" />
-          </Flex>
-
-          <Flex direction="column" gap={4} className="w-full">
-            <Label>Minimal buyurtma summasi</Label>
-            <Input type="number" {...form.register("minOrder")} placeholder="50,000" className="w-full" />
+          <Flex direction="column" gap={1}>
+            <Input
+              label="Minimal buyurtma summasi"
+              type="number"
+              {...form.register("minOrder")}
+              placeholder="50,000"
+              className="w-full"
+            />
             <div className="flex gap-2 rounded-md border border-blue-200 bg-blue-50 p-3 text-sm text-blue-600">
               <Info size={16} className="mt-0.5 shrink-0" />
               <span>
@@ -82,36 +82,30 @@ const ShippingCreate = () => {
           </Flex>
 
           <div className="grid w-full grid-cols-2 gap-4">
-            <Flex direction="column" gap={4} className="w-full">
-              <Label>Yetkazib berish vaqti (son)</Label>
-              <Input {...form.register("deliveryTime")} className="w-full" />
-            </Flex>
-            <Flex direction="column" gap={4} className="w-full">
-              <Label>Yetkazib berish vaqti birligi</Label>
-              <Select defaultValue="soat">
-                <SelectTrigger className="w-full">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="soat">soat</SelectItem>
-                  <SelectItem value="kun">kun</SelectItem>
-                  <SelectItem value="hafta">hafta</SelectItem>
-                </SelectContent>
-              </Select>
+            <Input
+              label="Yetkazib berish vaqti (son)"
+              {...form.register("deliveryTime")}
+              className="w-full"
+            />
+            <Flex direction="column" gap={1}>
+              <span className="text-sm font-medium">Yetkazib berish vaqti birligi</span>
+              <SelectInput
+                defaultValue="soat"
+                options={[
+                  { value: "soat", label: "soat" },
+                  { value: "kun", label: "kun" },
+                  { value: "hafta", label: "hafta" },
+                ]}
+              />
             </Flex>
           </div>
 
-          <Flex align="center" gap={4} className="w-full">
-            <Checkbox
-              id="allowDateSelect"
-              checked={allowDateSelect}
-              onCheckedChange={(v) => form.setValue("allowDateSelect", !!v)}
-            />
-            <Label htmlFor="allowDateSelect" className="cursor-pointer">
-              Yetkazib berish sanasi va vaqtini tanlash imkoniyatini qo'shing.
-            </Label>
-          </Flex>
-        </FormCard>
+          <CheckboxInput
+            value={allowDateSelect}
+            onChange={(v) => form.setValue("allowDateSelect", v)}
+            label="Yetkazib berish sanasi va vaqtini tanlash imkoniyatini qo'shing."
+          />
+        </Card>
 
         <StatusCard description="Yetkazib berish usuli holatini belgilang." />
       </div>

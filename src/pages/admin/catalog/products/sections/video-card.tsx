@@ -1,11 +1,14 @@
-import { useRef, useState } from "react"
+import { useRef } from "react"
+import { useFormContext } from "react-hook-form"
 import { Card, CardHeader, CardTitle, CardContent } from "@/shared/ui/card"
 import { Upload, Trash2 } from "lucide-react"
 import { Button } from "@/shared/ui/button"
+import type { ProductFormData } from "../create"
 
 export default function VideoCard() {
+  const { watch, setValue } = useFormContext<ProductFormData>()
+  const video = watch("video") || null
   const inputRef = useRef<HTMLInputElement | null>(null)
-  const [video, setVideo] = useState<string | null>(null)
 
   const openPicker = () => {
     inputRef.current?.click()
@@ -14,17 +17,14 @@ export default function VideoCard() {
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-
     const url = URL.createObjectURL(file)
-    setVideo(url)
-
-    // same file fix
+    setValue("video", url)
     e.target.value = ""
   }
 
   const removeVideo = () => {
-    if (video) URL.revokeObjectURL(video)
-    setVideo(null)
+    if (video?.startsWith("blob:")) URL.revokeObjectURL(video)
+    setValue("video", "")
   }
 
   return (

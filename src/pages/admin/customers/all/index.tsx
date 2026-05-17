@@ -1,14 +1,14 @@
 import type { Customer } from "@/entities/customer/types"
 import { customerMocks } from "@/mocks/customer-mocks"
 import { DataTable } from "@/shared/ui/data-table/data-table"
-import Flex from "@/shared/ui/flex"
-import AddButton from "@/shared/ui/predefined/add-button"
+import Flex from "@shared/flex"
+import AddButton from "@shared/predefined/add-button"
 import { columns } from "./columns"
 
 const AllCustomers = () => {
   return (
-    <Flex direction="column" className="w-full">
-      <Flex justify="end" className="w-full">
+    <Flex direction="column">
+      <Flex justify="end">
         <AddButton />
       </Flex>
 

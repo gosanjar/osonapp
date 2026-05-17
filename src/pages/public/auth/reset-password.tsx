@@ -4,10 +4,11 @@ import { useForm, useWatch, FormProvider } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import { ROUTES } from "@/shared/config/routes"
 import { AuthApi } from "@/entities/auth/api"
-import { FormControl } from "@/shared/ui/form-control"
-import { Input } from "@/shared/ui/input"
+import { FormControl } from "@shared/form-control"
+import { PasswordInput } from "@shared/password-input"
 import { passwordRules } from "@/shared/utils/validation"
 import { getApiError } from "@/shared/api"
+import { Button } from "@/shared/ui/button"
 import AuthLayout from "./layout"
 
 type ResetForm = { new_password: string; confirm_password: string }
@@ -59,7 +60,7 @@ export default function ResetPasswordPage() {
             required
             rules={passwordRules}
           >
-            <Input type="password" placeholder="••••••••" autoComplete="new-password" />
+            <PasswordInput placeholder="••••••••" autoComplete="new-password" />
           </FormControl>
 
           <FormControl<ResetForm>
@@ -68,7 +69,7 @@ export default function ResetPasswordPage() {
             required
             rules={{ validate: (v) => v === pw || "Parollar mos kelmadi" }}
           >
-            <Input type="password" placeholder="••••••••" autoComplete="new-password" />
+            <PasswordInput placeholder="••••••••" autoComplete="new-password" />
           </FormControl>
 
           {errorMsg && (
@@ -77,9 +78,9 @@ export default function ResetPasswordPage() {
             </p>
           )}
 
-          <button type="submit" disabled={isPending} className={btnClass}>
+          <Button type="submit" disabled={isPending} className={btnClass}>
             {isPending ? "Saqlanmoqda..." : "Parolni yangilash"}
-          </button>
+          </Button>
         </form>
       </FormProvider>
     </AuthLayout>

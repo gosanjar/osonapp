@@ -17,7 +17,7 @@ import {
 } from "lucide-react"
 import type { ISidebarMenuTree } from "./types"
 import { useMemo } from "react"
-import Icon from "@/shared/ui/icon"
+import Icon from "@shared/icon"
 import { useAuthStore } from "@/shared/store/auth.store"
 
 const useSidebar = () => {

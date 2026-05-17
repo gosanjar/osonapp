@@ -1,15 +1,29 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { RecommendationsApi } from "@/entities/catalog/api"
 import { DataTable } from "@/shared/ui/data-table/data-table"
-import Flex from "@/shared/ui/flex"
-import AddButton from "@/shared/ui/predefined/add-button"
-import GuideButton from "@/shared/ui/predefined/guide-button"
-import { columns, type Recommendation } from "./columns"
-
-const data: Recommendation[] = []
+import Flex from "@shared/flex"
+import AddButton from "@shared/predefined/add-button"
+import GuideButton from "@shared/predefined/guide-button"
+import { getColumns } from "./columns"
 
 const Recommendations = () => {
+  const queryClient = useQueryClient()
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["recommendations"],
+    queryFn: () => RecommendationsApi.list(),
+  })
+
+  const { mutate: remove, isPending: isDeleting } = useMutation({
+    mutationFn: (id: number) => RecommendationsApi.remove(id),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["recommendations"] }),
+  })
+
+  const recommendations = data?.data?.results ?? []
+
   return (
-    <Flex direction="column" className="w-full" gap={4}>
-      <Flex justify="between" align="center" className="w-full">
+    <Flex direction="column" gap={4}>
+      <Flex justify="between" align="center">
         <h1 className="text-2xl font-bold">Mahsulot tavsiyalari</h1>
         <Flex>
           <GuideButton />
@@ -18,10 +32,10 @@ const Recommendations = () => {
       </Flex>
 
       <DataTable
-        columns={columns}
-        data={data}
-        noResultsTitle="Bu erda siz mijozlaringizga ideal xaridlarini topishda yordam berish uchun mahsulotlar turlari bo'yicha tavsiyalar qo'shishingiz mumkin"
-        noResultsContent="Turli toifadagi mahsulotlar uchun tavsiyalar yarating, mijozlaringizni qiziqtirishi mumkin bo'lgan o'xshash yoki qo'shimcha mahsulotlarni taklif qiling"
+        columns={getColumns({ onDelete: remove, isDeleting })}
+        data={recommendations}
+        noResultsTitle={isLoading ? "Yuklanmoqda..." : "Hech qanday tavsiya topilmadi"}
+        noResultsContent="Turli toifadagi mahsulotlar uchun tavsiyalar yarating, mijozlaringizni qiziqtirishi mumkin bo'lgan o'xshash yoki qo'shimcha mahsulotlarni taklif qiling."
       />
     </Flex>
   )

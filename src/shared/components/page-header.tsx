@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import Flex from "@/shared/ui/flex"
+import Flex from "@shared/flex"
 
 interface PageHeaderProps {
   title: string
@@ -8,7 +8,7 @@ interface PageHeaderProps {
 
 export default function PageHeader({ title, children }: PageHeaderProps) {
   return (
-    <Flex justify="between" align="center" className="w-full">
+    <Flex justify="between" align="center">
       <h1 className="text-2xl font-bold">{title}</h1>
       {children && <Flex>{children}</Flex>}
     </Flex>

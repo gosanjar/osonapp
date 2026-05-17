@@ -1,5 +1,5 @@
 import type { Customer } from "@/entities/customer/types"
-import StatusBadge from "@/shared/components/status-badge"
+import StatusBadge from "@shared/status-badge"
 import { DataTableColumnHeader } from "@/shared/ui/data-table/data-table-column-header"
 import { type ColumnDef } from "@tanstack/react-table"
 

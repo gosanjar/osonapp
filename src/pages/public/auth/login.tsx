@@ -3,10 +3,10 @@ import { useForm, FormProvider } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import AuthLayout from "./layout"
 import { AuthApi } from "@/entities/auth/api"
-import { PhoneFormControl } from "@/shared/ui/phone-form-control"
-import { FormControl } from "@/shared/ui/form-control"
+import { PhoneFormControl } from "@shared/phone-form-control"
+import { FormControl } from "@shared/form-control"
 import { getApiError } from "@/shared/api"
-import { Input } from "@/shared/ui/input"
+import { PasswordInput } from "@shared/password-input"
 import { Button } from "@/shared/ui/button"
 import { Alert, AlertDescription } from "@/shared/ui/alert"
 import { Link, useLocation } from "react-router-dom"
@@ -77,7 +77,7 @@ export default function LoginPage() {
               </Button>
             </div>
             <FormControl<FormValues> name="password" required>
-              <Input type="password" placeholder="Kamida 8 ta belgi" />
+              <PasswordInput placeholder="Kamida 8 ta belgi" />
             </FormControl>
           </div>
 

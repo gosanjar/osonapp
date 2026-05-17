@@ -2,6 +2,8 @@ import { useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
 import PublicNav from "./nav"
 import PublicFooter from "./footer"
+import { Button } from "@/shared/ui/button"
+import { Input } from "@/shared/ui/input"
 
 const categories = [
   { slug: "all", label: "Barchasi" },
@@ -274,19 +276,21 @@ export default function BlogPage() {
               </p>
             ) : (
               <div className="mx-auto flex max-w-md flex-col gap-3 sm:flex-row">
-                <input
+                <Input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email manzilingiz"
                   className="flex-1 rounded-xl border border-border bg-background px-5 py-3 text-sm text-foreground placeholder-muted-foreground transition-colors outline-none focus:border-primary"
                 />
-                <button
+                <Button
+                  type="button"
+                  variant="ghost"
                   onClick={() => email && setSubscribed(true)}
                   className="shrink-0 rounded-xl bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
                 >
                   Obuna bo'lish
-                </button>
+                </Button>
               </div>
             )}
           </div>

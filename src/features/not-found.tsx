@@ -1,5 +1,5 @@
 import { ROUTES } from "@/shared/config/routes"
-import Flex from "@/shared/ui/flex"
+import Flex from "@shared/flex"
 import { ArrowLeft } from "lucide-react"
 import { NavLink } from "react-router-dom"
 

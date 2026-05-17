@@ -1,13 +1,13 @@
 import { DataTable } from "@/shared/ui/data-table/data-table"
-import Flex from "@/shared/ui/flex"
-import AddButton from "@/shared/ui/predefined/add-button"
+import Flex from "@shared/flex"
+import AddButton from "@shared/predefined/add-button"
 import { ROUTES } from "@/shared/config/routes"
 import { columns, type PromoCode } from "./columns"
 
 const Discount = () => {
   return (
-    <Flex direction="column" className="w-full">
-      <Flex justify="between" align="center" className="w-full">
+    <Flex direction="column">
+      <Flex justify="between" align="center">
         <h1 className="text-2xl font-bold">Promo kodlar</h1>
         <AddButton to={ROUTES.MARKETING_DISCOUNT_CREATE} />
       </Flex>
