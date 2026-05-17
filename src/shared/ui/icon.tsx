@@ -1,26 +1,23 @@
-import { HugeiconsIcon, type IconSvgElement } from "@hugeicons/react"
+import type { LucideIcon } from "lucide-react"
 
 const Icon = ({
-  icon,
+  icon: IconComponent,
   size = 18,
   color,
   className,
-  strokeWidth,
-  ...props
+  strokeWidth = 2,
 }: {
-  icon: IconSvgElement
+  icon: LucideIcon
   size?: number
   color?: string
   strokeWidth?: number
   className?: string
 }) => (
-  <HugeiconsIcon
-    icon={icon}
+  <IconComponent
     size={size}
     color={color}
-    className={`shrink-0 ${className || ""}`}
+    className={`shrink-0 ${className ?? ""}`}
     strokeWidth={strokeWidth}
-    {...props}
   />
 )
 

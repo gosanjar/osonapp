@@ -27,6 +27,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const params = new URLSearchParams(window.location.search)
     const urlToken = params.get("token")
     const urlRefresh = params.get("refresh")
+    const botToken = params.get("bot_token")
+
+    if (botToken) {
+      params.delete("bot_token")
+      const clean = window.location.pathname + (params.toString() ? `?${params}` : "")
+      window.history.replaceState({}, "", clean)
+      AuthApi.botLogin(botToken)
+        .then((res) => {
+          const { access, refresh } = res.data
+          if (access) localStorage.setItem(TOKEN_KEY, access)
+          if (refresh) localStorage.setItem(REFRESH_KEY, refresh)
+          window.location.replace(window.location.pathname)
+        })
+        .catch(() => null)
+      return
+    }
+
     if (urlToken) {
       localStorage.setItem(TOKEN_KEY, urlToken)
       params.delete("token")

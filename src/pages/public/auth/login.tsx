@@ -1,12 +1,10 @@
 import { ROUTES } from "@/shared/config/routes"
-import { AuthRedirectLink } from "./components/auth-redirect-link"
 import { useForm, FormProvider } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
 import AuthLayout from "./layout"
 import { AuthApi } from "@/entities/auth/api"
-import { PhoneInput } from "@/shared/ui/phone-input"
+import { PhoneFormControl } from "@/shared/ui/phone-form-control"
 import { FormControl } from "@/shared/ui/form-control"
-import { PHONE_PATTERN } from "@/shared/utils/validation"
 import { getApiError } from "@/shared/api"
 import { Input } from "@/shared/ui/input"
 import { Button } from "@/shared/ui/button"
@@ -19,7 +17,10 @@ type FormValues = { phone_number: string; password: string }
 
 export default function LoginPage() {
   const { state } = useLocation()
-  const locationState = state as { phone?: string; alreadyRegistered?: boolean } | null
+  const locationState = state as {
+    phone?: string
+    alreadyRegistered?: boolean
+  } | null
   const form = useForm<FormValues>({
     defaultValues: { phone_number: locationState?.phone ?? "" },
   })
@@ -38,7 +39,11 @@ export default function LoginPage() {
   const errorMsg = getApiError(error, "Telefon raqam yoki parol noto'g'ri")
 
   return (
-    <AuthLayout>
+    <AuthLayout
+      redirectText="Akkauntingiz yo'qmi?"
+      redirectLinkText="Ro'yxatdan o'tish"
+      redirectTo={ROUTES.REGISTER}
+    >
       <div className="mb-8">
         <h1 className="mb-1 text-2xl font-bold">Akkauntga kirish</h1>
         <p className="text-sm text-muted-foreground">
@@ -60,19 +65,7 @@ export default function LoginPage() {
           className="space-y-4"
           noValidate
         >
-          <FormControl<FormValues>
-            name="phone_number"
-            label="Telefon raqam"
-            required
-            rules={{
-              pattern: {
-                value: PHONE_PATTERN,
-                message: "Noto'g'ri format. Masalan: +998901234567",
-              },
-            }}
-          >
-            <PhoneInput placeholder="90 123 45 67" />
-          </FormControl>
+          <PhoneFormControl<FormValues> name="phone_number" />
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
@@ -103,12 +96,6 @@ export default function LoginPage() {
           </Button>
         </form>
       </FormProvider>
-
-      <AuthRedirectLink
-        text="Akkauntingiz yo'qmi?"
-        linkText="Ro'yxatdan o'tish"
-        to={ROUTES.REGISTER}
-      />
     </AuthLayout>
   )
 }

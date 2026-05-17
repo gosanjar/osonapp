@@ -1,168 +1,69 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { AuthRedirectLink } from "./components/auth-redirect-link"
-import { ROUTES } from "@/shared/config/routes"
-import { useForm, useWatch, FormProvider } from "react-hook-form"
+import { Send } from "lucide-react"
+import { useForm, FormProvider, useWatch } from "react-hook-form"
 import { useMutation } from "@tanstack/react-query"
+import { ROUTES } from "@/shared/config/routes"
 import AuthLayout from "./layout"
 import { AuthApi } from "@/entities/auth/api"
-import { OtpStep } from "@/shared/components/otp-step"
-import { Input } from "@/shared/ui/input"
-import { FormControl } from "@/shared/ui/form-control"
-import { PHONE_PATTERN, passwordRules } from "@/shared/utils/validation"
+import { PhoneFormControl } from "@/shared/ui/phone-form-control"
 import { getApiError } from "@/shared/api"
-
-type Step = "phone" | "otp" | "reset"
-
-const btnClass =
-  "mt-2 w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-60"
+import { PHONE_PATTERN } from "@/shared/utils/validation"
+import { TelegramBotCard, TelegramBotButton } from "./components/telegram-bot-card"
+import { openBot } from "./components/telegram-bot"
 
 type PhoneForm = { phone_number: string }
-type ResetForm = { new_password: string; confirm_password: string }
 
 export default function ForgotPasswordPage() {
-  const navigate = useNavigate()
-  const [step, setStep] = useState<Step>("phone")
-  const [phone, setPhone] = useState("")
-  const [resetToken, setResetToken] = useState("")
+  const form = useForm<PhoneForm>()
+  const phoneValue =
+    useWatch({ control: form.control, name: "phone_number" }) || ""
+  const isPhoneValid = PHONE_PATTERN.test(phoneValue)
 
-  const phoneForm = useForm<PhoneForm>()
-  const resetForm = useForm<ResetForm>()
-
-  const sendOtp = useMutation({
+  const { mutate, isPending, error, isSuccess } = useMutation({
     mutationFn: (phone_number: string) => AuthApi.forgotPassword(phone_number),
-    onSuccess: (_, phone_number) => {
-      setPhone(phone_number)
-      setStep("otp")
-    },
+    onSuccess: () => openBot(),
   })
 
-  const verifyOtp = useMutation({
-    mutationFn: (otp: string) => AuthApi.verifyOtp(phone, otp),
-    onSuccess: (res) => {
-      setResetToken(res.data.reset_token)
-      setStep("reset")
-    },
-  })
+  const errorMsg = getApiError(error, "Xatolik yuz berdi")
 
-  const resetPassword = useMutation({
-    mutationFn: (new_password: string) =>
-      AuthApi.resetPassword(phone, resetToken, new_password),
-    onSuccess: () => navigate(ROUTES.LOGIN),
-  })
-
-  if (step === "phone") {
-    const errorMsg = getApiError(sendOtp.error, "Xatolik yuz berdi")
-
+  if (isSuccess) {
     return (
-      <AuthLayout>
+      <AuthLayout
+        redirectText="Esladingizmi?"
+        redirectLinkText="Kirish"
+        redirectTo={ROUTES.LOGIN}
+      >
         <div className="mb-8">
-          <h1 className="mb-1 text-2xl font-bold">Parolni tiklash</h1>
+          <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+            <Send size={24} strokeWidth={2} className="text-primary" />
+          </div>
+          <h1 className="mb-1 text-2xl font-bold">Telegram ga o'ting</h1>
           <p className="text-sm text-muted-foreground">
-            Telegram botga bog'langan telefon raqamingizni kiriting
+            Parolni tiklash havolasi Telegram botga yuborildi. Botni oching va
+            havolaga bosing.
           </p>
         </div>
 
-        <FormProvider {...phoneForm}>
-          <form
-            onSubmit={phoneForm.handleSubmit((d) =>
-              sendOtp.mutate(d.phone_number)
-            )}
-            className="space-y-4"
-          >
-            <FormControl<PhoneForm>
-              name="phone_number"
-              label="Telefon raqam"
-              required
-              rules={{
-                pattern: {
-                  value: PHONE_PATTERN,
-                  message: "Noto'g'ri format. Masalan: +998901234567",
-                },
-              }}
-            >
-              <Input type="tel" placeholder="+998 90 123 45 67" />
-            </FormControl>
-
-            {errorMsg && (
-              <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
-                {errorMsg}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={sendOtp.isPending}
-              className={btnClass}
-            >
-              {sendOtp.isPending ? "Yuborilmoqda..." : "Kod yuborish"}
-            </button>
-          </form>
-        </FormProvider>
-
-        <AuthRedirectLink
-          text="Esladingizmi?"
-          linkText="Kirish"
-          to={ROUTES.LOGIN}
-        />
+        <TelegramBotButton onClick={() => openBot()} />
       </AuthLayout>
     )
   }
-
-  if (step === "otp") {
-    return (
-      <AuthLayout>
-        <OtpStep
-          phone={phone}
-          isPending={verifyOtp.isPending}
-          error={getApiError(verifyOtp.error, "Kod noto'g'ri")}
-          onSubmit={(otp) => verifyOtp.mutate(otp)}
-          onBack={() => {
-            setStep("phone")
-            sendOtp.reset()
-          }}
-        />
-      </AuthLayout>
-    )
-  }
-
-  // step === "reset"
-  const errorMsg = getApiError(resetPassword.error, "Xatolik yuz berdi")
-  const pw = useWatch({ control: resetForm.control, name: "new_password" })
 
   return (
-    <AuthLayout>
+    <AuthLayout
+      redirectText="Esladingizmi?"
+      redirectLinkText="Kirish"
+      redirectTo={ROUTES.LOGIN}
+    >
       <div className="mb-8">
-        <h1 className="mb-1 text-2xl font-bold">Yangi parol</h1>
+        <h1 className="mb-1 text-2xl font-bold">Parolni tiklash</h1>
         <p className="text-sm text-muted-foreground">
-          Kamida 8 ta belgidan iborat parol kiriting
+          Telegram botga bog'langan telefon raqamingizni kiriting
         </p>
       </div>
 
-      <FormProvider {...resetForm}>
-        <form
-          onSubmit={resetForm.handleSubmit((d) =>
-            resetPassword.mutate(d.new_password)
-          )}
-          className="space-y-4"
-        >
-          <FormControl<ResetForm>
-            name="new_password"
-            label="Yangi parol"
-            required
-            rules={passwordRules}
-          >
-            <Input type="password" placeholder="••••••••" />
-          </FormControl>
-
-          <FormControl<ResetForm>
-            name="confirm_password"
-            label="Parolni tasdiqlang"
-            required
-            rules={{ validate: (v) => v === pw || "Parollar mos kelmadi" }}
-          >
-            <Input type="password" placeholder="••••••••" />
-          </FormControl>
+      <FormProvider {...form}>
+        <form className="space-y-4" noValidate>
+          <PhoneFormControl<PhoneForm> name="phone_number" />
 
           {errorMsg && (
             <p className="rounded-lg bg-destructive/10 px-4 py-2 text-sm text-destructive">
@@ -170,13 +71,16 @@ export default function ForgotPasswordPage() {
             </p>
           )}
 
-          <button
-            type="submit"
-            disabled={resetPassword.isPending}
-            className={btnClass}
-          >
-            {resetPassword.isPending ? "Saqlanmoqda..." : "Parolni yangilash"}
-          </button>
+          <TelegramBotCard
+            steps={[
+              "Quyidagi tugmani bosing",
+              "Bot parolni tiklash havolasini yuboradi",
+              "Havolaga bosib parolni yangilang",
+            ]}
+            disabled={!isPhoneValid}
+            isPending={isPending}
+            onClick={() => mutate(phoneValue)}
+          />
         </form>
       </FormProvider>
     </AuthLayout>

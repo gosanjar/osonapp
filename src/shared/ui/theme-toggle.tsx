@@ -1,6 +1,5 @@
-import { Moon02Icon, Sun01Icon } from "@hugeicons/core-free-icons"
+import { Moon, Sun } from "lucide-react"
 import { useEffect, useState } from "react"
-import Icon from "./icon"
 import { Button } from "./button"
 
 const ThemeToggle = () => {
@@ -23,6 +22,8 @@ const ThemeToggle = () => {
     setTimeout(() => setAnimating(false), 300)
   }
 
+  const IconComponent = dark ? Moon : Sun
+
   return (
     <Button
       onClick={toggle}
@@ -32,13 +33,11 @@ const ThemeToggle = () => {
         style={{
           display: "inline-flex",
           transition: "transform 0.3s ease, opacity 0.3s ease",
-          transform: animating
-            ? "rotate(180deg) scale(0)"
-            : "rotate(0deg) scale(1)",
+          transform: animating ? "rotate(180deg) scale(0)" : "rotate(0deg) scale(1)",
           opacity: animating ? 0 : 1,
         }}
       >
-        <Icon icon={dark ? Moon02Icon : Sun01Icon} size={18} strokeWidth={2} />
+        <IconComponent size={18} strokeWidth={2} />
       </span>
     </Button>
   )

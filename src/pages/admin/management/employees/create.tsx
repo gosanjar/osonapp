@@ -7,7 +7,7 @@ import type { EmployeeCreateData } from "@/entities/employees/types"
 import { RolesApi } from "@/entities/roles/api"
 import { getApiError } from "@/shared/api"
 import { Input } from "@/shared/ui/input"
-import { PhoneInput } from "@/shared/ui/phone-input"
+import { PhoneFormControl } from "@/shared/ui/phone-form-control"
 import { Checkbox } from "@/shared/ui/checkbox"
 import { Label } from "@/shared/ui/label"
 import {
@@ -116,13 +116,9 @@ const EmployeeCreate = () => {
         </div>
 
         <div className="grid w-full grid-cols-2 gap-4">
-          <FormControl<EmployeeCreateData>
+          <PhoneFormControl<EmployeeCreateData>
             name="phone_number"
-            label="Telefon raqami"
-            required
-          >
-            <PhoneInput placeholder="901234567" />
-          </FormControl>
+          />
 
           <FormControl<EmployeeCreateData>
             name="password"

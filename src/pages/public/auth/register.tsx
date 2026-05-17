@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react"
 import { useNavigate } from "react-router-dom"
-import { AuthRedirectLink } from "./components/auth-redirect-link"
 import { ROUTES } from "@/shared/config/routes"
 import { useForm, useWatch, FormProvider } from "react-hook-form"
 import { useMutation, useQuery } from "@tanstack/react-query"
@@ -8,7 +7,9 @@ import { Loader2 } from "lucide-react"
 import AuthLayout from "./layout"
 import { AuthApi } from "@/entities/auth/api"
 import { Button } from "@/shared/ui/button"
-import { PhoneInput } from "@/shared/ui/phone-input"
+import { PhoneFormControl } from "@/shared/ui/phone-form-control"
+import { TelegramBotCard } from "./components/telegram-bot-card"
+import { openBot, getDeepLink } from "./components/telegram-bot"
 import { Input } from "@/shared/ui/input"
 import { FormControl } from "@/shared/ui/form-control"
 import {
@@ -20,17 +21,11 @@ import { getApiError } from "@/shared/api"
 
 type Step = "phone" | "details"
 
-const TelegramIcon = () => (
-  <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z" />
-  </svg>
-)
-
 type PhoneForm = { phone_number: string }
 type DetailsForm = {
   first_name: string
   last_name: string
-  shop_name: string
+  subdomain: string
   password: string
   confirm_password: string
 }
@@ -58,7 +53,8 @@ export default function RegisterPage() {
   })
 
   useEffect(() => {
-    if (phoneCheck?.data.exists) navigate(ROUTES.LOGIN, { state: { phone: phoneValue } })
+    if (phoneCheck?.data.exists)
+      navigate(ROUTES.LOGIN, { state: { phone: phoneValue } })
   }, [phoneCheck, navigate])
 
   const onRegisterToken = useCallback(
@@ -73,21 +69,21 @@ export default function RegisterPage() {
   useEffect(() => {
     if (step !== "phone" || !isPhoneValid || !botClicked) return
 
-    const wsUrl = (import.meta.env.VITE_API_URL as string).replace(
-      /^http/,
-      "ws"
+    const apiUrl = (import.meta.env.VITE_API_URL as string) ?? ""
+    const es = new EventSource(
+      `${apiUrl}/auth/pre-reg-stream/?phone_number=${encodeURIComponent(phoneValue)}`
     )
-    const digits = phoneValue.replace(/\D/g, "")
-    const ws = new WebSocket(`${wsUrl}/ws/pre-reg/${digits}/`)
 
-    ws.onmessage = (e) => {
+    es.onmessage = (e) => {
       try {
         const data = JSON.parse(e.data) as {
           register_token?: string
           already_registered?: boolean
         }
         if (data.already_registered) {
-          navigate(ROUTES.LOGIN, { state: { phone: phoneValue, alreadyRegistered: true } })
+          navigate(ROUTES.LOGIN, {
+            state: { phone: phoneValue, alreadyRegistered: true },
+          })
         } else if (data.register_token) {
           onRegisterToken(data.register_token)
         }
@@ -96,26 +92,26 @@ export default function RegisterPage() {
       }
     }
 
-    ws.onerror = () => ws.close()
+    es.onerror = () => es.close()
 
-    return () => ws.close()
+    return () => es.close()
   }, [step, isPhoneValid, phoneValue, botClicked, onRegisterToken])
 
-  const shopName =
-    useWatch({ control: detailsForm.control, name: "shop_name" }) || ""
+  const subdomain =
+    useWatch({ control: detailsForm.control, name: "subdomain" }) || ""
   const pw = useWatch({ control: detailsForm.control, name: "password" })
 
   useEffect(() => {
-    const cleaned = shopName.replace(/[^a-zA-Z\s]/g, "")
-    if (cleaned !== shopName) detailsForm.setValue("shop_name", cleaned)
-  }, [shopName, detailsForm])
+    const cleaned = subdomain.replace(/[^a-zA-Z\s]/g, "")
+    if (cleaned !== subdomain) detailsForm.setValue("subdomain", cleaned)
+  }, [subdomain, detailsForm])
 
   const register = useMutation({
-    mutationFn: ({ first_name, last_name, shop_name, password }: DetailsForm) =>
+    mutationFn: ({ first_name, last_name, subdomain, password }: DetailsForm) =>
       AuthApi.register({
         first_name,
         last_name,
-        shop_name,
+        subdomain,
         password,
         phone_number: phone,
         register_token: registerToken,
@@ -129,7 +125,11 @@ export default function RegisterPage() {
 
   if (step === "phone") {
     return (
-      <AuthLayout>
+      <AuthLayout
+        redirectText="Akkauntingiz bormi?"
+        redirectLinkText="Kirish"
+        redirectTo={ROUTES.LOGIN}
+      >
         <div className="mb-8">
           <h1 className="mb-1 text-2xl font-bold">Ro'yxatdan o'tish</h1>
           <p className="text-sm text-muted-foreground">
@@ -139,53 +139,27 @@ export default function RegisterPage() {
 
         <FormProvider {...phoneForm}>
           <form className="space-y-4" noValidate>
-            <FormControl<PhoneForm>
+            <PhoneFormControl<PhoneForm>
               name="phone_number"
-              label="Telefon raqam"
-              required
               labelRight={
                 isCheckingPhone ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : null
               }
-              rules={{
-                pattern: {
-                  value: PHONE_PATTERN,
-                  message: "Noto'g'ri format. Masalan: +998901234567",
-                },
-              }}
-            >
-              <PhoneInput placeholder="90 123 45 67" />
-            </FormControl>
+            />
 
-            <div className="rounded-xl border border-border bg-muted p-4">
-              <p className="mb-2 text-sm font-medium">
-                Telegram bot orqali tasdiqlang
-              </p>
-              <ol className="mb-3 space-y-1 text-sm text-muted-foreground">
-                <li>1. Quyidagi tugmani bosing</li>
-                <li>2. Botda telefon raqamingizni ulashing</li>
-                <li>3. Tasdiqlanishi bilan avtomatik davom etadi</li>
-              </ol>
-              {isPhoneValid && !isCheckingPhone ? (
-                <Button
-                  className="w-full bg-[#229ED9] text-white hover:bg-[#229ED9]/90"
-                  onClick={() => {
-                    setBotClickedPhone(phoneValue)
-                    const tab = window.open(`https://t.me/osonapp_bot?start=${phoneValue.replace(/\D/g, "")}`, "_blank")
-                    if (tab) setTimeout(() => tab.close(), 2000)
-                  }}
-                >
-                  <TelegramIcon />
-                  @osonapp_bot ga o'tish
-                </Button>
-              ) : (
-                <Button disabled className="w-full bg-[#229ED9] text-white">
-                  <TelegramIcon />
-                  @osonapp_bot ga o'tish
-                </Button>
-              )}
-            </div>
+            <TelegramBotCard
+              steps={[
+                "Quyidagi tugmani bosing",
+                "Botda telefon raqamingizni ulashing",
+                "Tasdiqlanishi bilan avtomatik davom etadi",
+              ]}
+              disabled={!isPhoneValid || isCheckingPhone}
+              onClick={() => {
+                setBotClickedPhone(phoneValue)
+                openBot(getDeepLink(phoneValue.replace(/\D/g, "")))
+              }}
+            />
 
             {isPhoneValid && botClicked && (
               <p className="animate-pulse text-center text-sm text-muted-foreground">
@@ -194,12 +168,6 @@ export default function RegisterPage() {
             )}
           </form>
         </FormProvider>
-
-        <AuthRedirectLink
-          text="Akkauntingiz bormi?"
-          linkText="Kirish"
-          to={ROUTES.LOGIN}
-        />
       </AuthLayout>
     )
   }
@@ -209,8 +177,13 @@ export default function RegisterPage() {
     register.error,
     "Ro'yxatdan o'tishda xatolik yuz berdi"
   )
+
   return (
-    <AuthLayout>
+    <AuthLayout
+      redirectText="Akkauntingiz bormi?"
+      redirectLinkText="Kirish"
+      redirectTo={ROUTES.LOGIN}
+    >
       <div className="mb-8">
         <h1 className="mb-1 text-2xl font-bold">Ma'lumotlarni kiriting</h1>
         <p className="text-sm text-muted-foreground">
@@ -238,7 +211,7 @@ export default function RegisterPage() {
           </div>
 
           <FormControl<DetailsForm>
-            name="shop_name"
+            name="subdomain"
             label="Do'kon nomi"
             required
             rules={shopNameRules}
@@ -287,12 +260,6 @@ export default function RegisterPage() {
           </Button>
         </form>
       </FormProvider>
-
-      <AuthRedirectLink
-        text="Akkauntingiz bormi?"
-        linkText="Kirish"
-        to={ROUTES.LOGIN}
-      />
     </AuthLayout>
   )
 }

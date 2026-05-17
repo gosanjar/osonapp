@@ -1,7 +1,6 @@
 import { ROUTES } from "@/shared/config/routes"
 import Flex from "@/shared/ui/flex"
-import Icon from "@/shared/ui/icon"
-import { ArrowLeft02Icon } from "@hugeicons/core-free-icons"
+import { ArrowLeft } from "lucide-react"
 import { NavLink } from "react-router-dom"
 
 const NotFound = () => {
@@ -17,10 +16,11 @@ const NotFound = () => {
         to={ROUTES.ROOT}
         className="flex items-center gap-2.5 rounded-md bg-secondary-foreground p-2 text-2xl font-medium text-secondary"
       >
-        <Icon icon={ArrowLeft02Icon} size={32} />
+        <ArrowLeft size={32} strokeWidth={2} />
         Go Home
       </NavLink>
     </Flex>
   )
 }
+
 export default NotFound

@@ -14,6 +14,7 @@ const mainDomainRoutes = (): RouteObject[] => [
   { path: ROUTES.LOGIN, Component: lazy(() => import("@/pages/public/auth/login")) },
   { path: ROUTES.REGISTER, Component: lazy(() => import("@/pages/public/auth/register")) },
   { path: ROUTES.FORGOT_PASSWORD, Component: lazy(() => import("@/pages/public/auth/forgot-password")) },
+  { path: ROUTES.RESET_PASSWORD, Component: lazy(() => import("@/pages/public/auth/reset-password")) },
   { path: ROUTES.PRICING, Component: lazy(() => import("@/pages/public/pricing")) },
   { path: ROUTES.BLOG, Component: lazy(() => import("@/pages/public/blog")) },
   { path: ROUTES.FOR_NICHE, Component: lazy(() => import("@/pages/public/niche")) },

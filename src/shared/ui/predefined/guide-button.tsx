@@ -1,11 +1,10 @@
-import { Youtube } from "@hugeicons/core-free-icons"
+import { Youtube } from "lucide-react"
 import { Button } from "../button"
-import Icon from "../icon"
 
 const GuideButton = () => {
   return (
     <Button size="lg" variant="outline">
-      <Icon icon={Youtube} />
+      <Youtube size={18} strokeWidth={2} />
       Qo'llanma
     </Button>
   )

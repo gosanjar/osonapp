@@ -2,9 +2,17 @@ import { Link } from "react-router-dom"
 
 interface AuthLayoutProps {
   children: React.ReactNode
+  redirectText?: string
+  redirectLinkText?: string
+  redirectTo?: string
 }
 
-export default function AuthLayout({ children }: AuthLayoutProps) {
+export default function AuthLayout({
+  children,
+  redirectText,
+  redirectLinkText,
+  redirectTo,
+}: AuthLayoutProps) {
   return (
     <div className="grid h-screen grid-cols-1 bg-secondary lg:grid-cols-2">
       <div className="flex flex-col items-center justify-center overflow-y-auto px-8 py-10 text-secondary-foreground sm:px-16">
@@ -14,7 +22,20 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
               OSON APP
             </Link>
           </div>
+
           {children}
+
+          {redirectTo && redirectText && redirectLinkText && (
+            <p className="mt-6 text-center text-sm text-muted-foreground">
+              {redirectText}{" "}
+              <Link
+                to={redirectTo}
+                className="text-primary transition-colors hover:text-primary/80"
+              >
+                {redirectLinkText}
+              </Link>
+            </p>
+          )}
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 import { Suspense, useState } from "react"
 import Sidebar from "../sidebar"
 import { NavLink, Outlet, useLocation } from "react-router-dom"
-import { Loading03Icon, Menu02Icon } from "@hugeicons/core-free-icons"
+import { Loader2, Menu } from "lucide-react"
 import useSidebar from "@/entities/sidebar/use-sidebar"
 import Flex from "@/shared/ui/flex"
 import Icon from "@/shared/ui/icon"
@@ -34,7 +34,6 @@ const MainLayout = () => {
           className={`absolute inset-0 bg-black/50 transition-opacity ${open ? "opacity-100" : "opacity-0"}`}
           onClick={() => setOpen(false)}
         />
-
         <div
           className={`absolute top-0 left-0 h-full w-64 transform bg-background shadow-xl transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"}`}
         >
@@ -55,7 +54,7 @@ const MainLayout = () => {
         >
           <Flex align="center">
             <Button className="lg:hidden" onClick={() => setOpen(true)}>
-              <Icon icon={Menu02Icon} />
+              <Icon icon={Menu} />
             </Button>
             <div className="items-center gap-2.5 text-lg font-medium">
               {currentLabel}
@@ -75,7 +74,7 @@ const MainLayout = () => {
           <Suspense
             fallback={
               <div className="flex flex-1 w-full items-center justify-center">
-                <Icon icon={Loading03Icon} className="animate-spin" />
+                <Loader2 size={18} strokeWidth={2} className="animate-spin" />
               </div>
             }
           >
@@ -83,17 +82,11 @@ const MainLayout = () => {
             <Flex justify="between" className="mt-auto w-full text-sm">
               <div>
                 <span className="text-gray-400">2026© </span>
-                <NavLink
-                  to="https://osonapp.uz"
-                  className="hover:text-blue-500"
-                >
+                <NavLink to="https://osonapp.uz" className="hover:text-blue-500">
                   Osonapp
                 </NavLink>
               </div>
-              <NavLink
-                to="https://osonapp.uz/support"
-                className="hover:text-blue-500"
-              >
+              <NavLink to="https://osonapp.uz/support" className="hover:text-blue-500">
                 Support
               </NavLink>
             </Flex>

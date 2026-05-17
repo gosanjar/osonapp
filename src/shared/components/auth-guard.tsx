@@ -1,8 +1,7 @@
 import { Outlet } from "react-router-dom"
 import { useAuth } from "@/shared/providers/auth-provider"
 import Flex from "@/shared/ui/flex"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Loading03Icon } from "@hugeicons/core-free-icons"
+import { Loader2 } from "lucide-react"
 
 export function AuthGuard() {
   const { state } = useAuth()
@@ -15,7 +14,7 @@ export function AuthGuard() {
         justify="center"
         className="h-screen w-screen"
       >
-        <HugeiconsIcon icon={Loading03Icon} size={32} className="animate-spin" />
+        <Loader2 size={32} strokeWidth={2} className="animate-spin" />
       </Flex>
     )
   }

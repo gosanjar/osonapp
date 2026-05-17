@@ -1,10 +1,8 @@
 import * as React from "react"
 import { Dialog as DialogPrimitive } from "radix-ui"
-
+import { X } from "lucide-react"
 import { cn } from "@utils/utils"
 import { Button } from "@/shared/ui/button"
-import { HugeiconsIcon } from "@hugeicons/react"
-import { Cancel01Icon } from "@hugeicons/core-free-icons"
 
 function Dialog({
   ...props
@@ -73,7 +71,7 @@ function DialogContent({
               className="absolute top-2 right-2"
               size="icon-sm"
             >
-              <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />
+              <X strokeWidth={2} />
               <span className="sr-only">Close</span>
             </Button>
           </DialogPrimitive.Close>

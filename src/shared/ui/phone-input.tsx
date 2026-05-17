@@ -12,16 +12,35 @@ interface PhoneInputProps extends Omit<
 
 const PREFIX = "+998"
 
+// "901234567" → "90 123 45 67"
+function formatDisplay(digits: string): string {
+  const d = digits.slice(0, 9)
+  const parts: string[] = []
+  if (d.length > 0) parts.push(d.slice(0, 2))
+  if (d.length > 2) parts.push(d.slice(2, 5))
+  if (d.length > 5) parts.push(d.slice(5, 7))
+  if (d.length > 7) parts.push(d.slice(7, 9))
+  return parts.join(" ")
+}
+
+// "90 123 45 67" → "901234567"
+function stripFormatting(str: string): string {
+  return str.replace(/\D/g, "")
+}
+
 export function PhoneInput({
   value = "",
   onChange,
   "aria-invalid": ariaInvalid,
+  placeholder = "90 123 45 67",
   ...props
 }: PhoneInputProps) {
-  const suffix = value.startsWith(PREFIX) ? value.slice(PREFIX.length) : value
+  const digits = value.startsWith(PREFIX) ? value.slice(PREFIX.length) : value
+  const displayed = formatDisplay(digits)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange?.(PREFIX + e.target.value.replace(/\D/g, ""))
+    const raw = stripFormatting(e.target.value).slice(0, 9)
+    onChange?.(PREFIX + raw)
   }
 
   return (
@@ -31,9 +50,9 @@ export function PhoneInput({
       </span>
       <Input
         type="tel"
-        value={suffix}
+        value={displayed}
         onChange={handleChange}
-        maxLength={9}
+        placeholder={placeholder}
         aria-invalid={ariaInvalid}
         className="rounded-l-none"
         {...props}

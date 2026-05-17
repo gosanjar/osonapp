@@ -1,12 +1,8 @@
 import useSidebar from "@/entities/sidebar/use-sidebar"
 import SidebarItem from "./sidebar-item"
 import { Accordion } from "@/shared/ui/accordion"
-import {
-  BubbleChatQuestionIcon,
-  MoreVerticalIcon,
-} from "@hugeicons/core-free-icons"
-import { NavLink, useLocation, useParams } from "react-router-dom"
-import Icon from "@/shared/ui/icon"
+import { HelpCircle, MoreVertical } from "lucide-react"
+import { NavLink, useLocation } from "react-router-dom"
 import Flex from "@/shared/ui/flex"
 import { useState } from "react"
 import { useAuthStore } from "@/shared/store/auth.store"
@@ -23,7 +19,6 @@ const Sidebar = ({ onNavigate }: { onNavigate?: () => void }) => {
   const { menuList } = useSidebar()
   const user = useAuthStore((s) => s.user)
   const { logout } = useAuth()
-  const { lang } = useParams<{ lang: string }>()
 
   const activeItem =
     menuList.find((item) =>
@@ -45,7 +40,7 @@ const Sidebar = ({ onNavigate }: { onNavigate?: () => void }) => {
         align="center"
         className="sticky top-0 z-50 h-16 w-full border-b border-gray-800 p-3.5"
       >
-        <NavLink to={`/${lang ?? "uz"}`} onClick={onNavigate}>
+        <NavLink to="/" onClick={onNavigate}>
           <img className="size-9 rounded" src="/logo.png" alt="logo" />
         </NavLink>
         <div className="grow text-lg font-medium">
@@ -89,11 +84,11 @@ const Sidebar = ({ onNavigate }: { onNavigate?: () => void }) => {
           </Flex>
         </Flex>
         <Flex gap={2}>
-          <Icon icon={BubbleChatQuestionIcon} />
+          <HelpCircle size={18} strokeWidth={2} />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="cursor-pointer rounded p-0.5 hover:bg-white/10">
-                <Icon icon={MoreVerticalIcon} />
+                <MoreVertical size={18} strokeWidth={2} />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent side="right" align="end">

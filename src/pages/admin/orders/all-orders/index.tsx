@@ -3,8 +3,7 @@ import { orderMocks } from "@/mocks/order-mocks"
 import { Button } from "@/shared/ui/button"
 import { DataTable } from "@/shared/ui/data-table/data-table"
 import Flex from "@/shared/ui/flex"
-import Icon from "@/shared/ui/icon"
-import { TelegramIcon } from "@hugeicons/core-free-icons"
+import { Send } from "lucide-react"
 import { columns } from "../pre-orders/columns"
 import GuideButton from "@/shared/ui/predefined/guide-button"
 
@@ -14,7 +13,7 @@ const AllOrders = () => {
       <Flex justify="end" className="w-full">
         <GuideButton />
         <Button size="lg" variant="outline">
-          <Icon icon={TelegramIcon} />
+          <Send size={18} strokeWidth={2} />
         </Button>
       </Flex>
 

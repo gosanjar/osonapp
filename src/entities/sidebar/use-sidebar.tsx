@@ -1,20 +1,20 @@
 import { ROUTES } from "@/shared/config/routes"
 import {
-  BankIcon,
-  Book02Icon,
-  ChatIcon,
-  DashboardSquare01Icon,
-  DiscountIcon,
-  Home01Icon,
-  Setting07Icon,
-  ShoppingCart02Icon,
-  Store01Icon,
-  TelegramIcon,
-  User03Icon,
-  UserMultiple02Icon,
-  WaterfallUp01Icon,
-  WebDesign01Icon,
-} from "@hugeicons/core-free-icons"
+  Landmark,
+  BookOpen,
+  MessageSquare,
+  LayoutDashboard,
+  Tag,
+  Home,
+  Settings,
+  ShoppingCart,
+  Store,
+  Send,
+  User,
+  Users,
+  TrendingUp,
+  Monitor,
+} from "lucide-react"
 import type { ISidebarMenuTree } from "./types"
 import { useMemo } from "react"
 import Icon from "@/shared/ui/icon"
@@ -27,17 +27,17 @@ const useSidebar = () => {
     return [
       {
         path: ROUTES.DASHBOARD,
-        icon: <Icon icon={Home01Icon} />,
+        icon: <Icon icon={Home} />,
         label: "Dashboard",
       },
       {
         path: ROUTES.CONSTRUCTOR,
-        icon: <Icon icon={WebDesign01Icon} />,
+        icon: <Icon icon={Monitor} />,
         label: "Konstruktor",
       },
       {
         path: ROUTES.ORDERS,
-        icon: <Icon icon={ShoppingCart02Icon} />,
+        icon: <Icon icon={ShoppingCart} />,
         label: "Buyurtmalar",
         children: [
           { path: ROUTES.ORDERS_ALL, label: "Barcha buyurtmalar", permission: "can_order_edit" },
@@ -47,7 +47,7 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.CATALOG,
-        icon: <Icon icon={Store01Icon} />,
+        icon: <Icon icon={Store} />,
         label: "Katalog",
         children: [
           { path: ROUTES.CATALOG_PRODUCTS, label: "Mahsulotlar", permission: "can_product_edit" },
@@ -59,7 +59,7 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.CUSTOMERS,
-        icon: <Icon icon={User03Icon} />,
+        icon: <Icon icon={User} />,
         label: "Mijozlar",
         children: [
           { path: ROUTES.CUSTOMERS_ALL, label: "Barcha mijozlar", permission: "can_customer_edit" },
@@ -68,7 +68,7 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.MARKETING,
-        icon: <Icon icon={DiscountIcon} />,
+        icon: <Icon icon={Tag} />,
         label: "Marketing",
         children: [
           { path: ROUTES.MARKETING_DISCOUNT, label: "Promo kodlar" },
@@ -82,7 +82,7 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.ANALYTICS,
-        icon: <Icon icon={WaterfallUp01Icon} />,
+        icon: <Icon icon={TrendingUp} />,
         label: "Metrikalar",
         children: [
           { path: ROUTES.ANALYTICS_GOOGLE, label: "Google Analitika" },
@@ -95,19 +95,19 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.TELEGRAM_CONNECT,
-        icon: <Icon icon={TelegramIcon} />,
+        icon: <Icon icon={Send} />,
         label: "Telegram bot",
         section: "Kanallar",
         permission: "can_telegram_connect",
       },
       {
         path: ROUTES.CONVERSATIONS,
-        icon: <Icon icon={ChatIcon} />,
+        icon: <Icon icon={MessageSquare} />,
         label: "Chat",
       },
       {
         path: ROUTES.SETTINGS,
-        icon: <Icon icon={Setting07Icon} />,
+        icon: <Icon icon={Settings} />,
         label: "Sozlamalar",
         section: "Sozlamalar",
         children: [
@@ -118,7 +118,7 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.PAYMENTS,
-        icon: <Icon icon={BankIcon} />,
+        icon: <Icon icon={Landmark} />,
         label: "To'lovlar",
         children: [
           { path: ROUTES.PAYMENTS_ALL, label: "To'lov tizimlari", permission: "can_payment_edit" },
@@ -128,7 +128,7 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.MANAGEMENT,
-        icon: <Icon icon={UserMultiple02Icon} />,
+        icon: <Icon icon={Users} />,
         label: "Xodimlar",
         children: [
           { path: ROUTES.MANAGEMENT_EMPLOYEES, label: "Xodimlar", permission: "can_user_edit" },
@@ -137,12 +137,12 @@ const useSidebar = () => {
       },
       {
         path: ROUTES.APPLICATIONS,
-        icon: <Icon icon={DashboardSquare01Icon} />,
+        icon: <Icon icon={LayoutDashboard} />,
         label: "Dastur",
       },
       {
         path: ROUTES.META_FIELDS,
-        icon: <Icon icon={Book02Icon} />,
+        icon: <Icon icon={BookOpen} />,
         label: "Maxsus ma'lumotlar",
       },
     ]

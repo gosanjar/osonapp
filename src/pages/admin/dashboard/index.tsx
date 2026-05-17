@@ -7,11 +7,7 @@ import {
   CardTitle,
 } from "@/shared/ui/card"
 import Flex from "@/shared/ui/flex"
-import Icon from "@/shared/ui/icon"
-import {
-  ArrowUpRight01Icon,
-  Notification01Icon,
-} from "@hugeicons/core-free-icons"
+import { ArrowUpRight, Bell } from "lucide-react"
 import { NavLink } from "react-router-dom"
 import Chart from "./chart"
 import { Checkbox } from "@/shared/ui/checkbox"
@@ -68,7 +64,7 @@ const Dashboard = () => {
         align="center"
         className="w-full rounded-lg bg-blue-500 p-3 text-white"
       >
-        <Icon icon={Notification01Icon} />
+        <Bell size={18} strokeWidth={2} />
         <div>
           <span className="font-medium">
             Sizning obunangiz 5 kundan keyin tugaydi.
@@ -94,7 +90,7 @@ const Dashboard = () => {
             to={ROUTES.ANALYTICS_GOOGLE}
           >
             <span>Google Analitika</span>
-            <Icon icon={ArrowUpRight01Icon} />
+            <ArrowUpRight size={14} strokeWidth={2} />
           </NavLink>
         </Flex>
         <img src="/illustrations/1.svg" alt="" className="h-50" />
